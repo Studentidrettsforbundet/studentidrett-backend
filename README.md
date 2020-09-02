@@ -1,5 +1,13 @@
 # studentidrett-backend
 
+### Dependencies
+
+Dependencies are stored in `requirements.txt`, and is installed by running `pip install -r requirements.txt`.
+
+After adding a new dependency, run `pip freeze > requirements.txt` to update.
+
+This makes sure that everyone uses the same dependencies and versions during development.
+
 # Git-conventions
 
 Branches:

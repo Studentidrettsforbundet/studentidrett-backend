@@ -22,6 +22,8 @@ media
 .idea/**/uiDesigner.xml 
 .idea/**/gradle.xml 
 .idea/**/libraries 
+.idea/**/misc.xml
+.idea/**/studentidrett-backend.iml 
 *.iws /out/ 
 
 # Python # 
