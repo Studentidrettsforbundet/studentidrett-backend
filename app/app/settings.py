@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'clubs.apps.ClubsConfig'
+    'rest_framework',
+    'clubs.apps.ClubsConfig',
+    'cities.apps.CitiesConfig'
 ]
 
 MIDDLEWARE = [
-    'django.pipmiddleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'app.wsgi.application'
+# WSGI_APPLICATION = 'app.wsgi.application'
 
 
 # Database
