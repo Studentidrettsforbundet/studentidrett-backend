@@ -14,3 +14,15 @@ def city_list(request):
         serializer = CitySerializer(cities, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
+@csrf_exempt
+def city_detail(request, pk):
+    try:
+        city = City.objects.get(pk=pk)
+    except City.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == "GET":
+        serializer = CitySerializer(city)
+        return JsonResponse(serializer.data)
+

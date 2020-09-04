@@ -3,7 +3,8 @@ from cities.models import City
 
 
 class CitySerializer(serializers.ModelSerializer):
+    clubs = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = City
-        fields = ['id', 'name', 'region']
+        fields = ['id', 'name', 'region', 'clubs']
