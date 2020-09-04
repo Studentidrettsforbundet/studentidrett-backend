@@ -24,6 +24,7 @@ media
 .idea/**/libraries 
 .idea/**/misc.xml
 .idea/**/studentidrett-backend.iml 
+.idea/
 *.iws /out/ 
 
 # Python # 
@@ -116,5 +117,3 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
-
-
