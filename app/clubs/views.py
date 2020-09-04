@@ -2,53 +2,54 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .models import Club
 from .serializers import ClubSerializer
 
 # Create your views here.
 
-@csrf_exempt #TODO: eventually remove this tag
-def club_list(request):
+@api_view(['GET', 'POST'])
+def club_list(request, format=None):
     if request.method == "GET":
         clubs = Club.objects.all()
         serializer = ClubSerializer(clubs, many = True)
 
-        return JsonResponse(serializer.data, safe = False)
+        return Response(serializer.data)
 
     elif request.method == "POST":
-        data = JSONParser().parse(request)
-        serializer = ClubSerializer(data=data)
+        serializer = ClubSerializer(data=request.data)
+
         if(serializer.is_valid()):
             serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            return JsonResponse(serializer.data, status=201)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return JsonResponse(serializer.errors, status=400)
-
-def club_detail(request, pk):
+@api_view(['GET','DELETE','PUT'])
+def club_detail(request, pk, format=None):
     try:
         club = Club.objects.get(pk = pk)
 
     except Club.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
         serializer = ClubSerializer(club)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == "PUT":
-        data = JSONParser().parse(request)
-        serializer = ClubSerializer(club, data=data)
+        serializer = ClubSerializer(club, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
+            return Response(serializer.data)
 
-        return JsonResponse(serializer.errors, status=400)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == "DELETE":
         club.delete()
-
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
