@@ -1,5 +1,7 @@
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework import permissions
 
 from cities.models import City
 from cities.serializers import CitySerializer
@@ -7,22 +9,8 @@ from cities.serializers import CitySerializer
 # Create your views here.
 
 
-@csrf_exempt
-def city_list(request):
-    if request.method == "GET":
-        cities = City.objects.all()
-        serializer = CitySerializer(cities, many=True)
-        return JsonResponse(serializer.data, safe=False)
+class CityViewSet(viewsets.ReadOnlyModelViewSet):
 
-
-@csrf_exempt
-def city_detail(request, pk):
-    try:
-        city = City.objects.get(pk=pk)
-    except City.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == "GET":
-        serializer = CitySerializer(city)
-        return JsonResponse(serializer.data)
-
+    permission_classes = (permissions.AllowAny,)
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
