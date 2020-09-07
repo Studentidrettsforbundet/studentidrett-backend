@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.test import APIClient, APIRequestFactory, APITestCase
+from rest_framework.test import APIRequestFactory, APITestCase
 from cities.models import City
 from cities.views import CityViewSet
 
@@ -11,7 +11,6 @@ class TestCityApi(APITestCase):
     def setUp(self):
         city= City(name="Trondheim", region="Trondelag")
         city.save()
-        self.client=APIClient()
         self.factory=APIRequestFactory()
         self.cities=City.objects.all()
 
@@ -27,7 +26,7 @@ class TestCityApi(APITestCase):
         self.assertEqual(response.data.get('results')[0].keys(), {'id','name','region','clubs'})
 
     def test_city_detail(self):
-        request = self.factory.get('cities/1')
+        request = self.factory.get('cities')
         view = CityViewSet.as_view({'get': 'retrieve'})
         response = view(request, pk='1')
         # Check status code
