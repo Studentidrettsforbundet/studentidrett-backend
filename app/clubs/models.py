@@ -16,4 +16,4 @@ class Club(models.Model):
     register_info = models.CharField(max_length=255, null=True)
 
     class Meta:
-        ordering=['name']
+        ordering = ['name']
