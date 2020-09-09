@@ -39,3 +39,10 @@ class TestCityApi(APITestCase):
         self.assertEqual(response.data.keys(),
                          {'id', 'city', 'name', 'information', 'contact_email', 'contact_phone', 'pricing',
                           'register_info'})
+
+    def test_club_detail_non_existing(self):
+        request = self.factory.get('clubs')
+        view = ClubViewSet.as_view({'get': 'retrieve'})
+        response = view(request, pk='999')
+        # Check status code
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
