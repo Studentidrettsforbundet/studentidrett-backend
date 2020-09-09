@@ -80,3 +80,9 @@ class TestInterestApi(APITestCase):
         response = self.get_detail_view(request, pk=1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.keys(), {'id', 'email', 'sport', 'club'})
+
+    def test_get_non_existing_interest(self):
+        request = self.factory.get('/interest/')
+        force_authenticate(request, self.user)
+        response = self.get_detail_view(request, pk=999)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
