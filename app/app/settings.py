@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'clubs.apps.ClubsConfig'
+    'clubs.apps.ClubsConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(os.path.dirname(__file__) ,'../templates').replace('\\','/')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -73,7 +74,12 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'app.wsgi.application'
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
+#WSGI_APPLICATION = 'app.wsgi.application'
 
 
 # Database
