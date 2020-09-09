@@ -22,7 +22,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r app/requirements.txt
     - name: Run migrations
-      run: python manage.py migrate
+      run: python app/manage.py migrate
     - name: Run Tests
       run: |
-        python manage.py test
+        python app/manage.py test
