@@ -1,14 +1,14 @@
-from rest_framework import permissions
+from .models import Club
+from .serializers import ClubSerializer
 from rest_framework import viewsets
-
-from clubs.models import Club
-from clubs.serializers import ClubSerializer
-
 
 # Create your views here.
 
+# Automatically provides 'list', 'create', 'retrieve', 'update' and 'destroy' actions
 
-class ClubViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (permissions.AllowAny,)
+
+class ClubViewSet(viewsets.ModelViewSet):
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
+
+
