@@ -1,13 +1,19 @@
 from django.db import models
 
+from cities.models import City
+
+
+# Create your models here.
+
 
 class Club(models.Model):
-    name = models.CharField(max_length=100, default='')
-    contact_email = models.EmailField(blank=True)
-    contact_phone = models.CharField(max_length=11, blank=True)
-    pricing = models.FloatField(null=True)
-    register_info = models.TextField(blank=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, related_name="clubs")
+    name = models.CharField(max_length=255, null=False)
+    information = models.CharField(max_length=1023, null=True)
+    contact_email = models.EmailField(max_length=127, null=True)
+    contact_phone = models.CharField(max_length=11, null=True)
+    pricing = models.CharField(max_length=255, null=True)
+    register_info = models.CharField(max_length=255, null=True)
 
     class Meta:
         ordering = ['name']
-
