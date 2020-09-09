@@ -1,15 +1,15 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from .views import *
-from django.conf.urls import include
+from rest_framework import renderers
+from rest_framework.routers import DefaultRouter
+
+
+router = DefaultRouter()
+router.register(r'clubs', ClubViewSet)
+router.register(r'users', UserViewSet)
+
 
 urlpatterns = [
-    path('clubs/', ClubList.as_view()),
-    path('clubs/<int:pk>/', ClubDetail.as_view()),
-    path('users/', UserList.as_view()),
-    path('users/<int:pk>', UserDetail.as_view()),
-    path('api-auth/', include('rest_framework.urls'))
+    path('', include(router.urls)),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
-

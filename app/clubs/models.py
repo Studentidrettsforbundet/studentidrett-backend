@@ -9,12 +9,7 @@ class Club(models.Model):
     pricing = models.FloatField(null=True)
     register_info = models.TextField(blank=True)
     owner = models.ForeignKey('auth.User', related_name='clubs', on_delete=models.CASCADE)
-    highlighted = models.TextField()
 
     class Meta:
         ordering = ['name']
-
-
-    def save(self, *args, **kwargs):
-        super(Club, self).save(*args, **kwargs)
 
