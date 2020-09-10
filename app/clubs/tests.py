@@ -14,7 +14,6 @@ class TestCityApi(APITestCase):
         club = Club(name="NTNUI")
         club.save()
         self.factory = APIRequestFactory()
-        self.cities = Club.objects.all()
 
     def test_clubs_list(self):
         request = self.factory.get('clubs')
