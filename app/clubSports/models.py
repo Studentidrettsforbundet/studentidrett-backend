@@ -10,9 +10,8 @@ class ClubSport(models.Model):
     description = models.TextField(max_length=500, null=True)
     coverPhoto = models.ImageField(upload_to='clubSports', null=True)
     sportType = models.ForeignKey(Sport, on_delete=models.SET_NULL, null=True)
-    # club = models.ForeignKey(Club, on_delete=models.CASCADE())
     contactPerson = models.CharField(max_length=30, blank=True, default='', null=True)
-    contactEMail = models.EmailField(max_length=254, null=True)
+    contactMail = models.EmailField(max_length=254, null=True)
 
     class Meta:
         ordering = ['name']
