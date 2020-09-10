@@ -14,7 +14,7 @@ from clubSports.models import ClubSport
 class TestInterestApi(APITestCase):
 
     def setUp(self):
-        club= Club(name="NTNUI")
+        club = Club(name="NTNUI")
         club.save()
         club_sport = ClubSport(name="NTNUI Fotball", club=club)
         club_sport.save()

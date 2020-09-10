@@ -14,14 +14,18 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Interest',
+            name='Team',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(max_length=254)),
+                ('name', models.CharField(max_length=63)),
+                ('full_capacity', models.BooleanField()),
+                ('tryouts', models.BooleanField()),
+                ('registration_open', models.BooleanField()),
                 ('club_sport', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='clubSports.clubsport')),
             ],
             options={
-                'ordering': ['club_sport'],
+                'verbose_name': 'Team',
+                'verbose_name_plural': 'Teams',
             },
         ),
     ]
