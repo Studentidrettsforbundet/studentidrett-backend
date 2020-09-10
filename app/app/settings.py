@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'clubs.apps.ClubsConfig',
+    'clubSports.apps.ClubSportsConfig',
+    'sports.apps.SportsConfig',
     'cities.apps.CitiesConfig'
 ]
 
