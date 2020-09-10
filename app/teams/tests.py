@@ -7,6 +7,7 @@ import json
 from .models import Team
 from clubSports.models import ClubSport
 from .serializers import TeamSerializer
+from clubs.models import Club
 
 # initialize the APIClient app
 client = APIClient()
@@ -18,7 +19,8 @@ client = APIClient()
 class TeamModelTest(TestCase):
     def setUp(self):
 
-        self.clubSport = ClubSport.objects.create(name="TestClubSport")
+        self.club = Club.objects.create(name="TestClub")
+        self.clubSport = ClubSport.objects.create(name="TestClubSport", club=self.club)
 
         Team.objects.create(
             name='TeamName1',
@@ -38,7 +40,8 @@ class TeamModelTest(TestCase):
 
 class TeamViewTest(TestCase):
     def setUp(self):
-        self.clubSport = ClubSport.objects.create(name="TestClubSport")
+        self.club = Club.objects.create(name="TestClub")
+        self.clubSport = ClubSport.objects.create(name="TestClubSport", club=self.club)
         Team.objects.create(
             name='TeamName1',
             full_capacity=True,
@@ -83,7 +86,8 @@ class TeamViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_new_team(self):
-        clubSport = ClubSport.objects.create(name="TestClubSport2")
+        club = Club.objects.create(name="TestClub")
+        clubSport = ClubSport.objects.create(name="TestClubSport2", club=club)
         response = self.client.post('/team/', {
             "id": 5,
             "name": "post",
