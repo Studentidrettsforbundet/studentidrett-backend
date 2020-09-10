@@ -47,7 +47,10 @@ INSTALLED_APPS = [
     'cities.apps.CitiesConfig',
     'interest.apps.InterestConfig',
     'rest_framework_swagger',
-    'drf_yasg'
+    'drf_yasg',
+    'clubSports.apps.ClubSportsConfig',
+    'sports.apps.SportsConfig',
+    'cities.apps.CitiesConfig'
 ]
 
 MIDDLEWARE = [
