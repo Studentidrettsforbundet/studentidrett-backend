@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 import os
 
@@ -31,7 +33,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'clubs.apps.ClubsConfig',
-    'teams.apps.TeamsConfig'
+    'teams.apps.TeamsConfig',
+    'cities.apps.CitiesConfig'
 ]
 
 MIDDLEWARE = [
@@ -75,6 +77,13 @@ TEMPLATES = [
     },
 ]
 
+# Add default pagination
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
+
 # WSGI_APPLICATION = 'app.wsgi.application'
 
 
@@ -87,7 +96,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -107,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -120,7 +127,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
