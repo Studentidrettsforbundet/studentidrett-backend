@@ -61,12 +61,12 @@ class TeamViewTest(TestCase):
             registration_open=True,
             club_sport=self.clubSport)
 
-    def test_contains_expected_fields(self):
-        response = client.get('/team/1/')
-        self.assertCountEqual(response.data.keys(), {'id', 'name', 'full_capacity', 'tryouts', 'registration_open', 'club_sport'})
+    def test_team_contains_expected_fields(self):
+        response = client.get('/teams/1/')
+        self.assertEqual(response.data.keys(), {'id', 'name', 'full_capacity', 'tryouts', 'registration_open', 'club_sport'})
 
     def test_team_detail(self):
-        response = client.get('/team/2/')
+        response = client.get('/teams/2/')
         self.assertEqual(json.loads(response.content),
                          {'id': 2,
                           'name': 'TeamName2',
@@ -78,7 +78,7 @@ class TeamViewTest(TestCase):
 
     def test_team_list(self):
         # get API response
-        response = client.get('/team/')
+        response = client.get('/teams/')
         # get data from db
         teams = Team.objects.all()
         serializer = TeamSerializer(teams, many=True)
@@ -88,7 +88,7 @@ class TeamViewTest(TestCase):
     def test_create_new_team(self):
         club = Club.objects.create(name="TestClub")
         clubSport = ClubSport.objects.create(name="TestClubSport2", club=club)
-        response = self.client.post('/team/', {
+        response = self.client.post('/teams/', {
             "id": 5,
             "name": "post",
             "full_capacity": False,
@@ -99,6 +99,6 @@ class TeamViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Team.objects.filter(name="post").exists())
 
-    def test_get_non_existing_team(self):
-        response = client.get('/team/42/')
+    def test_get_nonexistent_team(self):
+        response = client.get('/teams/42/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
