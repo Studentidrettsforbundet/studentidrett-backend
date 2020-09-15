@@ -3,10 +3,12 @@
   services:
     db:
       image: postgres
+      ports:
+        - "5432"
       environment:
-        - POSTGRES_DB=postgres
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_DB=nsi
+        - POSTGRES_USER=django
+        - POSTGRES_PASSWORD=django
     migrate:
       build: .
       command: python manage.py migrate
