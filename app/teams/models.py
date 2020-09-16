@@ -1,5 +1,5 @@
 from django.db import models
-from clubSports.models import ClubSport
+from groups.models import Group
 # Create your models here.
 
 
@@ -8,7 +8,7 @@ class Team(models.Model):
     full_capacity = models.BooleanField()
     tryouts = models.BooleanField()
     registration_open = models.BooleanField()
-    club_sport = models.ForeignKey(ClubSport, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     class Meta:
         """ Configure the name displayed in the admin panel """

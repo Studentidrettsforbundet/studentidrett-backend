@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from clubSports.models import ClubSport
+from groups.models import Group
 
 
-class ClubSportSerializer(serializers.ModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ClubSport
+        model = Group
         fields = ['id', 'name', 'description', 'cover_photo', 'sport_type', 'club', 'contact_person', 'contact_email']
