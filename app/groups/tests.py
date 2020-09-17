@@ -4,11 +4,12 @@ from rest_framework.test  import APIClient
 import json
 
 from .models import Group
-from clubs.models import Club
+
 from .serializers import GroupSerializer
 
 from sports.models import Sport
-
+from clubs.models import Club
+from cities.models import City
 
 #initialize the APIClient app
 client = APIClient()
@@ -20,6 +21,7 @@ class GroupsModelTest(TestCase):
     def setUp(self):
         self.club = Club.objects.create(name="TestClub")
         self.sport = Sport.objects.create(name="TestSport")
+        self.city = City.objects.create(name="TestCity")
 
         Group.objects.create(
             name='Group1',
@@ -27,8 +29,9 @@ class GroupsModelTest(TestCase):
             cover_photo =  None,
             sport_type = self.sport,
             club = self.club,
-            contact_person = None,
-            contact_email = None,
+            city = self.city
+            #contact_person = None,
+            #contact_email = None,
         )
 
     def test_group_attributes(self):
@@ -38,13 +41,15 @@ class GroupsModelTest(TestCase):
         self.assertFalse(group.cover_photo is None) #TODO fix this test
         self.assertEqual(group.sport_type, self.sport)
         self.assertEqual(group.club, self.club)
-        self.assertEqual(group.contact_person, None)
-        self.assertEqual(group.contact_email, None)
+        self.assertEqual(group.city, self.city)
+        #self.assertEqual(group.contact_person, None)
+        #self.assertEqual(group.contact_email, None)
 
 class GroupViewTest(TestCase):
     def setUp(self):
         self.club = Club.objects.create(name="TestClub")
         self.sport = Sport.objects.create(name="TestSport")
+        self.city = City.objects.create(name="TestCity")
 
         Group.objects.create(
             name='Group1',
@@ -52,8 +57,9 @@ class GroupViewTest(TestCase):
             cover_photo=None,
             sport_type=self.sport,
             club=self.club,
-            contact_person=None,
-            contact_email=None,
+            city = self.city
+            #contact_person=None,
+            #contact_email=None,
         )
 
         Group.objects.create(
@@ -62,8 +68,10 @@ class GroupViewTest(TestCase):
             cover_photo=None,
             sport_type=self.sport,
             club=self.club,
-            contact_person=None,
-            contact_email=None,
+            city=self.city
+
+            #contact_person=None,
+            #contact_email=None,
         )
 
         Group.objects.create(
@@ -72,15 +80,18 @@ class GroupViewTest(TestCase):
             cover_photo=None,
             sport_type=self.sport,
             club=self.club,
-            contact_person=None,
-            contact_email=None,
+            city=self.city
+
+            #contact_person=None,
+            #contact_email=None,
         )
 
     def test_group_contains_expected_fields(self):
         response = client.get('/groups/1/')
         self.assertEqual(response.data.keys(), {'id', 'name', 'description', 'cover_photo',
-                                                'sport_type', 'club', 'contact_person',
-                                                'contact_email'})
+                                                'sport_type', 'club', 'city'})
+                                                #'contact_person',
+                                                #'contact_email'})
 
     def test_group_detail(self):
         response = client.get('/groups/1/')
@@ -91,8 +102,9 @@ class GroupViewTest(TestCase):
                           'cover_photo': None,
                           'sport_type' : self.sport.id,
                           'club' : self.club.id,
-                          'contact_person' : None,
-                          'contact_email' : None
+                          'city': self.city.id
+                          #'contact_person' : None,
+                          #'contact_email' : None
                          })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -110,6 +122,7 @@ class GroupViewTest(TestCase):
     def test_create_new_group(self):
         club = Club.objects.create(name="Club")
         sport = Sport.objects.create(name = "Sport")
+        city = City.objects.create(name="City")
 
         response = self.client.post('/groups/', {
                                     'id': 5,
@@ -118,6 +131,7 @@ class GroupViewTest(TestCase):
                                     #'cover_photo': None,
                                     'sport_type': sport.id,
                                     'club': club.id,
+                                    'city': city.id
                                     #'contact_person': None,
                                     #'contact_email': None
                                     },
