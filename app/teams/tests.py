@@ -1,16 +1,14 @@
-import json
-
-from django.contrib.auth.models import User
 from cities.models import City
 from clubs.models import Club
-from sports.models import Sport
-from teams.views import TeamViewSet
+from django.contrib.auth.models import User
 from django.test import TestCase
+from groups.models import Group
 from rest_framework import status
 from rest_framework.test import APIClient, force_authenticate, APIRequestFactory
+from sports.models import Sport
+from teams.views import TeamViewSet
 
 from .models import Team
-from groups.models import Group
 from .serializers import TeamSerializer
 
 # initialize the APIClient app
@@ -38,14 +36,12 @@ class TestTeam(TestCase):
             group=self.group,
             sport=self.sport,
             description="Dette er et lag",
-            schedule=None,
             cost="1000kr i uka",
             equipment="Susp, baller av stål og en teskje",
-            gender="Male",
-            skill_level="Low",
+            gender="M",
+            skill_level="LOW",
             season="Høst til vår",
             facebook_link="facebook.com",
-            tryuot_dates="Mandag 15.desember",
             availability="Open",
             image=None
         )
@@ -88,9 +84,9 @@ class TestTeam(TestCase):
         response = client.get('/team/1/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.keys(),
-                              {'id', 'name', 'name', 'location', 'group', 'sport', 'description', 'schedule', 'cost',
-                               'equipment', 'gender', 'skill_level', 'season', 'facebook_link', 'instagram_link','webpage',
-                               'tryout_dates', 'availability', 'image'})
+                         {'id', 'name', 'name', 'location', 'group', 'sport', 'description', 'schedule', 'cost',
+                          'equipment', 'gender', 'skill_level', 'season', 'facebook_link', 'instagram_link', 'webpage',
+                          'tryout_dates', 'availability', 'image'})
 
     def test_team_detail(self):
         response = client.get('/team/2/')
@@ -117,7 +113,7 @@ class TestTeam(TestCase):
 
         }, format='json')
         force_authenticate(request, self.user)
-        view = TeamViewSet.as_view({'post':'create'})
+        view = TeamViewSet.as_view({'post': 'create'})
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Team.objects.filter(name="post").exists())
@@ -130,7 +126,7 @@ class TestTeam(TestCase):
             "sport": self.sport.id,
 
         }, format='json')
-        view = TeamViewSet.as_view({'post':'create'})
+        view = TeamViewSet.as_view({'post': 'create'})
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
