@@ -43,12 +43,6 @@ class TestCityApi(APITestCase):
         # Check status code
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_city_post_not_allowed(self):
-        request = self.factory.post('cities', {'name': 'Oslo', 'region': 'øst'})
-        view = CityViewSet.as_view({'post': 'post'})
-        response = view(request)
-        # Check status code
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_query_param_region(self):
         city = City(name="Stjørdal", region="midt")
