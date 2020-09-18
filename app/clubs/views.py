@@ -2,7 +2,6 @@ from .models import Club
 from cities.models import City
 from .serializers import ClubSerializer
 from rest_framework import viewsets
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 # Create your views here.
 

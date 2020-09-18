@@ -2,9 +2,9 @@ from rest_framework import permissions, status
 from rest_framework import viewsets
 from rest_framework.exceptions import ParseError
 
-from cities.models import City, Region
+from cities.models import City
 from cities.serializers import CitySerializer
-
+from app.enums import Region
 
 # Create your views here.
 
