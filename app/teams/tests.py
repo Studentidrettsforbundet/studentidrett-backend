@@ -51,14 +51,12 @@ class TestTeam(TestCase):
             group=self.group,
             sport=self.sport,
             description="Dette er enda et lag",
-            schedule=None,
             cost="1000kr i uka",
             equipment="Susp, baller av stål og en teskje",
             gender="Male",
             skill_level="Low",
             season="Høst til vår",
             facebook_link="facebook.com",
-            tryuot_dates="Mandag 15.desember",
             availability="Open",
             image=None
         )
@@ -69,14 +67,12 @@ class TestTeam(TestCase):
         self.assertEqual(team.group, self.clubSport)
         self.assertEqual(team.sport, self.sport)
         self.assertEqual(team.description, "Dette er et lag")
-        self.assertEqual(team.schedule, None)
         self.assertEqual(team.cost, "1000kr i uka")
         self.assertEqual(team.equipment, "Susp, baller av stål og en teskje")
         self.assertEqual(team.gender, "Male")
         self.assertEqual(team.skill_level, "Low")
         self.assertEqual(team.season, "Høst til vår")
         self.assertEqual(team.facebook_link, "facebook.com")
-        self.assertEqual(team.tryuot_dates, "Mandag 15.desember")
         self.assertEqual(team.availability, "Open")
         self.assertEqual(team.image, None)
 

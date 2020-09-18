@@ -3,11 +3,8 @@ from groups.models import Group
 from cities.models import City
 from sports.models import Sport
 from app.enums import Gender, Skill, Status
+from django.utils import timezone
 # Create your models here.
-
-
-class TryoutDates(models.Model):
-    date = models.DateTimeField(default=timezone.now),
 
 
 class Team(models.Model):
@@ -20,9 +17,10 @@ class Team(models.Model):
     equipment = models.CharField(max_length=511,null=True)
     gender = models.CharField(max_length=2, choices=Gender.choices, default=Gender.ANY)
     skill_level = models.CharField(max_length=4, choices=Skill.choices, default=Skill.NONE)
-    tryout_dates = models.ManyToManyField(TryoutDates)
     season = models.CharField(max_length=511, null=True)
     facebook_link = models.CharField(max_length=127, null=True)
+    instagram_link = models.CharField(max_length=127, null=True)
+    webpage = models.CharField(max_length=127, null=True)
     availability = models.CharField(max_length=2, choices=Status.choices, default=Status.FULL)
     image = models.ImageField(upload_to='teams', null=True)
 
@@ -36,5 +34,10 @@ class Team(models.Model):
 
 
 class Schedule(models.Model):
-    date = models.DateTimeField(default=timezone.now),
+    date = models.DateTimeField(default=timezone.now)
+    team = models.ManyToManyField(Team)
 
+
+class TryoutDates(models.Model):
+    date = models.DateTimeField(default=timezone.now)
+    team = models.ManyToManyField(Team)
