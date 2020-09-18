@@ -2,7 +2,6 @@ import json
 
 from django.contrib.auth.models import User
 from cities.models import City
-from clubSports.models import ClubSport
 from clubs.models import Club
 from sports.models import Sport
 from teams.views import TeamViewSet
@@ -11,6 +10,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, force_authenticate, APIRequestFactory
 
 from .models import Team
+from groups.models import Group
 from .serializers import TeamSerializer
 
 # initialize the APIClient app
@@ -29,7 +29,7 @@ class TestTeam(TestCase):
         self.user = User.objects.get(username='testuser')
         self.city = City.objects.create(name="Trondelag")
         self.club = Club.objects.create(name="TestClub")
-        self.group = ClubSport.objects.create(name="TestClubSport", club=self.club)
+        self.group = Group.objects.create(name="TestGroup", club=self.club)
         self.sport = Sport.objects.create(name="Fotball")
 
         Team.objects.create(
@@ -52,7 +52,7 @@ class TestTeam(TestCase):
         Team.objects.create(
             name="test2",
             location=self.city,
-            group=self.clubSport,
+            group=self.group,
             sport=self.sport,
             description="Dette er enda et lag",
             schedule=None,
@@ -101,7 +101,7 @@ class TestTeam(TestCase):
 
     def test_team_list(self):
         # get API response
-        response = client.get('/team/')
+        response = client.get('/teams/')
         # get data from db
         teams = Team.objects.all()
         serializer = TeamSerializer(teams, many=True)

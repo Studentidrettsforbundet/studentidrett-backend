@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'clubs.apps.ClubsConfig',
     'cities.apps.CitiesConfig',
     'interest.apps.InterestConfig',
-    'clubSports.apps.ClubSportsConfig',
+    'groups.apps.GroupsConfig',
     'sports.apps.SportsConfig',
     'teams.apps.TeamsConfig'
 ]
