@@ -56,10 +56,25 @@ class GroupViewTest(TestCase):
         city.save()
 
         user = User.objects.create_superuser(username='testuser',  email='testuser@test.com', password='testing')
+        user.save()
+
+
 
         self.factory = APIRequestFactory()
-        self.group = Group.objects.all()
+        self.club = club
+        self.sport = sport
+        self.city = city
         self.user = User.objects.get(username='testuser')
+
+        group = Group(name="Group1",
+                      description="This is a description",
+                      cover_photo=None,
+                      sport_type=self.sport,
+                      club=self.club,
+                      city=self.city)
+        group.save()
+        self.group = Group.objects.all()
+
         self.post_view = GroupViewSet.as_view({'post': 'create'})
         self.get_list_view = GroupViewSet.as_view({'get': 'list'})
         self.get_detail_view = GroupViewSet.as_view({'get': 'retrieve'})
@@ -67,12 +82,12 @@ class GroupViewTest(TestCase):
 
     def test_post_groups(self):
         request = self.factory.post('/groups/', {
-              'name' :'Group1',
+              'name' :'Group2',
               'description': 'This is a description',
               'cover_photo': None,
-              'sport_type' : self.sport,
-              'club' : self.club,
-              'city': self.city
+              'sport_type' : self.sport.id,
+              'club' : self.club.id,
+              'city': self.city.id
              }, format = 'json')
         #bytte til city.id eller bare 1
         force_authenticate(request, self.user)
@@ -80,51 +95,25 @@ class GroupViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        '''Group.objects.create(
-            name='Group1',
-            description='This is a description',
-            cover_photo=None,
-            sport_type= ,
-            club=self.club,
-            city = self.city
-        )
-
-        Group.objects.create(
-            name='Group2',
-            description='This is a description',
-            cover_photo=None,
-            sport_type=self.sport,
-            club=self.club,
-            city=self.city
-
-        )
-
-        Group.objects.create(
-            name='Group3',
-            description='This is a description',
-            cover_photo=None,
-            sport_type=self.sport,
-            club=self.club,
-            city=self.city
-
-        )'''
 
     def test_group_contains_expected_fields(self):
         request = self.factory.get('/groups/')
         force_authenticate(request, self.user)
         response = self.get_detail_view(request, pk=1)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
         self.assertEqual(response.data.keys(), {'id', 'name', 'description', 'cover_photo',
                                                 'sport_type', 'club', 'city'})
-
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_group_detail(self):
         request = self.factory.get('/groups/')
         force_authenticate(request, self.user)
         response = self.get_detail_view(request, pk=1)
 
-        self.assertEqual(json.loads(response.content),
+        print("PRINTER", response.data)
+
+        self.assertEqual(response.data,
                          {'id':1,
                           'name' :'Group1',
                           'description': 'This is a description',
@@ -150,17 +139,14 @@ class GroupViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_new_group(self):
-        club = Club.objects.create(name="Club")
-        sport = Sport.objects.create(name = "Sport")
-        city = City.objects.create(name="City")
 
         request = self.factory.post('/groups/', {
-                                    'name': 'Group4',
+                                    'name': 'Group3',
                                     'description': 'This is a description',
-                                    'cover_photo': '',
-                                    'sport_type': sport.id,
-                                    'club': club.id,
-                                    'city': city.id
+                                    'cover_photo': None,
+                                    'sport_type': self.sport.id,
+                                    'club': self.club.id,
+                                    'city': self.city.id
                                     },
                                     format='json')
 
@@ -168,12 +154,12 @@ class GroupViewTest(TestCase):
         response = self.post_view(request)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(Group.objects.filter(name='Group4').exists())
+        self.assertTrue(Group.objects.filter(name='Group3').exists())
 
     def test_get_nonexistent_group(self):
-        request = self.factory.get('/groups/69/')
+        request = self.factory.get('/groups/')
         force_authenticate(request, self.user)
-        response = self.get_detail_view(request)
+        response = self.get_detail_view(request, pk=69)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_groups_auth(self):
@@ -184,13 +170,12 @@ class GroupViewTest(TestCase):
 
     def test_post_group_auth(self):
         request = self.factory.post('/groups/', {
-                                            'id': 5,
                                             'name': 'Group4',
                                             'description': 'This is a description',
-                                            'cover_photo': '',
-                                            'sport_type': self.sport,
-                                            'club': self.club,
-                                            'city': self.city
+                                            'cover_photo': None,
+                                            'sport_type': self.sport.id,
+                                            'club': self.club.id,
+                                            'city': self.city.id
                                             },
                                             format='json')
         response = self.post_view(request)
