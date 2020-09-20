@@ -22,3 +22,11 @@ class Status(models.TextChoices):
     CLOSED = 'CL', _('Closed')
     FULL = 'FU', _('Full')
     TRYOUTS = 'TO', _('Tryouts')
+
+
+class Region(models.TextChoices):
+    NORD = 'nord', _('Nord-Norge')
+    MIDT = 'midt', _('Midt-Norge')
+    VEST = 'vest', _('Vestlandet')
+    SOR = 'sør', _('Sørlandet')
+    OST = 'øst', _('Østlandet')
