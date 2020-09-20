@@ -1,15 +1,15 @@
-from cities.models import City
-from clubs.models import Club
+from app.cities.models import City
+from app.clubs.models import Club
 from django.contrib.auth.models import User
 from django.test import TestCase
-from groups.models import Group
+from app.groups.models import Group
 from rest_framework import status
 from rest_framework.test import APIClient, force_authenticate, APIRequestFactory
-from sports.models import Sport
-from teams.views import TeamViewSet
+from app.sports.models import Sport
+from app.teams.views import TeamViewSet
 
-from .models import Team
-from .serializers import TeamSerializer
+from app.teams.models import Team
+from app.teams.serializers import TeamSerializer
 
 # initialize the APIClient app
 client = APIClient()
@@ -64,7 +64,7 @@ class TestTeam(TestCase):
     def test_team_model(self):
         team = Team.objects.get(id='1')
         self.assertEqual(team.location, self.city)
-        self.assertEqual(team.group, self.clubSport)
+        self.assertEqual(team.group, self.group)
         self.assertEqual(team.sport, self.sport)
         self.assertEqual(team.description, "Dette er et lag")
         self.assertEqual(team.cost, "1000kr i uka")

@@ -35,9 +35,9 @@ class Team(models.Model):
 
 class Schedule(models.Model):
     date = models.DateTimeField(default=timezone.now)
-    team = models.ManyToManyField(Team)
+    team = models.ManyToManyField(Team, related_name="schedule")
 
 
 class TryoutDates(models.Model):
     date = models.DateTimeField(default=timezone.now)
-    team = models.ManyToManyField(Team)
+    team = models.ManyToManyField(Team, related_name="tryout_dates")
