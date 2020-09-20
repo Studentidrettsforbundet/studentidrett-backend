@@ -1,15 +1,15 @@
-from app.cities.models import City
-from app.clubs.models import Club
+from cities.models import City
+from clubs.models import Club
 from django.contrib.auth.models import User
 from django.test import TestCase
-from app.groups.models import Group
+from groups.models import Group
 from rest_framework import status
 from rest_framework.test import APIClient, force_authenticate, APIRequestFactory
-from app.sports.models import Sport
-from app.teams.views import TeamViewSet
+from sports.models import Sport
+from teams.views import TeamViewSet
 
-from app.teams.models import Team
-from app.teams.serializers import TeamSerializer
+from teams.models import Team
+from teams.serializers import TeamSerializer
 
 # initialize the APIClient app
 client = APIClient()
@@ -42,8 +42,7 @@ class TestTeam(TestCase):
             skill_level="LOW",
             season="Høst til vår",
             facebook_link="facebook.com",
-            availability="Open",
-            image=None
+            availability="OP",
         )
         Team.objects.create(
             name="test2",
@@ -53,43 +52,37 @@ class TestTeam(TestCase):
             description="Dette er enda et lag",
             cost="1000kr i uka",
             equipment="Susp, baller av stål og en teskje",
-            gender="Male",
-            skill_level="Low",
+            gender="M",
+            skill_level="LOW",
             season="Høst til vår",
             facebook_link="facebook.com",
-            availability="Open",
-            image=None
+            availability="OP",
         )
 
     def test_team_model(self):
-        team = Team.objects.get(id='1')
+        team = Team.objects.all()[0]
         self.assertEqual(team.location, self.city)
         self.assertEqual(team.group, self.group)
         self.assertEqual(team.sport, self.sport)
         self.assertEqual(team.description, "Dette er et lag")
         self.assertEqual(team.cost, "1000kr i uka")
         self.assertEqual(team.equipment, "Susp, baller av stål og en teskje")
-        self.assertEqual(team.gender, "Male")
-        self.assertEqual(team.skill_level, "Low")
+        self.assertEqual(team.gender, "M")
+        self.assertEqual(team.skill_level, "LOW")
         self.assertEqual(team.season, "Høst til vår")
         self.assertEqual(team.facebook_link, "facebook.com")
-        self.assertEqual(team.availability, "Open")
-        self.assertEqual(team.image, None)
+        self.assertEqual(team.availability, "OP")
 
     def test_contains_expected_fields(self):
-        response = client.get('/team/1/')
+        response = client.get('/teams/1/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.keys(),
-                         {'id', 'name', 'name', 'location', 'group', 'sport', 'description', 'schedule', 'cost',
-                          'equipment', 'gender', 'skill_level', 'season', 'facebook_link', 'instagram_link', 'webpage',
-                          'tryout_dates', 'availability', 'image'})
-
-    def test_team_detail(self):
-        response = client.get('/team/2/')
-        team = Team.objects.get(id='2')
+                         {'id', 'name', 'location', 'group', 'sport', 'description', 'cost', 'equipment', 'gender',
+                          'skill_level', 'season', 'schedule', 'tryout_dates', 'facebook_link', 'instagram_link',
+                          'webpage', 'availability', 'image'})
+        team = Team.objects.all()[0]
         serializer = TeamSerializer(team)
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_team_list(self):
         # get API response
@@ -103,9 +96,10 @@ class TestTeam(TestCase):
     def test_create_new_team_auth(self):
         request = factory.post('/team/', {
             "name": "post",
-            "location": self.city.id,
             "group": self.group.id,
             "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
 
         }, format='json')
         force_authenticate(request, self.user)
@@ -117,35 +111,23 @@ class TestTeam(TestCase):
     def test_create_new_team_no_auth(self):
         request = factory.post('/team/', {
             "name": "post",
-            "location": self.city.id,
             "group": self.group.id,
             "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
 
         }, format='json')
         view = TeamViewSet.as_view({'post': 'create'})
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_create_new_team_bad_location(self):
-        request = factory.post('/team/', {
-            "name": "post",
-            "location": None,
-            "group": self.group.id,
-            "sport": self.sport.id,
-
-        }, format='json')
-        force_authenticate(request, self.user)
-        view = TeamViewSet.as_view({'post': 'create'})
-        response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data.keys(), {'location'})
-
     def test_create_new_team_bad_group(self):
         request = factory.post('/team/', {
             "name": "post",
-            "location": self.city.id,
             "group": None,
             "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
 
         }, format='json')
         force_authenticate(request, self.user)
@@ -157,9 +139,10 @@ class TestTeam(TestCase):
     def test_create_new_team_bad_sport(self):
         request = factory.post('/team/', {
             "name": "post",
-            "location": self.city.id,
             "group": self.group.id,
             "sport": None,
+            "schedule": [],
+            "tryout_dates": []
 
         }, format='json')
         force_authenticate(request, self.user)
@@ -171,9 +154,10 @@ class TestTeam(TestCase):
     def test_create_new_team_empty_name(self):
         request = factory.post('/team/', {
             "name": "",
-            "location": self.city.id,
             "group": self.group.id,
             "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
 
         }, format='json')
         force_authenticate(request, self.user)
@@ -185,9 +169,10 @@ class TestTeam(TestCase):
     def test_create_new_team_bad_name(self):
         request = factory.post('/team/', {
             "name": None,
-            "location": self.city.id,
             "group": self.group.id,
             "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
 
         }, format='json')
         force_authenticate(request, self.user)

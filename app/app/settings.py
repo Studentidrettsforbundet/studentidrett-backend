@@ -36,22 +36,37 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Django modules
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 3rd party
     'corsheaders',
     'rest_framework',
     'rest_framework_swagger',
     'drf_yasg',
+    'django_nose',
+
+    # Local
     'clubs.apps.ClubsConfig',
     'cities.apps.CitiesConfig',
     'interest.apps.InterestConfig',
     'groups.apps.GroupsConfig',
     'sports.apps.SportsConfig',
     'teams.apps.TeamsConfig'
+]
+
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=cities,clubs,groups,interest,sports,teams',
 ]
 
 MIDDLEWARE = [
@@ -105,6 +120,9 @@ DATABASES = {
         'PASSWORD': 'django',
         'HOST': 'localhost',
         'PORT': '5432',
+        'TEST': {
+            'NAME': 'test_nsi'
+        }
     }
 }
 
