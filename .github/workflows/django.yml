@@ -3,7 +3,7 @@ name: Django Tests
 on: [push]
 
 jobs:
-  build:
+  build-and-deploy:
 
     env:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
@@ -16,30 +16,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r app/requirements.txt
+
     - name: Run migrations
       run: python app/manage.py migrate
+
     - name: Run Tests
       run: |
         python app/manage.py test
-
-    - name: python-lint
-      uses: CyberZHG/github-action-python-lint@0.0.2
-
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - run: |
-          az appservice plan create -g studentidrett-backend -n nsi-app
-          az webapp create -g studentidrett-backend -p nsi-app -n nsi-django
 
     - name: Azure WebApp
         uses: Azure/webapps-deploy@v2
