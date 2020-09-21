@@ -24,21 +24,23 @@ class GroupsModelTest(TestCase):
         self.sport = Sport.objects.create(name="TestSport")
         self.city = City.objects.create(name="TestCity")
 
-        Group.objects.create(
+        group = Group.objects.create(
             name='Group1',
             description = 'This is a description',
             cover_photo =  None,
-            sports = self.sport,
             club = self.club,
             city = self.city
         )
+        group.sports.add(self.sport)
+        group.save()
 
     def test_group_attributes(self):
         group = Group.objects.get(name='Group1')
+
         self.assertEqual(group.name, 'Group1')
         self.assertEqual(group.description, 'This is a description')
         self.assertFalse(group.cover_photo is None) #TODO fix this test
-        self.assertEqual(group.sports, self.sport)
+        self.assertEqual(list(group.sports.all()), [self.sport])
         self.assertEqual(group.club, self.club)
         self.assertEqual(group.city, self.city)
 
@@ -69,12 +71,11 @@ class GroupViewTest(TestCase):
         group = Group.objects.create(name="Group1",
                       description="This is a description",
                       cover_photo=None,
-                      #port_type=self.sport,
                       club=self.club,
                       city=self.city)
-        group.save()
 
-        group.sports.set(self.sport)
+        group.sports.add(self.sport)
+        group.save()
 
         self.group = Group.objects.all()
 
@@ -88,11 +89,10 @@ class GroupViewTest(TestCase):
               'name' :'Group2',
               'description': 'This is a description',
               'cover_photo': None,
-              'sports' : self.sport.id,
+              'sports' : [self.sport.id],
               'club' : self.club.id,
               'city': self.city.id
              }, format = 'json')
-        #bytte til city.id eller bare 1
         force_authenticate(request, self.user)
         response = self.post_view(request)
 
@@ -114,14 +114,12 @@ class GroupViewTest(TestCase):
         force_authenticate(request, self.user)
         response = self.get_detail_view(request, pk=1)
 
-        print("PRINTER", response.data)
-
         self.assertEqual(response.data,
                          {'id':1,
                           'name' :'Group1',
                           'description': 'This is a description',
                           'cover_photo': None,
-                          'sports' : self.sport.id,
+                          'sports' : [self.sport.id],
                           'club' : self.club.id,
                           'city': self.city.id
                          })
@@ -143,14 +141,13 @@ class GroupViewTest(TestCase):
 
     def test_create_new_group(self):
 
-        group = Group.objects.create(group = Group(name="Group3",
+        group = Group.objects.create(name="Group3",
                                       description="This is a description",
                                       cover_photo=None,
                                       club=self.club,
-                                      city=self.city))
-
-        #group.save()
-        group.sports.set(self.sport)
+                                      city=self.city)
+        group.sports.add(self.sport)
+        group.save()
         serializer = GroupSerializer(group)
         request = self.factory.post('/groups/', serializer.data, format='json')
 
