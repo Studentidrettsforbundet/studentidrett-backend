@@ -44,6 +44,26 @@ class GroupsModelTest(TestCase):
         self.assertEqual(group.club, self.club)
         self.assertEqual(group.city, self.city)
 
+    def test_no_duplicate_sports(self):
+        group = Group.objects.get(name='Group1')
+
+        self.assertEqual(len(group.sports.all()), 1)
+
+        group.sports.add(self.sport)
+        group.save()
+
+        #Same sport-object should not be added again
+        self.assertEqual(len(group.sports.all()), 1)
+
+    def test_multiple_sports(self):
+        group = Group.objects.get(name="Group1")
+
+        sport = Sport.objects.create(name="Sport2")
+        group.sports.add(sport)
+        group.save()
+
+        self.assertTrue(len(group.sports.all()), not 1)
+
 
 
 class GroupViewTest(TestCase):
