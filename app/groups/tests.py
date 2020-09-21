@@ -171,16 +171,6 @@ class GroupViewTest(TestCase):
         serializer = GroupSerializer(group)
         request = self.factory.post('/groups/', serializer.data, format='json')
 
-        '''request = self.factory.post('/groups/', {
-                                    'name': 'Group3',
-                                    'description': 'This is a description',
-                                    'cover_photo': None,
-                                    'sports': self.sport.id,
-                                    'club': self.club.id,
-                                    'city': self.city.id
-                                    },
-                                    format='json')'''
-
         force_authenticate(request, self.user)
         response = self.post_view(request)
 
