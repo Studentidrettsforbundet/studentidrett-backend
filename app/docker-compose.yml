@@ -1,25 +1,24 @@
   version: '3'
 
   services:
-    db:
+    postgres:
       image: postgres
       ports:
-        - "5432"
+        - "5432:5432"
       environment:
         - POSTGRES_DB=nsi
         - POSTGRES_USER=django
         - POSTGRES_PASSWORD=django
+        - POSTGRES_HOST_AUTH_METHOD=trust
+      networks:
+        - postgres_network
     migrate:
       build: .
       command: python manage.py migrate
+      networks:
+        - postgres_network
       depends_on:
-        - db
-    test:
-      build: .
-      command: python manage.py test
-      depends_on:
-        - db
-        - migrate
+        - postgres
     web:
       build: .
       command: python manage.py runserver 0.0.0.0:8000
@@ -28,5 +27,8 @@
       ports:
         - "8000:8000"
       depends_on:
-        - db
+        - postgres
         - migrate
+  networks:
+    postgres_network:  # <-- add the bridge
+      driver: bridge
