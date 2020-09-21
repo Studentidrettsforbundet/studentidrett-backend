@@ -29,3 +29,16 @@ jobs:
     - name: Run Tests
       run: |
         python app/manage.py test
+    - name: Deploy azure
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - run: |
+          az appservice plan create -g studentidrett-backend -n nsi-app
+          az webapp create -g studentidrett-backend -p nsi-app -n nsi-django
+
+    - name: Azure WebApp
+      - uses: Azure/webapps-deploy@v2
+        with:
+          app-name: pyweb
