@@ -28,7 +28,7 @@ class GroupsModelTest(TestCase):
             name='Group1',
             description = 'This is a description',
             cover_photo =  None,
-            sport_type = self.sport,
+            sports = self.sport,
             club = self.club,
             city = self.city
         )
@@ -38,7 +38,7 @@ class GroupsModelTest(TestCase):
         self.assertEqual(group.name, 'Group1')
         self.assertEqual(group.description, 'This is a description')
         self.assertFalse(group.cover_photo is None) #TODO fix this test
-        self.assertEqual(group.sport_type, self.sport)
+        self.assertEqual(group.sports, self.sport)
         self.assertEqual(group.club, self.club)
         self.assertEqual(group.city, self.city)
 
@@ -46,13 +46,13 @@ class GroupsModelTest(TestCase):
 
 class GroupViewTest(TestCase):
     def setUp(self):
-        club = Club(name="TestClub")
+        club = Club.objects.create(name="TestClub")
         club.save()
 
-        sport = Sport(name="TestSport")
+        sport = Sport.objects.create(name="TestSport")
         sport.save()
 
-        city = City(name="TestCity")
+        city = City.objects.create(name="TestCity")
         city.save()
 
         user = User.objects.create_superuser(username='testuser',  email='testuser@test.com', password='testing')
@@ -64,15 +64,18 @@ class GroupViewTest(TestCase):
         self.club = club
         self.sport = sport
         self.city = city
-        self.user = User.objects.get(username='testuser')
+        self.user = user
 
-        group = Group(name="Group1",
+        group = Group.objects.create(name="Group1",
                       description="This is a description",
                       cover_photo=None,
-                      sport_type=self.sport,
+                      #port_type=self.sport,
                       club=self.club,
                       city=self.city)
         group.save()
+
+        group.sports.set(self.sport)
+
         self.group = Group.objects.all()
 
         self.post_view = GroupViewSet.as_view({'post': 'create'})
@@ -85,7 +88,7 @@ class GroupViewTest(TestCase):
               'name' :'Group2',
               'description': 'This is a description',
               'cover_photo': None,
-              'sport_type' : self.sport.id,
+              'sports' : self.sport.id,
               'club' : self.club.id,
               'city': self.city.id
              }, format = 'json')
@@ -103,7 +106,7 @@ class GroupViewTest(TestCase):
 
 
         self.assertEqual(response.data.keys(), {'id', 'name', 'description', 'cover_photo',
-                                                'sport_type', 'club', 'city'})
+                                                'sports', 'club', 'city'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_group_detail(self):
@@ -118,7 +121,7 @@ class GroupViewTest(TestCase):
                           'name' :'Group1',
                           'description': 'This is a description',
                           'cover_photo': None,
-                          'sport_type' : self.sport.id,
+                          'sports' : self.sport.id,
                           'club' : self.club.id,
                           'city': self.city.id
                          })
@@ -140,15 +143,26 @@ class GroupViewTest(TestCase):
 
     def test_create_new_group(self):
 
-        request = self.factory.post('/groups/', {
+        group = Group.objects.create(group = Group(name="Group3",
+                                      description="This is a description",
+                                      cover_photo=None,
+                                      club=self.club,
+                                      city=self.city))
+
+        #group.save()
+        group.sports.set(self.sport)
+        serializer = GroupSerializer(group)
+        request = self.factory.post('/groups/', serializer.data, format='json')
+
+        '''request = self.factory.post('/groups/', {
                                     'name': 'Group3',
                                     'description': 'This is a description',
                                     'cover_photo': None,
-                                    'sport_type': self.sport.id,
+                                    'sports': self.sport.id,
                                     'club': self.club.id,
                                     'city': self.city.id
                                     },
-                                    format='json')
+                                    format='json')'''
 
         force_authenticate(request, self.user)
         response = self.post_view(request)
@@ -173,7 +187,7 @@ class GroupViewTest(TestCase):
                                             'name': 'Group4',
                                             'description': 'This is a description',
                                             'cover_photo': None,
-                                            'sport_type': self.sport.id,
+                                            'sports': self.sport.id,
                                             'club': self.club.id,
                                             'city': self.city.id
                                             },
