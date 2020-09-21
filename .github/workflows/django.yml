@@ -1,6 +1,17 @@
 name: Django Tests
 
-on: [push]
+# triggers for our workflow
+on:
+  # opening a pull request to master and develop branch will be a trigger
+  pull_request:
+    branches:
+      - dev
+      - main
+  # any code pushed to master and develop branch will also be a trigger
+  push:
+    branches:
+      - main
+      - dev
 
 jobs:
   build-and-deploy:
@@ -15,29 +26,24 @@ jobs:
         python-version: [3.7]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Actions
+      uses: actions/checkout@v2
+
     - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install Dependencies
+    - name: Create Docker Image
       run: |
         python -m pip install --upgrade pip
-        pip install -r app/requirements.txt
-
-    - name: Run migrations
-      run: python app/manage.py migrate
-
-    - name: Run Tests
-      run: |
-        python app/manage.py test
+        docker-compose up -d --build
 
     - name: Azure WebApp
         uses: Azure/webapps-deploy@v2
         with:
-          app-name: nsi-django
+          app-name: app_web
