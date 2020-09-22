@@ -27,7 +27,7 @@ jobs:
         - uses: azure/webapps-container-deploy@v1
           with:
             app-name: 'testnsiapp'
-            images: ${{ secrets.REGISTRY_LOGIN_SERVER}}/sampleapp:${{ github.sha }}
+            images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
 
         - name: Azure logout
           run: |
