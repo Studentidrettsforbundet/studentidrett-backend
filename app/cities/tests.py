@@ -11,7 +11,7 @@ from .views import CityViewSet
 class TestCityApi(APITestCase):
 
     def setUp(self):
-        city = City(name="Trondheim", region="Trondelag")
+        city = City(name="Trondheim", region="midt")
         city.save()
         self.factory = APIRequestFactory()
         self.cities = City.objects.all()
@@ -42,3 +42,35 @@ class TestCityApi(APITestCase):
         response = view(request, pk='999')
         # Check status code
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+    def test_query_param_region(self):
+        city = City(name="Stjørdal", region="midt")
+        city.save()
+        request = self.factory.get('cities', {'region': 'midt'})
+        view = CityViewSet.as_view({'get': 'list'})
+        response = view(request)
+        # Check status code
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check length of results
+        self.assertEqual(len(response.data.get('results')), 2)
+        # Check that both clubs are in Trondheim
+        self.assertEqual(response.data.get('results')[0].get('name'), 'Trondheim')
+        self.assertEqual(response.data.get('results')[1].get('name'), 'Stjørdal')
+
+
+    def test_query_param_non_existing_region(self):
+        request = self.factory.get('cities', {'region': 'fest'})
+        view = CityViewSet.as_view({'get': 'list'})
+        response = view(request)
+        # Check status code
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_query_param_no_cities_in_region(self):
+        request = self.factory.get('cities', {'region': 'vest'})
+        view = CityViewSet.as_view({'get': 'list'})
+        response = view(request)
+        # Check status code
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check length of results
+        self.assertEqual(len(response.data.get('results')), 0)
