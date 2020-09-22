@@ -2,12 +2,13 @@
 
   services:
     postgres:
-      image: postgres
+      image: postgres:latest
       ports:
         - "5432:5432"
       networks:
         - postgres_network
     migrate:
+      image: migrate:latest
       build: .
       command: python manage.py migrate
       networks:
@@ -15,6 +16,7 @@
       depends_on:
         - postgres
     web:
+      image: webapp:latest
       build:
         context: .
         dockerfile: Dockerfile
