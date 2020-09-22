@@ -2,11 +2,10 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
-import json
 
-from .models import Group
-from .views import GroupViewSet
-from .serializers import GroupSerializer
+from groups.models import Group
+from groups.views import GroupViewSet
+from groups.serializers import GroupSerializer
 
 from sports.models import Sport
 from clubs.models import Club

@@ -1,11 +1,8 @@
-from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 
-from rest_framework.parsers import JSONParser
-
-from .serializers import GroupSerializer
-from .models import Group
-from .permissions import GetGroupPermission
+from groups.serializers import GroupSerializer
+from groups.models import Group
+from groups.permissions import GetGroupPermission
 
 # Create your views here.
 
