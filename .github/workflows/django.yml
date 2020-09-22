@@ -1,5 +1,5 @@
 on: [push]
-name: Linux_Container_Workflow
+name: Docker_build_and_push_to_Azure
 
 jobs:
     build-and-deploy:
@@ -24,10 +24,12 @@ jobs:
             cd app && docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
 
-        - uses: azure/webapps-container-deploy@v1
+        - name: Deploy Web App using GH Action azure/webapps-deploy
+          uses: azure/webapps-deploy@v2
           with:
-            app-name: 'testnsiapp'
-            images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
+            app-name: testnsiapp
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+            package: .
 
         - name: Azure logout
           run: |
