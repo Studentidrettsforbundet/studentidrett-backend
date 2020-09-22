@@ -22,7 +22,7 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
             cd app && docker-compose up --build -d
-            docker-compose push ${{ secrets.REGISTRY_LOGIN_SERVER }}/testnsiapp:${{ github.sha }}
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
