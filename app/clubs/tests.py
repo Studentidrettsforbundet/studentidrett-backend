@@ -8,7 +8,7 @@ from clubs.views import ClubViewSet
 # Create your tests here.
 
 
-class TestCityApi(APITestCase):
+class TestClubApi(APITestCase):
 
     def setUp(self):
         club = Club(name="NTNUI")
