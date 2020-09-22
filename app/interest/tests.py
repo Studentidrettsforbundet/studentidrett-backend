@@ -18,9 +18,10 @@ class TestInterestApi(APITestCase):
         club.save()
         group = Group(name="NTNUI Fotball", club=club)
         group.save()
+        self.group_id = group.id
         user = User.objects.create_superuser('testuser', email='testuser@test.com', password='testing')
         user.save()
-        interest = Interest(email='test@test.no', group=group)
+        interest = Interest(cookie_key='c00k13M0n5t3r', group=group)
         interest.save()
 
         self.factory = APIRequestFactory()
@@ -31,25 +32,25 @@ class TestInterestApi(APITestCase):
         self.get_detail_view = InterestViewSet.as_view({'get': 'retrieve'})
 
     def test_post_interests(self):
-        request = self.factory.post('/interest/', {'email': 'test@test.no', 'group': 1}, format='json')
+        request = self.factory.post('/interest/', {'cookie_key': 'c00k13M0n5t3r1sN0M0r3', 'group': 1}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data.keys(), {'id', 'email', 'group'})
+        self.assertEqual(response.data.keys(), {'id', 'cookie_key', 'group', 'created'})
 
-    def test_post_wrong_email(self):
-        request = self.factory.post('/interest/', {'email': 'test', 'group': 1}, format='json')
+    def test_post_used_cookie_key(self):
+        request = self.factory.post('/interest/', {'cookie_key': 'c00k13M0n5t3r', 'group': self.group_id}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data.keys(), {'email'})
+        self.assertEqual(response.data.keys(), {'non_field_errors'})
 
-    def test_post_empty_email(self):
-        request = self.factory.post('/interest/', {'email': '', 'group': 1}, format='json')
+    def test_post_empty_cookie_key(self):
+        request = self.factory.post('/interest/', {'cookie_key': '', 'group': 1}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data.keys(), {'email'})
+        self.assertEqual(response.data.keys(), {'cookie_key'})
 
     def test_post_empty_club(self):
-        request = self.factory.post('/interest/', {'email': 'test@test.no', 'group': None}, format='json')
+        request = self.factory.post('/interest/', {'cookie_key': 'testetestetest', 'group': None}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data.keys(), {'group'})
@@ -79,7 +80,7 @@ class TestInterestApi(APITestCase):
         force_authenticate(request, self.user)
         response = self.get_detail_view(request, pk=1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.keys(), {'id', 'email', 'group'})
+        self.assertEqual(response.data.keys(), {'id', 'cookie_key', 'group', 'created'})
 
     def test_get_non_existing_interest(self):
         request = self.factory.get('/interest/')

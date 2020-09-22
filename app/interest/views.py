@@ -11,3 +11,4 @@ class InterestViewSet(viewsets.ModelViewSet):
     permission_classes = [GetInterestPermission]
     queryset = Interest.objects.all()
     serializer_class = InterestSerializer
+    http_method_names = ['get', 'post', 'head']
