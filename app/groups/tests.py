@@ -10,7 +10,7 @@ from .serializers import GroupSerializer
 from sports.models import Sport
 
 
-#initialize the APIClient app
+# initialize the APIClient app
 client = APIClient()
 
 # Create your tests here.
@@ -23,12 +23,11 @@ class GroupsModelTest(TestCase):
 
         Group.objects.create(
             name='Group1',
-            description = 'This is a description',
-            cover_photo =  None,
-            sport_type = self.sport,
-            club = self.club,
-            contact_person = None,
-            contact_email = None,
+            description='This is a description',
+            cover_photo=None,
+            sport_type=self.sport,
+            club=self.club,
+            contact_email=None,
         )
 
     def test_group_attributes(self):
@@ -38,8 +37,8 @@ class GroupsModelTest(TestCase):
         self.assertFalse(group.cover_photo is None) #TODO fix this test
         self.assertEqual(group.sport_type, self.sport)
         self.assertEqual(group.club, self.club)
-        self.assertEqual(group.contact_person, None)
         self.assertEqual(group.contact_email, None)
+
 
 class GroupViewTest(TestCase):
     def setUp(self):
@@ -52,7 +51,6 @@ class GroupViewTest(TestCase):
             cover_photo=None,
             sport_type=self.sport,
             club=self.club,
-            contact_person=None,
             contact_email=None,
         )
 
@@ -62,7 +60,6 @@ class GroupViewTest(TestCase):
             cover_photo=None,
             sport_type=self.sport,
             club=self.club,
-            contact_person=None,
             contact_email=None,
         )
 
@@ -72,27 +69,26 @@ class GroupViewTest(TestCase):
             cover_photo=None,
             sport_type=self.sport,
             club=self.club,
-            contact_person=None,
             contact_email=None,
         )
 
     def test_group_contains_expected_fields(self):
         response = client.get('/groups/1/')
         self.assertEqual(response.data.keys(), {'id', 'name', 'description', 'cover_photo',
-                                                'sport_type', 'club', 'contact_person',
+                                                'sport_type', 'club',
                                                 'contact_email'})
 
     def test_group_detail(self):
         response = client.get('/groups/1/')
         self.assertEqual(json.loads(response.content),
-                         {'id':1,
-                          'name' :'Group1',
-                          'description': 'This is a description',
-                          'cover_photo': None,
-                          'sport_type' : self.sport.id,
-                          'club' : self.club.id,
-                          'contact_person' : None,
-                          'contact_email' : None
+                         {
+                            'id': 1,
+                            'name': 'Group1',
+                            'description': 'This is a description',
+                            'cover_photo': None,
+                            'sport_type': self.sport.id,
+                            'club': self.club.id,
+                            'contact_email': None
                          })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -101,9 +97,9 @@ class GroupViewTest(TestCase):
         groups = Group.objects.all()
         serializer = GroupSerializer(groups, many=True)
 
-        #Check pagination
+        # Check pagination
         self.assertEqual(response.data.keys(), {'count', 'next', 'previous', 'results'})
-        #Check if object in response correlates with objects in database
+        # Check if object in response correlates with objects in database
         self.assertEqual(response.data.get('results'), serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -115,11 +111,10 @@ class GroupViewTest(TestCase):
                                     'id': 5,
                                     'name': 'Group4',
                                     'description': 'This is a description',
-                                    #'cover_photo': None,
+                                    # 'cover_photo': None,
                                     'sport_type': sport.id,
                                     'club': club.id,
-                                    #'contact_person': None,
-                                    #'contact_email': None
+                                    # 'contact_email': None
                                     },
                                     format='json')
 

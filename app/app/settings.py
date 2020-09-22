@@ -51,8 +51,7 @@ INSTALLED_APPS = [
     'interest.apps.InterestConfig',
     'groups.apps.GroupsConfig',
     'sports.apps.SportsConfig',
-    'teams.apps.TeamsConfig',
-    'corsheaders'
+    'teams.apps.TeamsConfig'
 ]
 
 MIDDLEWARE = [
