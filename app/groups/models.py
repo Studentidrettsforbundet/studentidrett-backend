@@ -13,7 +13,7 @@ class Group(models.Model):
     sports = models.ManyToManyField(Sport)
     club = models.ForeignKey(Club, on_delete=models.SET_NULL, null=True, related_name="groups") #TODO on_delete=models.CASCADE,
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, related_name="groups")#TODO on_delete=models.CASCADE,
-
+    contact_email = models.EmailField(max_length=254, null=True)
 
     class Meta:
         ordering = ['name']

@@ -1,13 +1,17 @@
-from cities.models import City
-from clubs.models import Club
 from django.contrib.auth.models import User
 from django.test import TestCase
-from groups.models import Group
-from groups.serializers import GroupSerializer
-from groups.views import GroupViewSet
 from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
+
+from groups.models import Group
+from groups.views import GroupViewSet
+from groups.serializers import GroupSerializer
+
 from sports.models import Sport
+
+# initialize the APIClient app
+from clubs.models import Club
+from cities.models import City
 
 # initialize the APIClient app
 client = APIClient()
@@ -40,6 +44,7 @@ class GroupsModelTest(TestCase):
         self.assertFalse(group.cover_photo is None)  # TODO fix this test
         self.assertEqual(list(group.sports.all()), [self.sport])
         self.assertEqual(group.club, self.club)
+        self.assertEqual(group.contact_email, None)
         self.assertEqual(group.city, self.city)
 
     def test_no_duplicate_sports(self):
@@ -65,21 +70,14 @@ class GroupsModelTest(TestCase):
 
 class GroupViewTest(TestCase):
     def setUp(self):
-        club = Club.objects.create(name="TestClub")
-        club.save()
-
-        sport = Sport.objects.create(name="TestSport")
-        sport.save()
-
+        self.club = Club.objects.create(name="TestClub")
+        self.sport = Sport.objects.create(name="TestSport")
         city = City.objects.create(name="TestCity")
-        city.save()
-
         user = User.objects.create_superuser(username='testuser', email='testuser@test.com', password='testing')
-        user.save()
 
         self.factory = APIRequestFactory()
-        self.club = club
-        self.sport = sport
+        self.club = self.club
+        self.sport = self.sport
         self.city = city
         self.user = user
 
@@ -120,7 +118,7 @@ class GroupViewTest(TestCase):
         response = self.get_detail_view(request, pk=self.group.pk)
 
         self.assertEqual(response.data.keys(), {'id', 'name', 'description', 'cover_photo',
-                                                'sports', 'club', 'city'})
+                                                'sports', 'club', 'city', 'contact_email'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_group_detail(self):
@@ -167,6 +165,7 @@ class GroupViewTest(TestCase):
         force_authenticate(request, self.user)
         response = self.get_detail_view(request, pk=6969)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
     def test_get_groups_auth(self):
         request = self.factory.get('/groups/')

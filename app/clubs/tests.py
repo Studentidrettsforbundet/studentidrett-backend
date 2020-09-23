@@ -4,6 +4,7 @@ from rest_framework.test import APIRequestFactory, APITestCase
 from clubs.models import Club
 from clubs.views import ClubViewSet
 from cities.models import City
+from clubs.serializers import ClubSerializer
 
 
 # Create your tests here.
@@ -12,38 +13,70 @@ from cities.models import City
 class TestClubsApi(APITestCase):
 
     def setUp(self):
-        city = City(id=5, name="Trondheim")
-        city.save()
-        club = Club(name="NTNUI", city=city)
-        club.save()
-        club2 = Club(name="Omega Fotballklubb", city=city)
-        club2.save()
+
+        self.name = 'NTNUI'
+        self.city1 = City.objects.create(name="Trondheim", region="midt")
+        self.city2 = City.objects.create(name="Eiksmarka", region="øst")
+        self.cities = City.objects.all()
+        self.description = "This is a club for the best of the best!"
+        self.contact_email = "captain1@ntnui.com"
+        self.pricing = "about half of your yearly income"
+        self.register_info = "You'll have to sell your soul, and bake a cake"
+
+        self.club1=Club.objects.create(
+            name=self.name,
+            city=self.city1,
+            description="This is a club for the best of the best!",
+            contact_email="captain1@ntnui.com",
+            pricing="about half of your yearly income",
+            register_info="You'll have to sell your soul, and bake a cake"
+                    )
+
+        self.club2=Club.objects.create(
+            name="BI lions",
+            city=self.city2,
+            description="We just wanna take your money",
+            contact_email="cheif@bilions.com",
+            pricing="about all of your yearly income",
+            register_info="You'll have to buy champagne for the whole club"
+        )
+        self.serialized_club1=ClubSerializer(self.club1)
+        self.clubs=Club.objects.all()
         self.factory = APIRequestFactory()
 
+    def test_club_model(self):
+        clubs = Club.objects.all()[1]
+        self.assertEqual(clubs.name, self.name)
+        self.assertEqual(clubs.city, self.city1)
+        self.assertEqual(clubs.description, self.description)
+        self.assertEqual(clubs.contact_email, self.contact_email)
+        self.assertEqual(clubs.pricing, self.pricing)
+        self.assertEqual(clubs.register_info, self.register_info)
+
     def test_clubs_list(self):
-        request = self.factory.get('clubs')
+        request = self.factory.get('/clubs/')
         view = ClubViewSet.as_view({'get': 'list'})
         response = view(request)
         # Check status code
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check pagination
         self.assertEqual(response.data.keys(), {'count', 'next', 'previous', 'results'})
-        # Check fields in results
-        self.assertEqual(response.data.get('results')[0].keys(), {'id', 'city', 'name', 'information',
-                                                                  'contact_email', 'contact_phone',
+        # Check fields in result
+        self.assertEqual(response.data.get('results')[1].keys(), {'id', 'city', 'name', 'description',
+                                                                  'contact_email',
                                                                   'pricing', 'register_info'})
         # Check length of results
-        self.assertEqual(len(response.data.get('results')), 2)
+        self.assertEqual(len(response.data.get('results')), len(self.clubs))
 
     def test_club_detail(self):
-        request = self.factory.get('clubs')
+        request = self.factory.get('/clubs/')
         view = ClubViewSet.as_view({'get': 'retrieve'})
-        response = view(request, pk='1')
+        response = view(request, pk=self.club1.pk)
         # Check status code
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check fields in result
         self.assertEqual(response.data.keys(),
-                         {'id', 'city', 'name', 'information', 'contact_email', 'contact_phone', 'pricing',
+                         {'id', 'city', 'name', 'description', 'contact_email', 'pricing',
                           'register_info'})
 
     def test_club_detail_non_existing(self):
@@ -54,18 +87,16 @@ class TestClubsApi(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_query_param_city(self):
-        request = self.factory.get('clubs', {'city': 'Trondheim'})
+        request = self.factory.get('clubs', {'city': self.city1.name})
         view = ClubViewSet.as_view({'get': 'list'})
         response = view(request)
         # Check status code
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check length of results
-        self.assertEqual(len(response.data.get('results')), 2)
+        self.assertEqual(len(response.data.get('results')), 1)
         # Check that both clubs are in Trondheim
-        self.assertEqual(response.data.get('results')[0].get('city'), 5)
-        self.assertEqual(response.data.get('results')[1].get('city'), 5)
-
-
+        self.assertEqual(response.data.get('results')[0].get('city'), self.city1.pk)
+        # self.assertEqual(response.data.get('results')[1].get('city'), 2)
 
     def test_query_param_city_no_clubs(self):
         new_city = City(name="Oslo")
@@ -77,6 +108,17 @@ class TestClubsApi(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check length of results
         self.assertEqual(len(response.data.get('results')), 0)
+
+    def test_create_club(self):
+        city = City.objects.create(name="Bergen")
+        response = self.client.post('/clubs/', {
+            'name': 'GCIL',
+            'city': city.id,
+            'description': 'Lover max guttastemning',
+            'contact_email': 'styret@gc.no'
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Club.objects.filter(name='GCIL').exists())
 
     def test_query_param_non_existing_city(self):
         request = self.factory.get('clubs', {'city': 'Gotham'})
