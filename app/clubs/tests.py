@@ -94,8 +94,6 @@ class TestClubsApi(APITestCase):
         self.assertEqual(response.data.get('results')[0].get('city'), 1)
         # self.assertEqual(response.data.get('results')[1].get('city'), 2)
 
-
-
     def test_query_param_city_no_clubs(self):
         new_city = City(name="Oslo")
         new_city.save()
@@ -106,6 +104,17 @@ class TestClubsApi(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check length of results
         self.assertEqual(len(response.data.get('results')), 0)
+
+    def test_create_club(self):
+        city = City.objects.create(name="Bergen")
+        response = self.client.post('/clubs/', {
+            'name': 'GCIL',
+            'city': city.id,
+            'description': 'Lover max guttastemning',
+            'contact_email': 'styret@gc.no'
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Club.objects.filter(name='GCIL').exists())
 
     def test_query_param_non_existing_city(self):
         request = self.factory.get('clubs', {'city': 'Gotham'})
