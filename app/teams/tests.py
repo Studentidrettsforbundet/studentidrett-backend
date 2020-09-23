@@ -74,7 +74,9 @@ class TestTeam(TestCase):
         self.assertEqual(team.availability, "OP")
 
     def test_contains_expected_fields(self):
-        response = client.get('/teams/1/')
+        request = factory.get('team')
+        view = TeamViewSet.as_view({'get':'retrieve'})
+        response = view(request, pk='1')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.keys(),
                          {'id', 'name', 'location', 'group', 'sport', 'description', 'cost', 'equipment', 'gender',

@@ -1,5 +1,6 @@
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APIRequestFactory
+from django.test import TestCase
 
 from .models import City
 from .views import CityViewSet
@@ -8,15 +9,15 @@ from .views import CityViewSet
 # Create your tests here.
 
 
-class TestCityApi(APITestCase):
+class TestCityApi(TestCase):
 
     def setUp(self):
-        City.objects.create(name="Trondheim", region="midt")
+        self.city = City.objects.create(name="Trondheim", region="midt")
         self.factory = APIRequestFactory()
         self.cities = City.objects.all()
 
     def test_cities_list(self):
-        request = self.factory.get('cities/')
+        request = self.factory.get('/cities/')
         view = CityViewSet.as_view({'get': 'list'})
         response = view(request)
         # Check status code
@@ -27,9 +28,9 @@ class TestCityApi(APITestCase):
         self.assertEqual(response.data.get('results')[0].keys(), {'id', 'name', 'region', 'clubs'})
 
     def test_city_detail(self):
-        request = self.factory.get('cities')
+        request = self.factory.get('/cities/')
         view = CityViewSet.as_view({'get': 'retrieve'})
-        response = view(request, pk='1')
+        response = view(request, pk=self.city.pk)
         # Check status code
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check fields in result

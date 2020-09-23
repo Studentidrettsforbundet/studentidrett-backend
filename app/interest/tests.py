@@ -16,12 +16,12 @@ class TestInterestApi(APITestCase):
     def setUp(self):
         club = Club(name="NTNUI")
         club.save()
-        group = Group(name="NTNUI Fotball", club=club)
-        group.save()
+        self.group = Group(name="NTNUI Fotball", club=club)
+        self.group.save()
         user = User.objects.create_superuser('testuser', email='testuser@test.com', password='testing')
         user.save()
-        interest = Interest(email='test@test.no', group=group)
-        interest.save()
+        self.interest = Interest(email='test@test.no', group=self.group)
+        self.interest.save()
 
         self.factory = APIRequestFactory()
         self.interests = Interest.objects.all()
@@ -31,19 +31,19 @@ class TestInterestApi(APITestCase):
         self.get_detail_view = InterestViewSet.as_view({'get': 'retrieve'})
 
     def test_post_interests(self):
-        request = self.factory.post('/interest/', {'email': 'test@test.no', 'group': 1}, format='json')
+        request = self.factory.post('/interest/', {'email': 'test@test.no', 'group': self.group.pk}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data.keys(), {'id', 'email', 'group'})
 
     def test_post_wrong_email(self):
-        request = self.factory.post('/interest/', {'email': 'test', 'group': 1}, format='json')
+        request = self.factory.post('/interest/', {'email': 'test', 'group': self.group.pk}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data.keys(), {'email'})
 
     def test_post_empty_email(self):
-        request = self.factory.post('/interest/', {'email': '', 'group': 1}, format='json')
+        request = self.factory.post('/interest/', {'email': '', 'group': self.group.pk}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data.keys(), {'email'})
@@ -70,14 +70,14 @@ class TestInterestApi(APITestCase):
 
     def test_get_interest_detail_no_auth(self):
         request = self.factory.get('/interest/')
-        response = self.get_detail_view(request, pk=1)
+        response = self.get_detail_view(request, pk=self.interest.pk)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data.keys(), {'detail'})
 
     def test_get_interest_detail_auth(self):
         request = self.factory.get('/interest/')
         force_authenticate(request, self.user)
-        response = self.get_detail_view(request, pk=1)
+        response = self.get_detail_view(request, pk=self.interest.pk)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.keys(), {'id', 'email', 'group'})
 
