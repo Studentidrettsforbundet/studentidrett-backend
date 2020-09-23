@@ -11,8 +11,7 @@ from .views import CityViewSet
 class TestCityApi(APITestCase):
 
     def setUp(self):
-        city = City(name="Trondheim", region="midt")
-        city.save()
+        City.objects.create(name="Trondheim", region="midt")
         self.factory = APIRequestFactory()
         self.cities = City.objects.all()
 
