@@ -1,11 +1,16 @@
 from django.contrib.auth.models import User
+from django.http.cookie import SimpleCookie
+from django.middleware.csrf import get_token
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate, APIClient
 
-from .models import Interest
-from .views import InterestViewSet
+from interest.models import Interest
+from interest.views import InterestViewSet
 from clubs.models import Club
 from groups.models import Group
+from clubs.views import ClubViewSet
+
+from django.middleware import csrf
 
 
 # Create your tests here.
@@ -30,30 +35,38 @@ class TestInterestApi(APITestCase):
         self.post_view = InterestViewSet.as_view({'post': 'create'})
         self.get_list_view = InterestViewSet.as_view({'get': 'list'})
         self.get_detail_view = InterestViewSet.as_view({'get': 'retrieve'})
+        self.club_view = ClubViewSet.as_view({'get': 'list'})
+
 
     def test_post_interests(self):
-        request = self.factory.post('/interest/', {'cookie_key': 'c00k13M0n5t3r1sN0M0r3', 'group': 1}, format='json')
+        request = self.factory.post('/interest/', {'group': 1}, format='json')
+        request.COOKIES['csrftoken'] = 'c00k13M0n5t3r1sN0M0r3'
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data.keys(), {'id', 'cookie_key', 'group', 'created'})
 
+
     def test_post_used_cookie_key(self):
-        request = self.factory.post('/interest/', {'cookie_key': 'c00k13M0n5t3r', 'group': self.group_id}, format='json')
+        request = self.factory.post('/interest/', {'group': self.group_id}, format='json')
+        request.COOKIES['csrftoken'] = 'c00k13M0n5t3r'
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data.keys(), {'non_field_errors'})
 
+
     def test_post_empty_cookie_key(self):
-        request = self.factory.post('/interest/', {'cookie_key': '', 'group': 1}, format='json')
+        request = self.factory.post('/interest/', {'group': 1}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data.keys(), {'cookie_key'})
+
 
     def test_post_empty_club(self):
-        request = self.factory.post('/interest/', {'cookie_key': 'testetestetest', 'group': None}, format='json')
+        request = self.factory.post('/interest/', {'group': None}, format='json')
+        request.COOKIES['csrftoken'] = 'testestest'
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data.keys(), {'group'})
+
 
     def test_get_interests_no_auth(self):
         request = self.factory.get('/interest/')
