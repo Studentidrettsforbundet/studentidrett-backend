@@ -6,9 +6,6 @@ from clubs.views import ClubViewSet
 from cities.models import City
 
 
-# Create your tests here.
-
-
 class TestClubsApi(APITestCase):
 
     def setUp(self):

@@ -3,9 +3,6 @@ from django.db import models
 from cities.models import City
 
 
-# Create your models here.
-
-
 class Club(models.Model):
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, related_name="clubs")
     name = models.CharField(max_length=255, null=False)

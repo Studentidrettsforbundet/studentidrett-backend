@@ -1,19 +1,14 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
-import json
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 from groups.models import Group
 from groups.views import GroupViewSet
 from groups.serializers import GroupSerializer
-
 from sports.models import Sport
 from clubs.models import Club
 from cities.models import City
-
-# initialize the APIClient app
-client = APIClient()
 
 
 class GroupsModelTest(TestCase):
@@ -51,7 +46,7 @@ class GroupsModelTest(TestCase):
         group.sports.add(self.sport)
         group.save()
 
-        #Same sport-object should not be added again
+        # Same sport-object should not be added again
         self.assertEqual(len(group.sports.all()), 1)
 
     def test_multiple_sports(self):
@@ -74,10 +69,10 @@ class GroupViewTest(TestCase):
         self.factory = APIRequestFactory()
 
         group = Group.objects.create(name="Group1",
-                      description="This is a description",
-                      cover_photo=None,
-                      club=self.club,
-                      city=self.city)
+                                     description="This is a description",
+                                     cover_photo=None,
+                                     club=self.club,
+                                     city=self.city)
 
         group.sports.add(self.sport)
         group.save()
@@ -90,13 +85,13 @@ class GroupViewTest(TestCase):
 
     def test_post_groups(self):
         request = self.factory.post('/groups/', {
-              'name': 'Group2',
-              'description': 'This is a description',
-              'cover_photo': None,
-              'sports': [self.sport.id],
-              'club': self.club.id,
-              'city': self.city.id
-             }, format='json')
+            'name': 'Group2',
+            'description': 'This is a description',
+            'cover_photo': None,
+            'sports': [self.sport.id],
+            'club': self.club.id,
+            'city': self.city.id
+        }, format='json')
         force_authenticate(request, self.user)
         response = self.post_view(request)
 
@@ -143,12 +138,11 @@ class GroupViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_new_group(self):
-
         group = Group.objects.create(name="Group3",
-                                      description="This is a description",
-                                      cover_photo=None,
-                                      club=self.club,
-                                      city=self.city)
+                                     description="This is a description",
+                                     cover_photo=None,
+                                     club=self.club,
+                                     city=self.city)
         group.sports.add(self.sport)
         group.save()
         serializer = GroupSerializer(group)
@@ -166,7 +160,6 @@ class GroupViewTest(TestCase):
         response = self.get_detail_view(request, pk=69)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-
     def test_get_groups_auth(self):
         request = self.factory.get('/groups/')
         response = self.get_list_view(request)
@@ -175,13 +168,13 @@ class GroupViewTest(TestCase):
 
     def test_post_group_auth(self):
         request = self.factory.post('/groups/', {
-                                            'name': 'Group4',
-                                            'description': 'This is a description',
-                                            'cover_photo': None,
-                                            'sports': self.sport.id,
-                                            'club': self.club.id,
-                                            'city': self.city.id
-                                            },
-                                            format='json')
+            'name': 'Group4',
+            'description': 'This is a description',
+            'cover_photo': None,
+            'sports': self.sport.id,
+            'club': self.club.id,
+            'city': self.city.id
+        },
+                                    format='json')
         response = self.post_view(request)
-        self.assertEqual(response.status_code , status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
