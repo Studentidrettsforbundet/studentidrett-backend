@@ -2,8 +2,6 @@ from django.db import models
 
 from groups.models import Group
 
-# Create your models here.
-
 
 class Interest(models.Model):
     cookie_key = models.CharField(max_length=32, null=False)

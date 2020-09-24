@@ -5,8 +5,6 @@ from rest_framework.response import Response
 from .models import Interest
 from .serializers import InterestSerializer
 
-# Create your views here.
-
 
 class InterestViewSet(viewsets.ModelViewSet):
     permission_classes = [GetInterestPermission]

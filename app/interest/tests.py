@@ -1,19 +1,11 @@
 from django.contrib.auth.models import User
-from django.http.cookie import SimpleCookie
-from django.middleware.csrf import get_token
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate, APIClient
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
 from interest.models import Interest
 from interest.views import InterestViewSet
 from clubs.models import Club
 from groups.models import Group
-from clubs.views import ClubViewSet
-
-from django.middleware import csrf
-
-
-# Create your tests here.
 
 
 class TestInterestApi(APITestCase):
@@ -35,8 +27,6 @@ class TestInterestApi(APITestCase):
         self.post_view = InterestViewSet.as_view({'post': 'create'})
         self.get_list_view = InterestViewSet.as_view({'get': 'list'})
         self.get_detail_view = InterestViewSet.as_view({'get': 'retrieve'})
-        self.club_view = ClubViewSet.as_view({'get': 'list'})
-
 
     def test_post_interests(self):
         request = self.factory.post('/interest/', {'group': 1}, format='json')
@@ -45,7 +35,6 @@ class TestInterestApi(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data.keys(), {'id', 'cookie_key', 'group', 'created'})
 
-
     def test_post_used_cookie_key(self):
         request = self.factory.post('/interest/', {'group': self.group_id}, format='json')
         request.COOKIES['csrftoken'] = 'c00k13M0n5t3r'
@@ -53,12 +42,10 @@ class TestInterestApi(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data.keys(), {'non_field_errors'})
 
-
     def test_post_empty_cookie_key(self):
         request = self.factory.post('/interest/', {'group': 1}, format='json')
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
 
     def test_post_empty_club(self):
         request = self.factory.post('/interest/', {'group': None}, format='json')
@@ -66,7 +53,6 @@ class TestInterestApi(APITestCase):
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data.keys(), {'group'})
-
 
     def test_get_interests_no_auth(self):
         request = self.factory.get('/interest/')
