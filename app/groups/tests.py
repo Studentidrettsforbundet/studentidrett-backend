@@ -68,14 +68,10 @@ class GroupViewTest(TestCase):
     def setUp(self):
         self.club = Club.objects.create(name="TestClub")
         self.sport = Sport.objects.create(name="TestSport")
-        city = City.objects.create(name="TestCity")
-        user = User.objects.create_superuser(username='testuser', email='testuser@test.com', password='testing')
+        self.city = City.objects.create(name="TestCity")
+        self.user = User.objects.create_superuser(username='testuser', email='testuser@test.com', password='testing')
 
         self.factory = APIRequestFactory()
-        self.club = club
-        self.sport = sport
-        self.city = city
-        self.user = user
 
         group = Group.objects.create(name="Group1",
                       description="This is a description",
@@ -92,27 +88,24 @@ class GroupViewTest(TestCase):
         self.get_list_view = GroupViewSet.as_view({'get': 'list'})
         self.get_detail_view = GroupViewSet.as_view({'get': 'retrieve'})
 
-
     def test_post_groups(self):
         request = self.factory.post('/groups/', {
-              'name' :'Group2',
+              'name': 'Group2',
               'description': 'This is a description',
               'cover_photo': None,
-              'sports' : [self.sport.id],
-              'club' : self.club.id,
+              'sports': [self.sport.id],
+              'club': self.club.id,
               'city': self.city.id
-             }, format = 'json')
+             }, format='json')
         force_authenticate(request, self.user)
         response = self.post_view(request)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-
     def test_group_contains_expected_fields(self):
         request = self.factory.get('/groups/')
         force_authenticate(request, self.user)
         response = self.get_detail_view(request, pk=1)
-
 
         self.assertEqual(response.data.keys(), {'id', 'name', 'description', 'cover_photo',
                                                 'sports', 'club', 'city', 'contact_email'})
@@ -124,13 +117,14 @@ class GroupViewTest(TestCase):
         response = self.get_detail_view(request, pk=1)
 
         self.assertEqual(response.data,
-                         {'id':1,
-                          'name' :'Group1',
+                         {'id': 1,
+                          'name': 'Group1',
                           'description': 'This is a description',
                           'cover_photo': None,
-                          'sports' : [self.sport.id],
-                          'club' : self.club.id,
-                          'city': self.city.id
+                          'sports': [self.sport.id],
+                          'club': self.club.id,
+                          'city': self.city.id,
+                          'contact_email': None
                           })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

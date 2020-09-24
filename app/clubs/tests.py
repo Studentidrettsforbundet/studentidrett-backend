@@ -14,8 +14,8 @@ class TestClubsApi(APITestCase):
     def setUp(self):
 
         self.name = 'NTNUI'
-        self.city1 = City.objects.create(name="Trondheim", region="Trondelag")
-        self.city2 = City.objects.create(name="Eiksmarka", region="Baerum")
+        self.city1 = City.objects.create(name="Trondheim", region="MIDT")
+        self.city2 = City.objects.create(name="Eiksmarka", region="ØST")
         self.description = "This is a club for the best of the best!"
         self.contact_email = "captain1@ntnui.com"
         self.pricing = "about half of your yearly income"
