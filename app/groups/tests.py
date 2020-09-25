@@ -61,24 +61,29 @@ class GroupsModelTest(TestCase):
 
 class GroupViewTest(TestCase):
     def setUp(self):
-        self.club = Club.objects.create(name="TestClub")
-        self.sport = Sport.objects.create(name="TestSport")
-        self.city = City.objects.create(name="TestCity")
-        self.user = User.objects.create_superuser(username='testuser', email='testuser@test.com', password='testing')
+        club = Club.objects.create(name="TestClub")
+        club.save()
+        sport = Sport.objects.create(name="TestSport")
+        sport.save()
+        city = City.objects.create(name="TestCity")
+        city.save()
+        user = User.objects.create_superuser(username='testuser', email='testuser@test.com', password='testing')
+        user.save()
 
         self.factory = APIRequestFactory()
+        self.club = club
+        self.sport = sport
+        self.city = city
+        self.user = user
 
-        group = Group.objects.create(name="Group1",
-                                     description="This is a description",
-                                     cover_photo=None,
-                                     club=self.club,
-                                     city=self.city)
-
-        group.sports.add(self.sport)
-        group.save()
-
-        self.group = Group.objects.all()
-
+        self.group = Group.objects.create(name="Group1",
+                                          description="This is a description",
+                                          cover_photo=None,
+                                          club=self.club,
+                                          city=self.city)
+        self.group.sports.add(self.sport)
+        self.group.save()
+        self.serialized_group = GroupSerializer(self.group)
         self.post_view = GroupViewSet.as_view({'post': 'create'})
         self.get_list_view = GroupViewSet.as_view({'get': 'list'})
         self.get_detail_view = GroupViewSet.as_view({'get': 'retrieve'})
@@ -100,7 +105,7 @@ class GroupViewTest(TestCase):
     def test_group_contains_expected_fields(self):
         request = self.factory.get('/groups/')
         force_authenticate(request, self.user)
-        response = self.get_detail_view(request, pk=1)
+        response = self.get_detail_view(request, pk=self.group.pk)
 
         self.assertEqual(response.data.keys(), {'id', 'name', 'description', 'cover_photo',
                                                 'sports', 'club', 'city', 'contact_email'})
@@ -109,18 +114,9 @@ class GroupViewTest(TestCase):
     def test_group_detail(self):
         request = self.factory.get('/groups/')
         force_authenticate(request, self.user)
-        response = self.get_detail_view(request, pk=1)
+        response = self.get_detail_view(request, pk=self.group.pk)
 
-        self.assertEqual(response.data,
-                         {'id': 1,
-                          'name': 'Group1',
-                          'description': 'This is a description',
-                          'cover_photo': None,
-                          'sports': [self.sport.id],
-                          'club': self.club.id,
-                          'city': self.city.id,
-                          'contact_email': None
-                          })
+        self.assertEqual(response.data, self.serialized_group.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_group_list(self):

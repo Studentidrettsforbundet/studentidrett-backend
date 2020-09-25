@@ -4,6 +4,7 @@ from rest_framework.test import APIRequestFactory, APITestCase
 from clubs.models import Club
 from clubs.views import ClubViewSet
 from cities.models import City
+from clubs.serializers import ClubSerializer
 
 
 class TestClubsApi(APITestCase):
@@ -18,7 +19,7 @@ class TestClubsApi(APITestCase):
         self.pricing = "about half of your yearly income"
         self.register_info = "You'll have to sell your soul, and bake a cake"
 
-        Club.objects.create(
+        self.club1 = Club.objects.create(
             name=self.name,
             city=self.city1,
             description="This is a club for the best of the best!",
@@ -64,7 +65,7 @@ class TestClubsApi(APITestCase):
     def test_club_detail(self):
         request = self.factory.get('/clubs/')
         view = ClubViewSet.as_view({'get': 'retrieve'})
-        response = view(request, pk='1')
+        response = view(request, pk=self.club1.pk)
         # Check status code
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check fields in result
@@ -80,7 +81,7 @@ class TestClubsApi(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_query_param_city(self):
-        request = self.factory.get('clubs', {'city': 'Trondheim'})
+        request = self.factory.get('clubs', {'city': self.city1.name})
         view = ClubViewSet.as_view({'get': 'list'})
         response = view(request)
         # Check status code
@@ -88,8 +89,7 @@ class TestClubsApi(APITestCase):
         # Check length of results
         self.assertEqual(len(response.data.get('results')), 1)
         # Check that both clubs are in Trondheim
-        self.assertEqual(response.data.get('results')[0].get('city'), 1)
-        # self.assertEqual(response.data.get('results')[1].get('city'), 2)
+        self.assertEqual(response.data.get('results')[0].get('city'), self.city1.pk)
 
     def test_query_param_city_no_clubs(self):
         new_city = City(name="Oslo")
