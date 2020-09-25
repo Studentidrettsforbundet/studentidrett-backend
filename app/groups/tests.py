@@ -1,23 +1,14 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 from groups.models import Group
 from groups.views import GroupViewSet
 from groups.serializers import GroupSerializer
-
 from sports.models import Sport
-
-# initialize the APIClient app
 from clubs.models import Club
 from cities.models import City
-
-# initialize the APIClient app
-client = APIClient()
-
-
-# Create your tests here.
 
 
 class GroupsModelTest(TestCase):
@@ -70,30 +61,29 @@ class GroupsModelTest(TestCase):
 
 class GroupViewTest(TestCase):
     def setUp(self):
-        self.club = Club.objects.create(name="TestClub")
-        self.sport = Sport.objects.create(name="TestSport")
+        club = Club.objects.create(name="TestClub")
+        club.save()
+        sport = Sport.objects.create(name="TestSport")
+        sport.save()
         city = City.objects.create(name="TestCity")
+        city.save()
         user = User.objects.create_superuser(username='testuser', email='testuser@test.com', password='testing')
+        user.save()
 
         self.factory = APIRequestFactory()
-        self.club = self.club
-        self.sport = self.sport
+        self.club = club
+        self.sport = sport
         self.city = city
         self.user = user
 
         self.group = Group.objects.create(name="Group1",
-                                     description="This is a description",
-                                     cover_photo=None,
-                                     club=self.club,
-                                     city=self.city)
-
+                                          description="This is a description",
+                                          cover_photo=None,
+                                          club=self.club,
+                                          city=self.city)
         self.group.sports.add(self.sport)
         self.group.save()
-
-        self.groups = Group.objects.all()
-
         self.serialized_group = GroupSerializer(self.group)
-
         self.post_view = GroupViewSet.as_view({'post': 'create'})
         self.get_list_view = GroupViewSet.as_view({'get': 'list'})
         self.get_detail_view = GroupViewSet.as_view({'get': 'retrieve'})
@@ -163,9 +153,8 @@ class GroupViewTest(TestCase):
     def test_get_nonexistent_group(self):
         request = self.factory.get('/groups/')
         force_authenticate(request, self.user)
-        response = self.get_detail_view(request, pk=6969)
+        response = self.get_detail_view(request, pk=69)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
 
     def test_get_groups_auth(self):
         request = self.factory.get('/groups/')

@@ -7,23 +7,19 @@ from cities.models import City
 from clubs.serializers import ClubSerializer
 
 
-# Create your tests here.
-
-
 class TestClubsApi(APITestCase):
 
     def setUp(self):
 
         self.name = 'NTNUI'
-        self.city1 = City.objects.create(name="Trondheim", region="midt")
-        self.city2 = City.objects.create(name="Eiksmarka", region="øst")
-        self.cities = City.objects.all()
+        self.city1 = City.objects.create(name="Trondheim", region="MIDT")
+        self.city2 = City.objects.create(name="Eiksmarka", region="ØST")
         self.description = "This is a club for the best of the best!"
         self.contact_email = "captain1@ntnui.com"
         self.pricing = "about half of your yearly income"
         self.register_info = "You'll have to sell your soul, and bake a cake"
 
-        self.club1=Club.objects.create(
+        self.club1 = Club.objects.create(
             name=self.name,
             city=self.city1,
             description="This is a club for the best of the best!",
@@ -32,7 +28,7 @@ class TestClubsApi(APITestCase):
             register_info="You'll have to sell your soul, and bake a cake"
                     )
 
-        self.club2=Club.objects.create(
+        Club.objects.create(
             name="BI lions",
             city=self.city2,
             description="We just wanna take your money",
@@ -40,8 +36,6 @@ class TestClubsApi(APITestCase):
             pricing="about all of your yearly income",
             register_info="You'll have to buy champagne for the whole club"
         )
-        self.serialized_club1=ClubSerializer(self.club1)
-        self.clubs=Club.objects.all()
         self.factory = APIRequestFactory()
 
     def test_club_model(self):
@@ -66,7 +60,7 @@ class TestClubsApi(APITestCase):
                                                                   'contact_email',
                                                                   'pricing', 'register_info'})
         # Check length of results
-        self.assertEqual(len(response.data.get('results')), len(self.clubs))
+        self.assertEqual(len(response.data.get('results')), 2)
 
     def test_club_detail(self):
         request = self.factory.get('/clubs/')
@@ -96,7 +90,6 @@ class TestClubsApi(APITestCase):
         self.assertEqual(len(response.data.get('results')), 1)
         # Check that both clubs are in Trondheim
         self.assertEqual(response.data.get('results')[0].get('city'), self.city1.pk)
-        # self.assertEqual(response.data.get('results')[1].get('city'), 2)
 
     def test_query_param_city_no_clubs(self):
         new_city = City(name="Oslo")
