@@ -14,6 +14,17 @@ jobs:
       matrix:
         python-version: [3.7]
 
+    services:
+      db:
+        image: postgres
+        env:
+          POSTGRES_DB: github-actions
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+        - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -28,4 +39,5 @@ jobs:
       run: python app/manage.py migrate
     - name: Run Tests
       run: |
-        python app/manage.py test
+        cd app
+        python manage.py test

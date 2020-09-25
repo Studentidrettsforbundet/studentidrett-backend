@@ -1,80 +1,90 @@
-from django.test import TestCase
-from rest_framework import status
-from rest_framework.test import APIClient
-import json
-
-
-from .models import Team
-from groups.models import Group
-from .serializers import TeamSerializer
+from cities.models import City
 from clubs.models import Club
+from django.contrib.auth.models import User
+from django.test import TestCase
+from groups.models import Group
+from rest_framework import status
+from rest_framework.test import APIClient, force_authenticate, APIRequestFactory
+from sports.models import Sport
+from teams.views import TeamViewSet
+
+from teams.models import Team
+from teams.serializers import TeamSerializer
 
 # initialize the APIClient app
 client = APIClient()
+factory = APIRequestFactory()
 
 
 # Create your tests here.
 
 
-class TeamModelTest(TestCase):
+class TestTeam(TestCase):
     def setUp(self):
+        user = User.objects.create_superuser('testuser', email='testuser@test.com', password='testing')
+        user.save()
 
+        self.user = User.objects.get(username='testuser')
+        self.city = City.objects.create(name="Trondelag")
         self.club = Club.objects.create(name="TestClub")
         self.group = Group.objects.create(name="TestGroup", club=self.club)
+        self.sport = Sport.objects.create(name="Fotball")
 
         Team.objects.create(
-            name='TeamName1',
-            full_capacity=True,
-            tryouts=True,
-            registration_open=False,
-            group=self.group)
+            name="test",
+            location=self.city,
+            group=self.group,
+            sport=self.sport,
+            description="Dette er et lag",
+            cost="1000kr i uka",
+            equipment="Susp, baller av stål og en teskje",
+            gender="M",
+            skill_level="LOW",
+            season="Høst til vår",
+            facebook_link="facebook.com",
+            availability="OP",
+        )
+        Team.objects.create(
+            name="test2",
+            location=self.city,
+            group=self.group,
+            sport=self.sport,
+            description="Dette er enda et lag",
+            cost="1000kr i uka",
+            equipment="Susp, baller av stål og en teskje",
+            gender="M",
+            skill_level="LOW",
+            season="Høst til vår",
+            facebook_link="facebook.com",
+            availability="OP",
+        )
 
-    def test_team_attributes(self):
-        team = Team.objects.get(name='TeamName1')
-        self.assertEqual(team.name, 'TeamName1')
-        self.assertEqual(team.full_capacity, True)
-        self.assertEqual(team.tryouts, True)
-        self.assertEqual(team.registration_open, False)
+    def test_team_model(self):
+        team = Team.objects.all()[0]
+        self.assertEqual(team.location, self.city)
         self.assertEqual(team.group, self.group)
+        self.assertEqual(team.sport, self.sport)
+        self.assertEqual(team.description, "Dette er et lag")
+        self.assertEqual(team.cost, "1000kr i uka")
+        self.assertEqual(team.equipment, "Susp, baller av stål og en teskje")
+        self.assertEqual(team.gender, "M")
+        self.assertEqual(team.skill_level, "LOW")
+        self.assertEqual(team.season, "Høst til vår")
+        self.assertEqual(team.facebook_link, "facebook.com")
+        self.assertEqual(team.availability, "OP")
 
-
-class TeamViewTest(TestCase):
-    def setUp(self):
-        self.club = Club.objects.create(name="TestClub")
-        self.group = Group.objects.create(name="TestGroup", club=self.club)
-        Team.objects.create(
-            name='TeamName1',
-            full_capacity=True,
-            tryouts=True,
-            registration_open=False,
-            group=self.group)
-        Team.objects.create(
-            name='TeamName2',
-            full_capacity=False,
-            tryouts=True,
-            registration_open=True,
-            group=self.group)
-        Team.objects.create(
-            name='TeamName3',
-            full_capacity=False,
-            tryouts=False,
-            registration_open=True,
-            group=self.group)
-
-    def test_team_contains_expected_fields(self):
-        response = client.get('/teams/1/')
-        self.assertEqual(response.data.keys(), {'id', 'name', 'full_capacity', 'tryouts', 'registration_open', 'group'})
-
-    def test_team_detail(self):
-        response = client.get('/teams/2/')
-        self.assertEqual(json.loads(response.content),
-                         {'id': 2,
-                          'name': 'TeamName2',
-                          'full_capacity': False,
-                          'tryouts': True,
-                          'registration_open': True,
-                          'group': self.group.id})
+    def test_contains_expected_fields(self):
+        request = factory.get('team')
+        view = TeamViewSet.as_view({'get':'retrieve'})
+        response = view(request, pk='1')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.keys(),
+                         {'id', 'name', 'location', 'group', 'sport', 'description', 'cost', 'equipment', 'gender',
+                          'skill_level', 'season', 'schedule', 'tryout_dates', 'facebook_link', 'instagram_link',
+                          'webpage', 'availability', 'image'})
+        team = Team.objects.all()[0]
+        serializer = TeamSerializer(team)
+        self.assertEqual(response.data, serializer.data)
 
     def test_team_list(self):
         # get API response
@@ -85,20 +95,94 @@ class TeamViewTest(TestCase):
         self.assertEqual(response.data.get('results'), serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_create_new_team(self):
-        club = Club.objects.create(name="TestClub")
-        group = Group.objects.create(name="TestGroup2", club=club)
-        response = self.client.post('/teams/', {
-            "id": 5,
+    def test_create_new_team_auth(self):
+        request = factory.post('/team/', {
             "name": "post",
-            "full_capacity": False,
-            "tryouts": True,
-            "registration_open": True,
-            "group": group.id},
-            format='json')
+            "group": self.group.id,
+            "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
+
+        }, format='json')
+        force_authenticate(request, self.user)
+        view = TeamViewSet.as_view({'post': 'create'})
+        response = view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Team.objects.filter(name="post").exists())
 
-    def test_get_nonexistent_team(self):
-        response = client.get('/teams/42/')
+    def test_create_new_team_no_auth(self):
+        request = factory.post('/team/', {
+            "name": "post",
+            "group": self.group.id,
+            "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
+
+        }, format='json')
+        view = TeamViewSet.as_view({'post': 'create'})
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_new_team_bad_group(self):
+        request = factory.post('/team/', {
+            "name": "post",
+            "group": None,
+            "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
+
+        }, format='json')
+        force_authenticate(request, self.user)
+        view = TeamViewSet.as_view({'post': 'create'})
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data.keys(), {'group'})
+
+    def test_create_new_team_bad_sport(self):
+        request = factory.post('/team/', {
+            "name": "post",
+            "group": self.group.id,
+            "sport": None,
+            "schedule": [],
+            "tryout_dates": []
+
+        }, format='json')
+        force_authenticate(request, self.user)
+        view = TeamViewSet.as_view({'post': 'create'})
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data.keys(), {'sport'})
+
+    def test_create_new_team_empty_name(self):
+        request = factory.post('/team/', {
+            "name": "",
+            "group": self.group.id,
+            "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
+
+        }, format='json')
+        force_authenticate(request, self.user)
+        view = TeamViewSet.as_view({'post': 'create'})
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data.keys(), {'name'})
+
+    def test_create_new_team_bad_name(self):
+        request = factory.post('/team/', {
+            "name": None,
+            "group": self.group.id,
+            "sport": self.sport.id,
+            "schedule": [],
+            "tryout_dates": []
+
+        }, format='json')
+        force_authenticate(request, self.user)
+        view = TeamViewSet.as_view({'post': 'create'})
+        response = view(request)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data.keys(), {'name'})
+
+    def test_get_non_existing_team(self):
+        response = client.get('/team/42/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
