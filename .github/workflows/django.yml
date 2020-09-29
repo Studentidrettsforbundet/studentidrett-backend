@@ -21,8 +21,7 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            cd app && docker-compose up --build -d
-            docker tag webapp:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/studentidrett:${{ github.sha }}
+            cd app && docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/studentidrett:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/studentidrett:${{ github.sha }}
 
         - name: 'Deploy to Azure Container Instances'
@@ -35,4 +34,4 @@ jobs:
             registry-username: ${{ secrets.REGISTRY_USERNAME }}
             registry-password: ${{ secrets.REGISTRY_PASSWORD }}
             name: studentidrett-backend
-            location: 'west europe'
+            location: 'north europe'
