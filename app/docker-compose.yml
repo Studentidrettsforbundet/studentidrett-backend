@@ -2,13 +2,13 @@ version: "3"
    
 services:
   db:
-    image: nsidjango.azurecr.io/postgres:latest
+    image: postgres
     ports:
       - "5432"
     environment:
       - POSTGRES_DB=nsi
       - POSTGRES_USER=django
-      - POSTGRES_PASSWORD=django
+      - POSTGRES_PASSWORD=Postgres123
   web:
     build: .
     image: nsidjango.azurecr.io/nsidjango:latest
