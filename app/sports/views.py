@@ -1,10 +1,7 @@
-from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
 
-from rest_framework.parsers import JSONParser
-
-from sports.serializers import SportSerializer
 from sports.models import Sport
+from sports.serializers import SportSerializer
 
 # Create your views here.
 

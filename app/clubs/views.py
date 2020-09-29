@@ -1,7 +1,9 @@
-from .models import Club
-from cities.models import City
-from .serializers import ClubSerializer
 from rest_framework import viewsets
+
+from cities.models import City
+
+from .models import Club
+from .serializers import ClubSerializer
 
 
 class ClubViewSet(viewsets.ModelViewSet):
@@ -10,7 +12,7 @@ class ClubViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-        city_name = self.request.query_params.get('city', None)
+        city_name = self.request.query_params.get("city", None)
         if city_name is not None:
             city = City.objects.filter(name=city_name)
             if city.count() == 0:
@@ -23,7 +25,3 @@ class ClubViewSet(viewsets.ModelViewSet):
                     result += queryset.filter(city=num)
                 queryset = result
         return queryset
-
-
-
-

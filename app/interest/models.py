@@ -9,7 +9,9 @@ class Interest(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['group']
+        ordering = ["group"]
         constraints = [
-            models.UniqueConstraint(fields=['cookie_key', 'group'], name='unique_interest')
+            models.UniqueConstraint(
+                fields=["cookie_key", "group"], name="unique_interest"
+            )
         ]
