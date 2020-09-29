@@ -20,5 +20,5 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            cd app && docker build . -t webapp:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
+            cd app && docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
