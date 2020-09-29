@@ -24,10 +24,3 @@ jobs:
             cd app && docker-compose up --build -d
             docker tag webapp:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
-
-        - name: Deploy Web App using GH Action azure/webapps-deploy
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: testnsiapp
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-            package: .
