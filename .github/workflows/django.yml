@@ -1,18 +1,19 @@
 on: [push]
-name: Push Docker Image to Azure
+name: Docker_build_and_push_to_Azure
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
+        # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@master
-          
+
         - name: 'Login via Azure CLI'
           uses: azure/login@v1
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
+
         - name: 'Build and push image'
           uses: azure/docker-login@v1
           with:
@@ -20,5 +21,13 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            cd app && docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
-            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
+            cd app && docker-compose up --build -d
+            docker tag webapp:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
+
+        - name: Deploy Web App using GH Action azure/webapps-deploy
+          uses: azure/webapps-deploy@v2
+          with:
+            app-name: testnsiapp
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+            package: .
