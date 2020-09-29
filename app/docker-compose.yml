@@ -2,7 +2,7 @@
 
   services:
     postgres:
-      image: studentidrett.azurecr.io/postgres:latest
+      image: postgres:latest
       ports:
         - "5432:5432"
       environment:
