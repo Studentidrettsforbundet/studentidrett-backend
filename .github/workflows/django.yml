@@ -21,7 +21,7 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            cd app && docker-compose up --build -d
+            cd app && docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/studentidrett-backend:latest
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/studentidrett-backend:latest
 
         - name: 'Deploy to Azure Container Instances'
