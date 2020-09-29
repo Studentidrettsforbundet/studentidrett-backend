@@ -51,8 +51,16 @@ INSTALLED_APPS = [
     'interest.apps.InterestConfig',
     'groups.apps.GroupsConfig',
     'sports.apps.SportsConfig',
-    'teams.apps.TeamsConfig'
+    'teams.apps.TeamsConfig',
+    'search',
+    'django_elasticsearch_dsl'
 ]
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
