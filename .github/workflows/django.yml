@@ -1,11 +1,6 @@
 on: [push]
 name: Push Docker Image to Azure
 
-env:
-  AZURE_WEBAPP_NAME: nsi-django
-  AZURE_WEBAPP_PACKAGE_PATH: 'app/'
-  PYTHON_VERSION: '3.7'
-
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
@@ -25,18 +20,5 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            cd app && docker-compose up --build -d
-            docker tag webapp:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
+            cd app && docker build . -t webapp:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
-
-        - name: 'Deploy Webapp to Azure'
-          uses: 'azure/aci-deploy@v1'
-          with:
-            resource-group: ${{ secrets.RESOURCE_GROUP }}
-            dns-name-label: ${{ secrets.RESOURCE_GROUP }}${{ github.run_number }}
-            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/djangonsitest:${{ github.sha }}
-            registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            registry-username: ${{ secrets.REGISTRY_USERNAME }}
-            registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-            name: nsi-django
-            location: 'west europe'
