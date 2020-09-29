@@ -1,20 +1,26 @@
-version: "3"
-   
-services:
-  db:
-    image: postgres
-    ports:
-      - "5432"
-    environment:
-      - POSTGRES_DB=nsi
-      - POSTGRES_USER=django
-      - POSTGRES_PASSWORD=Postgres123
-  web:
-    build: .
-    image: webapp:latest
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    container_name: code
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
+  version: '3'
+
+  services:
+    postgres:
+      image: postgres:latest
+      ports:
+        - "5432:5432"
+      networks:
+        - postgres_network
+    web:
+      image: webapp:latest
+      build:
+        context: .
+        dockerfile: Dockerfile
+      command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      volumes:
+        - .:/code
+      ports:
+        - "8000:8000"
+      networks:
+        - postgres_network
+      depends_on:
+        - postgres
+  networks:
+    postgres_network:
+      driver: bridge
