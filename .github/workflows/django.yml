@@ -1,6 +1,11 @@
 on: [push]
 name: Push Docker Image to Azure
 
+env:
+  AZURE_WEBAPP_NAME: nsi-django
+  AZURE_WEBAPP_PACKAGE_PATH: 'app/'
+  PYTHON_VERSION: '3.7'
+
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
