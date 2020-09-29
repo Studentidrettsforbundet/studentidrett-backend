@@ -2,13 +2,17 @@
 
   services:
     postgres:
-      image: postgres:latest
+      image: studentidrett.azurecr.io/postgres:latest
       ports:
         - "5432:5432"
+      environment:
+        - POSTGRES_DB=nsi
+        - POSTGRES_USER=django
+        - POSTGRES_PASSWORD=django
       networks:
         - postgres_network
     web:
-      image: webapp:latest
+      image: studentidrett.azurecr.io/studentidrett-backend:latest
       build:
         context: .
         dockerfile: Dockerfile
