@@ -2,7 +2,7 @@ version: "3"
    
 services:
   db:
-    image: nsidjango.azurecr.io/postgres:latest
+    image: postgres
     ports:
       - "5432"
     environment:
@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=Postgres123
   web:
     build: .
-    image: nsidjango.azurecr.io/nsidjango:latest
+    image: webapp:latest
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     container_name: code
     volumes:
