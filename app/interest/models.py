@@ -2,12 +2,14 @@ from django.db import models
 
 from groups.models import Group
 
-# Create your models here.
-
 
 class Interest(models.Model):
-    email = models.EmailField()
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=False)
+    cookie_key = models.CharField(max_length=32, null=False)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=False, blank=False)
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['group']
+        constraints = [
+            models.UniqueConstraint(fields=['cookie_key', 'group'], name='unique_interest')
+        ]

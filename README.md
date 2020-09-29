@@ -2,7 +2,7 @@
 
 # Run for the first time
 
-Make sure to have a .env-file in `app/app/` with `DJANGO_SECRET_KEY` set.
+Make sure to have a .env-file in root-directory with `DJANGO_SECRET_KEY` set.
 
 To run migrations, navigate to `/app` and run `python manage.py migrate`. This will create a database in the local virtual environment.
 
