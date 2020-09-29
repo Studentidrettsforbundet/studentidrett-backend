@@ -22,7 +22,6 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
             cd app && docker-compose up --build -d
-            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/postgres:latest
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/studentidrett-backend:latest
 
         - name: 'Deploy to Azure Container Instances'
