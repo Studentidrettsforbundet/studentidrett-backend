@@ -20,7 +20,7 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            docker-compose up --build -d
+            cd app && docker-compose up --build -d
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/nsidjango:latest
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/postgres:latest
 
