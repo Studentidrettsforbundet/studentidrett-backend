@@ -22,19 +22,6 @@ jobs:
         - run: |
             cd app && docker-compose up --build -d
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/nsidjango:latest
-            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/postgres:latest
-
-        - name: 'Deploy Database to Azure'
-          uses: 'azure/aci-deploy@v1'
-          with:
-            resource-group: ${{ secrets.RESOURCE_GROUP }}
-            dns-name-label: ${{ secrets.RESOURCE_GROUP }}${{ github.run_number }}
-            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/postgres:latest
-            registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            registry-username: ${{ secrets.REGISTRY_USERNAME }}
-            registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-            name: nsi-django
-            location: 'west europe'
 
         - name: 'Deploy Webapp to Azure'
           uses: 'azure/aci-deploy@v1'

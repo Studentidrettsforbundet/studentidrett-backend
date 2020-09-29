@@ -2,7 +2,7 @@ version: "3"
    
 services:
   db:
-    image: postgres
+    image: nsidjango.azurecr.io/postgres:latest
     ports:
       - "5432"
     environment:
