@@ -1,32 +1,20 @@
-  version: '3'
-
-  services:
-    db:
-      image: postgres
-      ports:
-        - "5432"
-      environment:
-        - POSTGRES_DB=nsi
-        - POSTGRES_USER=django
-        - POSTGRES_PASSWORD=django
-    migrate:
-      build: .
-      command: python manage.py migrate
-      depends_on:
-        - db
-    test:
-      build: .
-      command: python manage.py test
-      depends_on:
-        - db
-        - migrate
-    web:
-      build: .
-      command: python manage.py runserver 0.0.0.0:8000
-      volumes:
-        - .:/code
-      ports:
-        - "8000:8000"
-      depends_on:
-        - db
-        - migrate
+version: "3"
+   
+services:
+  db:
+    image: nsidjango.azurecr.io/postgres:latest
+    ports:
+      - "5432"
+    environment:
+      - POSTGRES_DB=nsi
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=django
+  web:
+    build: .
+    image: nsidjango.azurecr.io/nsidjango:latest
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: code
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
