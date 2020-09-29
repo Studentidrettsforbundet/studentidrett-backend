@@ -4,16 +4,16 @@ from clubs.models import Club
 CLUB_INDEX = Index('clubs')
 
 @CLUB_INDEX.doc_type
-class ClubDocuments(Document):
+class ClubDocument(Document):
     class Django:
-        #name = fields.CharField(attr='name')
+        #name = fields.TextField(attr='name')
 
         model = Club
 
         # Index on city, but including the other fields to include them in the resultbasepy
         fields = [
             'name',
-            'register_info',
+            'description',
             'contact_email',
             'pricing',
             'register_info'

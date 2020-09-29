@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+import search.views as search_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('interest.urls')),
@@ -24,5 +26,7 @@ urlpatterns = [
     path('', include('sports.urls')),
     path('', include('cities.urls')),
     path('', include('clubs.urls')),
-    path('', include('teams.urls'))
+    path('', include('teams.urls')),
+    #path('', include('search.urls'))
+    path(r'search/', search_views.search, name='search')
 ]
