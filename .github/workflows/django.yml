@@ -22,7 +22,7 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
             cd app && docker-compose up --build -d
-            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/studentidrett-backend:latest
+            docker-compose push
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
