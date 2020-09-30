@@ -5,4 +5,4 @@ WORKDIR /code
 ADD . /code/
 RUN pip install -r requirements.txt
 CMD ["gunicorn", "--bind", "0.0.0.0:80", "app.wsgi"]
-EXPOSE 80
+EXPOSE 2222 80
