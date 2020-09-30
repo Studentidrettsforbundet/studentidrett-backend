@@ -16,6 +16,7 @@
       build:
         context: .
         dockerfile: Dockerfile
+      command: python manage.py migrate
       volumes:
         - .:/code
       ports:
