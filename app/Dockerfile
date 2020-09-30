@@ -4,5 +4,5 @@ RUN mkdir /code
 WORKDIR /code
 ADD . /code/
 RUN pip install -r requirements.txt
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "app.wsgi"]
 EXPOSE 80
