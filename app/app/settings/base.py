@@ -15,7 +15,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from app.app.enums import EnvironmentOptions
+from app.enums import EnvironmentOptions
 
 load_dotenv()
 
@@ -51,15 +51,15 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "clubs.apps.ClubsConfig",
     "cities.apps.CitiesConfig",
+    "clubs.apps.ClubsConfig",
     "interest.apps.InterestConfig",
     "groups.apps.GroupsConfig",
     "sports.apps.SportsConfig",
     "teams.apps.TeamsConfig",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 
 
 MIDDLEWARE = [
@@ -128,20 +128,17 @@ AUTH_PASSWORD_VALIDATORS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
+        "NAME": os.getenv("DB_NAME", "postgres"),
+        "USER": os.getenv("DB_USER", "postgres"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "postgres"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", 5432),
     }
 }
 
 
 # Add default pagination and json-format
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
-    ],
     "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
