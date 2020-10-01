@@ -12,7 +12,7 @@
       networks:
         - postgres_network
     web:
-      image: studentidrett.azurecr.io/studentidrett-backend:latest
+      image: acrkundestyrtnsi.azurecr.io/studentidrett-backend:latest
       build:
         context: .
         dockerfile: config/django/Dockerfile
