@@ -1,3 +1,5 @@
+from enum import Enum
+
 from django.db import models
 
 from django.utils.translation import gettext_lazy as _
@@ -31,3 +33,10 @@ class Region(models.TextChoices):
     VEST = "vest", _("Vestlandet")
     SOR = "sør", _("Sørlandet")
     OST = "øst", _("Østlandet")
+
+
+class EnvironmentOptions(Enum):
+    BASE = "BASE"
+    LOCAL = "LOCAL"
+    DEVELOPMENT = "DEVELOPMENT"
+    PRODUCTION = "PRODUCTION"
