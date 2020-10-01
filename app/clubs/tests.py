@@ -1,9 +1,11 @@
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
 from cities.models import City
 from clubs.models import Club
 from clubs.views import ClubViewSet
+
+from django.contrib.auth.models import User
 
 
 class TestClubsApi(APITestCase):
@@ -34,7 +36,14 @@ class TestClubsApi(APITestCase):
             pricing="about all of your yearly income",
             register_info="You'll have to buy champagne for the whole club",
         )
+
+        self.user = User.objects.create_superuser(
+            username="testuser", email="testuser@test.com", password="testing"
+        )
+        self.user.save()
+
         self.factory = APIRequestFactory()
+        self.post_view = ClubViewSet.as_view({"post": "create"})
 
     def test_club_model(self):
         clubs = Club.objects.all()[1]
@@ -118,9 +127,9 @@ class TestClubsApi(APITestCase):
         # Check length of results
         self.assertEqual(len(response.data.get("results")), 0)
 
-    def test_create_club(self):
+    def test_post_club(self):
         city = City.objects.create(name="Bergen")
-        response = self.client.post(
+        request = self.factory.post(
             "/clubs/",
             {
                 "name": "GCIL",
@@ -130,8 +139,25 @@ class TestClubsApi(APITestCase):
             },
             format="json",
         )
+        force_authenticate(request, self.user)
+        response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Club.objects.filter(name="GCIL").exists())
+
+    def test_post_club_auth(self):
+        city = City.objects.create(name="Bergen")
+        request = self.factory.post(
+            "/clubs/",
+            {
+                "name": "GCIL",
+                "city": city.id,
+                "description": "Lover max guttastemning",
+                "contact_email": "styret@gc.no",
+            },
+            format="json",
+        )
+        response = self.post_view(request)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_query_param_non_existing_city(self):
         request = self.factory.get("clubs", {"city": "Gotham"})
