@@ -13,13 +13,6 @@ from teams.views import TeamViewSet
 
 from django.contrib.auth.models import User
 
-# initialize the APIClient app
-client = APIClient()
-factory = APIRequestFactory()
-
-
-# Create your tests here.
-
 
 class TestTeam(TestCase):
     def setUp(self):
@@ -63,6 +56,9 @@ class TestTeam(TestCase):
             availability="OP",
         )
 
+        self.client = APIClient()
+        self.factory = APIRequestFactory()
+
     def test_team_model(self):
         team = Team.objects.all()[0]
         self.assertEqual(team.location, self.city)
@@ -78,7 +74,7 @@ class TestTeam(TestCase):
         self.assertEqual(team.availability, "OP")
 
     def test_contains_expected_fields(self):
-        request = factory.get("team")
+        request = self.factory.get("team")
         view = TeamViewSet.as_view({"get": "retrieve"})
         response = view(request, pk="1")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -111,7 +107,7 @@ class TestTeam(TestCase):
 
     def test_team_list(self):
         # get API response
-        response = client.get("/teams/")
+        response = self.client.get("/teams/")
         # get data from db
         teams = Team.objects.all()
         serializer = TeamSerializer(teams, many=True)
@@ -119,7 +115,7 @@ class TestTeam(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_new_team_auth(self):
-        request = factory.post(
+        request = self.factory.post(
             "/team/",
             {
                 "name": "post",
@@ -137,7 +133,7 @@ class TestTeam(TestCase):
         self.assertTrue(Team.objects.filter(name="post").exists())
 
     def test_create_new_team_no_auth(self):
-        request = factory.post(
+        request = self.factory.post(
             "/team/",
             {
                 "name": "post",
@@ -153,7 +149,7 @@ class TestTeam(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_new_team_bad_group(self):
-        request = factory.post(
+        request = self.factory.post(
             "/team/",
             {
                 "name": "post",
@@ -171,7 +167,7 @@ class TestTeam(TestCase):
         self.assertEqual(response.data.keys(), {"group"})
 
     def test_create_new_team_bad_sport(self):
-        request = factory.post(
+        request = self.factory.post(
             "/team/",
             {
                 "name": "post",
@@ -189,7 +185,7 @@ class TestTeam(TestCase):
         self.assertEqual(response.data.keys(), {"sport"})
 
     def test_create_new_team_empty_name(self):
-        request = factory.post(
+        request = self.factory.post(
             "/team/",
             {
                 "name": "",
@@ -207,7 +203,7 @@ class TestTeam(TestCase):
         self.assertEqual(response.data.keys(), {"name"})
 
     def test_create_new_team_bad_name(self):
-        request = factory.post(
+        request = self.factory.post(
             "/team/",
             {
                 "name": None,
@@ -225,5 +221,5 @@ class TestTeam(TestCase):
         self.assertEqual(response.data.keys(), {"name"})
 
     def test_get_non_existing_team(self):
-        response = client.get("/team/42/")
+        response = self.client.get("/team/42/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

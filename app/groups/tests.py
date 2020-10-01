@@ -148,9 +148,7 @@ class GroupViewTest(TestCase):
         groups = Group.objects.all()
         serializer = GroupSerializer(groups, many=True)
 
-        # Check pagination
         self.assertEqual(response.data.keys(), {"count", "next", "previous", "results"})
-        # Check if object in response correlates with objects in database
         self.assertEqual(response.data.get("results"), serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

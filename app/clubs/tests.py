@@ -58,11 +58,9 @@ class TestClubsApi(APITestCase):
         request = self.factory.get("/clubs/")
         view = ClubViewSet.as_view({"get": "list"})
         response = view(request)
-        # Check status code
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Check pagination
         self.assertEqual(response.data.keys(), {"count", "next", "previous", "results"})
-        # Check fields in result
         self.assertEqual(
             response.data.get("results")[1].keys(),
             {
@@ -75,16 +73,14 @@ class TestClubsApi(APITestCase):
                 "register_info",
             },
         )
-        # Check length of results
         self.assertEqual(len(response.data.get("results")), 2)
 
     def test_club_detail(self):
         request = self.factory.get("/clubs/")
         view = ClubViewSet.as_view({"get": "retrieve"})
         response = view(request, pk=self.club1.pk)
-        # Check status code
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Check fields in result
         self.assertEqual(
             response.data.keys(),
             {
@@ -102,18 +98,16 @@ class TestClubsApi(APITestCase):
         request = self.factory.get("clubs")
         view = ClubViewSet.as_view({"get": "retrieve"})
         response = view(request, pk="999")
-        # Check status code
+
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_query_param_city(self):
         request = self.factory.get("clubs", {"city": self.city1.name})
         view = ClubViewSet.as_view({"get": "list"})
         response = view(request)
-        # Check status code
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Check length of results
         self.assertEqual(len(response.data.get("results")), 1)
-        # Check that both clubs are in Trondheim
         self.assertEqual(response.data.get("results")[0].get("city"), self.city1.pk)
 
     def test_query_param_city_no_clubs(self):
@@ -122,9 +116,8 @@ class TestClubsApi(APITestCase):
         request = self.factory.get("clubs", {"city": "Oslo"})
         view = ClubViewSet.as_view({"get": "list"})
         response = view(request)
-        # Check status code
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Check length of results
         self.assertEqual(len(response.data.get("results")), 0)
 
     def test_post_club(self):
@@ -163,7 +156,6 @@ class TestClubsApi(APITestCase):
         request = self.factory.get("clubs", {"city": "Gotham"})
         view = ClubViewSet.as_view({"get": "list"})
         response = view(request)
-        # Check status code
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Check length of results
         self.assertEqual(len(response.data.get("results")), 0)
