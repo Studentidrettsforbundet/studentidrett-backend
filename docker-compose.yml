@@ -14,9 +14,9 @@
     web:
       image: studentidrett.azurecr.io/studentidrett-backend:latest
       build:
-        context: .
-        dockerfile: Dockerfile
-      command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+        context: app
+        dockerfile: config/Dockerfile
+      command: bash -c "cd app && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
       volumes:
         - .:/code
       ports:
