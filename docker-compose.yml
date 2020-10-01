@@ -6,9 +6,9 @@
       ports:
         - "5432:5432"
       environment:
-        - POSTGRES_DB=nsi
-        - POSTGRES_USER=django
-        - POSTGRES_PASSWORD=django
+      - POSTGRES_DB=nsi
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=django
       networks:
         - postgres_network
     web:
@@ -17,11 +17,11 @@
         context: .
         dockerfile: config/django/Dockerfile
       volumes:
-        - .:/code
-      ports:
-        - "8000:8000"
+        - .:/app
       networks:
         - postgres_network
+      ports:
+        - "8000:8000"
       depends_on:
         - postgres
   networks:
