@@ -1,6 +1,7 @@
 from django.db import models
 
 from app.enums import Region
+
 # Create your models here.
 
 
@@ -12,4 +13,4 @@ class City(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['region']
+        ordering = ["region"]

@@ -7,19 +7,38 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='City',
+            name="City",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=31)),
-                ('region', models.CharField(choices=[('nord', 'Nord-Norge'), ('midt', 'Midt-Norge'), ('vest', 'Vestlandet'), ('sør', 'Sørlandet'), ('øst', 'Østlandet')], max_length=4)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=31)),
+                (
+                    "region",
+                    models.CharField(
+                        choices=[
+                            ("nord", "Nord-Norge"),
+                            ("midt", "Midt-Norge"),
+                            ("vest", "Vestlandet"),
+                            ("sør", "Sørlandet"),
+                            ("øst", "Østlandet"),
+                        ],
+                        max_length=4,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['region'],
+                "ordering": ["region"],
             },
         ),
     ]

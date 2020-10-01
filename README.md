@@ -2,7 +2,13 @@
 
 # Run for the first time
 
-Make sure to have a .env-file in root-directory with `DJANGO_SECRET_KEY` set.
+Make sure to have a .env-file in root-directory with:
+* `DJANGO_SECRET_KEY`
+* `DB_NAME`
+* `DB_USER`
+* `DB_PASSWORD`
+* `DB_HOST`
+* `DB_PORT`
 
 To run migrations, navigate to `/app` and run `python manage.py migrate`. This will create a database in the local virtual environment.
 
@@ -17,6 +23,13 @@ After adding a new dependency, run `pip freeze > requirements.txt` to update.
 This makes sure that everyone uses the same dependencies and versions during development.
 
 # Git-conventions
+
+Automatic linting, code formatting and security testing is implemented using
+[pre-commit](https://pre-commit.com/), with isort, Black, Flake8 and Bandit.
+To enable run `pre-commit install` once, and then `pre-commit autoupdate`.
+
+The pre-commit hooks will then run before every commit, and check the files changed.
+To run on all files, run `pre-commit run --all-files`
 
 Branches:
 
