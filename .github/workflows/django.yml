@@ -38,4 +38,4 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            docker-compose push
+            docker-compose -f docker-compose.prod.yml push
