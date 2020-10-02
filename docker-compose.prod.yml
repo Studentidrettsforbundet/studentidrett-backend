@@ -31,6 +31,7 @@
       depends_on:
         - postgres
       command: bash -c "
+        cd app &&
         black --check . --config pyproject.toml &&
         isort --check-only . &&
         flake8 &&
