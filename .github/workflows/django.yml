@@ -19,11 +19,11 @@ jobs:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
 
         - name: 'Build image'
-        - run: |
+          run: |
             docker-compose -f docker-compose.prod.yml build
 
         - name: 'Run tests and linting'
-        - run: |
+          run: |
             docker-compose -f docker-compose.prod.yml up --abort-on-container-exit
 
         - name: 'Push image to ACR'
