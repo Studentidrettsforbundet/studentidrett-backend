@@ -19,7 +19,9 @@ class CityViewSet(viewsets.ReadOnlyModelViewSet):
         if region is not None:
             if region not in Region.values:
                 raise ParseError(
-                    detail="Invalid region name. Only permitted names are: [nord, midt, vest, sør, øst]",
+                    detail="Invalid region name. Only permitted names are: ".join(
+                        Region.values
+                    ),
                     code=status.HTTP_400_BAD_REQUEST,
                 )
             else:
