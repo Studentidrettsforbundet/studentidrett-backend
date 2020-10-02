@@ -9,7 +9,7 @@ ENVIRONMENT = EnvironmentOptions.DEVELOPMENT
 
 
 """ ACCESS_CONTROL """
-ALLOWED_HOSTS = ["kundestyrt-nsi-dev-backend.azurewebsites.net"]
+ALLOWED_HOSTS = ["https://kundestyrt-nsi-dev-backend.azurewebsites.net/"]
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOWED_ORIGINS = "https://kundestyrt-nsi-dev-backend.azurewebsites.net"
 
