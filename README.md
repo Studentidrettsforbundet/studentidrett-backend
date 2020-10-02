@@ -31,6 +31,8 @@ To enable run `pre-commit install` once, and then `pre-commit autoupdate`.
 The pre-commit hooks will then run before every commit, and check the files changed.
 To run on all files, run `pre-commit run --all-files`
 
+When the pre-commit hooks automatically run and any of them fail, the attempted committed files need to be re-added and committed again.
+
 Branches:
 
 - main: update only for deployment (merge from dev)
