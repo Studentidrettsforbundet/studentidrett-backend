@@ -46,7 +46,7 @@ class TestCityApi(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.keys(), {"count", "next", "previous", "results"})
-        self.assertEqual(len(response.data.get("results")), 2)
+        self.assertEqual(len(response.data.get("results")), len(self.cities))
         self.assertEqual(
             response.data.get("results"), CitySerializer(self.cities, many=True).data
         )
