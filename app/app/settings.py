@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "groups.apps.GroupsConfig",
     "sports.apps.SportsConfig",
     "teams.apps.TeamsConfig",
+    "questionnaire.apps.QuestionnaireConfig"
 ]
 
 # Use nose to run all tests

@@ -26,4 +26,5 @@ urlpatterns = [
     path("", include("cities.urls")),
     path("", include("clubs.urls")),
     path("", include("teams.urls")),
+    path("", include("questionnaire.urls")),
 ]
