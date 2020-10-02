@@ -1,11 +1,15 @@
-on: [push]
-name: Docker_build_and_push_to_Azure
+on:
+  pull_request:
+    branches:
+      - dev
+      - master
+
+name: Backend build, test and push to Azure
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-        # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@master
 
@@ -14,12 +18,19 @@ jobs:
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-        - name: 'Build and push image'
+        - name: 'Build image'
+        - run: |
+            docker-compose -f docker-compose.prod.yml build
+
+        - name: 'Run tests and linting'
+        - run: |
+            docker-compose -f docker-compose.prod.yml up --abort-on-container-exit
+
+        - name: 'Push image to ACR'
           uses: azure/docker-login@v1
           with:
             login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            docker-compose up --build -d
             docker-compose push

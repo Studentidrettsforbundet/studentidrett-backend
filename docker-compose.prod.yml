@@ -1,0 +1,41 @@
+  version: '3'
+
+  services:
+    postgres:
+      image: postgres:latest
+      ports:
+        - "5432:5432"
+      environment:
+       POSTGRES_DB: ${DBNAME}
+       POSTGRES_USER: ${DBUSER}
+       POSTGRES_PASSWORD: ${DBPASS}
+      networks:
+        - postgres_network
+    web:
+      image: acrkundestyrtnsi.azurecr.io/studentidrett-backend:latest
+      build:
+        context: .
+        dockerfile: config/django/Dockerfile
+      logging:
+        driver: "json-file"
+      environment:
+        POSTGRES_DB: ${DBNAME}
+        POSTGRES_USER: ${DBUSER}
+        POSTGRES_PASSWORD: ${DBPASS}
+        POSTGRES_HOST: postgres
+        POSTGRES_PORT: 5432
+      networks:
+        - postgres_network
+      ports:
+        - "80:8000"
+      depends_on:
+        - postgres
+      command: bash -c "
+        black --check . --config pyproject.toml &&
+        isort --check-only . &&
+        flake8 &&
+        python manage.py makemigrations --check
+        "
+  networks:
+    postgres_network:
+      driver: bridge

@@ -25,4 +25,4 @@ COPY config/django/sshd_config /etc/ssh/
 # CMD ["gunicorn", "--bind", "0.0.0.0:80", "app.wsgi"]
 EXPOSE 2222 80
 
-ENTRYPOINT ["init.sh"]
+CMD ["../usr/local/bin/init.sh"]

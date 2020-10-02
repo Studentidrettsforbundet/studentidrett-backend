@@ -1,6 +1,20 @@
 [tool.black]
 line-length = 88
 include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/
+'''
 
 [tool.isort]
 line_length = 88
@@ -19,5 +33,6 @@ forced_separate = [
     ]
 skip = [
     "__init__.py",
-    "migrations"
+    "migrations",
+    "venv"
     ]
