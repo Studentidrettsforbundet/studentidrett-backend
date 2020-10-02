@@ -22,9 +22,6 @@ RUN apt-get update \
 
 COPY config/django/sshd_config /etc/ssh/
 
-# Add support for flake8
-ADD setup.cfg /code/
-
 # CMD ["gunicorn", "--bind", "0.0.0.0:80", "app.wsgi"]
 EXPOSE 2222 80
 
