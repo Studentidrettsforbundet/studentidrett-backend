@@ -8,6 +8,11 @@ name: Backend build, test and push to Azure
 
 jobs:
     build-and-deploy:
+      env:
+        POSTGRES_USER: ${secrets.POSTGRES_USER}
+        POSTGRES_PASSWORD: ${secrets.POSTGRES_PASSWORD}
+        POSTGRES_DB: ${secrets.POSTGRES_DB}
+      runs-on: ubuntu-latest
         runs-on: ubuntu-latest
         steps:
         - name: 'Checkout GitHub Action'

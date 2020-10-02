@@ -6,9 +6,9 @@
       ports:
         - "5432:5432"
       environment:
-       POSTGRES_DB: ${DBNAME}
-       POSTGRES_USER: ${DBUSER}
-       POSTGRES_PASSWORD: ${DBPASS}
+       POSTGRES_DB: ${POSTGRES_DB}
+       POSTGRES_USER: ${POSTGRES_USER}
+       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       networks:
         - postgres_network
     web:
@@ -19,9 +19,9 @@
       logging:
         driver: "json-file"
       environment:
-        POSTGRES_DB: ${DBNAME}
-        POSTGRES_USER: ${DBUSER}
-        POSTGRES_PASSWORD: ${DBPASS}
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
       networks:
