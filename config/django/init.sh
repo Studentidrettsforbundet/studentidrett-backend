@@ -32,4 +32,4 @@ python manage.py migrate
 
 python manage.py collectstatic --noinput
 
-gunicorn wsgi -w 4 -b 0.0.0.0:8000 --chdir=/code/app --log-file -
+gunicorn wsgi -w 4 -b 0.0.0.0:80 --chdir=/code/app --log-file -
