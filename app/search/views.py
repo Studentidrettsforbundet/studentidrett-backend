@@ -1,6 +1,5 @@
 from django.http import HttpResponse
 from django_elasticsearch_dsl.search import Search
-from elasticsearch_dsl.query import MultiMatch
 
 from rest_framework.utils import json
 from elasticsearch_dsl import Search, Q
@@ -10,7 +9,6 @@ def global_search(request):
 
     if q:
         search = Search(index=["clubs", "cities", "groups", "sports"])
-        #query = MultiMatch(query=q, fields=["name", "description"], fuzziness="AUTO")
         query = Q({
             "multi_match": {
                 "query": q,
