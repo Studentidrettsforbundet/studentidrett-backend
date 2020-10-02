@@ -22,8 +22,6 @@ RUN apt-get update \
 
 COPY config/django/sshd_config /etc/ssh/
 
-COPY setup.cfg /code/
-
 # CMD ["gunicorn", "--bind", "0.0.0.0:80", "app.wsgi"]
 EXPOSE 2222 80
 
