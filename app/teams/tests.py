@@ -19,7 +19,7 @@ def get_response(request, user=None, team_id=None):
     Converts a request to a response.
     :param request: the desired HTTP-request.
     :param user: the user performing the request. None represents an anonymous user
-    :param team_id: the desired group. None represents all teams.
+    :param team_id: the desired team. None represents all teams.
     :return: the HTTP-response from Django.
     """
 
