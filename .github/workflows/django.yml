@@ -43,7 +43,7 @@ jobs:
         - uses: azure/appservice-settings@v1
           with:
             app-name: kundestyrt-nsi-dev-backend
-            slot-name: 'staging'
+            slot-name: ${{ env.IMAGE_VERSION }}
             app-settings-json: '${{ secrets.APP_SETTINGS }}'
             general-settings-json: '{"alwaysOn": "false", "webSocketsEnabled": "true"}'
 
