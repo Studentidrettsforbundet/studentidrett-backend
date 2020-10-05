@@ -1,9 +1,9 @@
 on:
-  pull_request:
+  push:
     branches:
-      - dev
+      - main
 
-name: Backend build, test and push to Azure
+name: Stable backend build, test and push to Azure
 
 jobs:
     build-and-deploy:
@@ -12,7 +12,7 @@ jobs:
           POSTGRES_USER: ${secrets.POSTGRES_USER}
           POSTGRES_PASSWORD: ${secrets.POSTGRES_PASSWORD}
           POSTGRES_DB: ${secrets.POSTGRES_DB}
-          IMAGE_VERSION: staging
+          IMAGE_VERSION: prod
         runs-on: ubuntu-latest
         steps:
         - name: 'Checkout GitHub Action'
@@ -39,14 +39,3 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
             docker-compose -f docker-compose.prod.yml push
-
-        - uses: azure/appservice-settings@v1
-          with:
-            app-name: 'kundestyrt-staging'
-            slot-name: 'staging'
-            app-settings-json: '${{ secrets.APP_SETTINGS }}'
-            general-settings-json: '{"alwaysOn": "false", "webSocketsEnabled": "true"}'
-
-        - name: Azure logout
-          run: |
-            az logout
