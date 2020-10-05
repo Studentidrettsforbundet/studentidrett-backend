@@ -35,7 +35,7 @@
         context: ./config/nginx
         dockerfile: Dockerfile
       ports:
-      - 80:80
+      - 8000:80
       volumes:
       - ./config/nginx/conf.d:/nginx.conf
       - static_volume:/app/static
