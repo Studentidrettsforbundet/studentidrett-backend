@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from rest_framework import status
-from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 from cities.models import City
 from clubs.models import Club
@@ -137,7 +137,7 @@ class GroupViewTest(TestCase):
         force_authenticate(request, self.user)
         response = self.get_detail_view(request, pk=self.group.pk)
 
-        self.assertEqual(response.data,self.serialized_group.data)
+        self.assertEqual(response.data, self.serialized_group.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_group_list(self):
