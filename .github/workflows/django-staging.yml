@@ -1,9 +1,9 @@
 on:
-  pull_request:
+  push:
     branches:
       - dev
 
-name: Backend build, test and push to Azure
+name: Stable backend build, test and push to Azure
 
 jobs:
     build-and-deploy:
@@ -12,8 +12,7 @@ jobs:
           POSTGRES_USER: ${secrets.POSTGRES_USER}
           POSTGRES_PASSWORD: ${secrets.POSTGRES_PASSWORD}
           POSTGRES_DB: ${secrets.POSTGRES_DB}
-          IMAGE_VERSION: ${{ github.actor }} 
-          
+          IMAGE_VERSION: staging
         runs-on: ubuntu-latest
         steps:
         - name: 'Checkout GitHub Action'
@@ -47,7 +46,6 @@ jobs:
             slot-name: ${{ env.IMAGE_VERSION }}
             app-settings-json: '${{ secrets.APP_SETTINGS }}'
             general-settings-json: '{"alwaysOn": "false", "webSocketsEnabled": "true"}'
-
 
         - name: Deploy web App using GH Action azure/webapps-deploy
           uses: azure/webapps-deploy@v2
