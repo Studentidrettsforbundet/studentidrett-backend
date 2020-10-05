@@ -43,7 +43,7 @@ class TestClubsApi(APITestCase):
             city=self.city1,
             description="This is a club for the best of the best!",
             contact_email="captain1@ntnui.com",
-            pricing="about half of your yearly income",
+            membership_fee="about half of your yearly income",
             register_info="You'll have to sell your soul, and bake a cake",
         )
 
@@ -52,7 +52,7 @@ class TestClubsApi(APITestCase):
             city=self.city2,
             description="We just wanna take your money",
             contact_email="cheif@bilions.com",
-            pricing="about all of your yearly income",
+            membership_fee="about all of your yearly income",
             register_info="You'll have to buy champagne for the whole club",
         )
 
