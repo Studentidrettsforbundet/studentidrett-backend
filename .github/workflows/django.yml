@@ -42,10 +42,17 @@ jobs:
 
         - uses: azure/appservice-settings@v1
           with:
-            app-name: 'kundestyrt-staging'
+            app-name: kundestyrt-nsi-dev-backend
             slot-name: 'staging'
             app-settings-json: '${{ secrets.APP_SETTINGS }}'
             general-settings-json: '{"alwaysOn": "false", "webSocketsEnabled": "true"}'
+
+
+        - name: Deploy web App using GH Action azure/webapps-deploy
+          uses: azure/webapps-deploy@v2
+          with:
+            app-name: kundestyrt-nsi-dev-backend-${env.IMAGE_VERSION}
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
 
         - name: Azure logout
           run: |

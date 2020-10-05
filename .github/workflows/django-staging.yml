@@ -39,3 +39,7 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
             docker-compose -f docker-compose.prod.yml push
+
+        - name: Azure logout
+          run: |
+            az logout
