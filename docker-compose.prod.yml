@@ -28,7 +28,7 @@
       networks:
         - postgres_network
       ports:
-        - "80:8000"
+        - "8000:8000"
       depends_on:
         - postgres
       command: bash -c "
@@ -38,6 +38,29 @@
         python manage.py makemigrations --check
         "
       # TODO: Add pytest when this is fixed
+
+      nginx:
+        image: nginx:1.13
+        build:
+          context: ./config/nginx
+          dockerfile: Dockerfile
+        ports:
+        - 80:80
+        volumes:
+        - ./config/nginx/conf.d:/nginx.conf
+        - static_volume:/app/static
+        - media_volume:/app/media
+        depends_on:
+        - web
+        networks:
+        - nginx_network
+
+  volumes:
+    postgres_data:
+    static_volume:
+    media_volume:
   networks:
     postgres_network:
+      driver: bridge
+    nginx_network:
       driver: bridge
