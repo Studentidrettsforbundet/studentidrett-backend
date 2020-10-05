@@ -46,7 +46,6 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
     "drf_yasg",
-    "django_nose",
 ]
 
 LOCAL_APPS = [
@@ -70,15 +69,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
-# Use nose to run all tests
-TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
-
-# Tell nose to measure coverage on the 'foo' and 'bar' apps
-NOSE_ARGS = [
-    "--with-coverage",
-    "--cover-package=cities,clubs,groups,interest,sports,teams",
 ]
 
 ROOT_URLCONF = "app.urls"

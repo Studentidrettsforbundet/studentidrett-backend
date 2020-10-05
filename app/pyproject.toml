@@ -21,3 +21,40 @@ skip = [
     "__init__.py",
     "migrations"
     ]
+
+
+[tool.coverage]
+[tool.coverage.run]
+# whether to measure branch coverage in addition to statement coverage. The result only included in HTML and JSON reports
+branch = true
+
+# files to omit from coverage
+omit = [
+    "*/__init__.py",
+    "*/apps.py",
+    "*/migrations/*",
+    "*/settings/*",
+    "*/urls.py",
+    "*wsgi.py",
+    "manage.py",
+    "*/tests.py",
+    "*/venv/*"
+]
+
+[tool.coverage.report]
+# Exclude lines matching one of the RegEx-expressions in the list.
+exclude_lines = []
+
+# Show missing lines in the report
+show_missing = true
+
+# Exclude empty files from the report
+skip_empty = true
+
+# Sort the text report. Allowed values are “Name”, “Stmts”, “Miss”, “Branch”, “BrPart”, or “Cover”.
+sort = "Name"
+
+
+[tool.coverage.html]
+# where to store the html report
+directory = "coverage_report"
