@@ -52,8 +52,9 @@ jobs:
           uses: azure/webapps-deploy@v2
           with:
             app-name: kundestyrt-nsi-dev-backend
-            slot-name: 'staging'
+            slot-name: ${env.IMAGE_VERSION}
             publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+            image: acrkundestyrtnsi.azurecr.io/studentidrett-backend:${env.IMAGE_VERSION}
 
         - name: Azure logout
           run: |
