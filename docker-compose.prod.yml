@@ -27,6 +27,7 @@
         POSTGRES_PORT: 5432
       networks:
         - postgres_network
+        - nginx_network
       ports:
         - "8000:8000"
       depends_on:
@@ -45,7 +46,7 @@
           context: ./config/nginx
           dockerfile: Dockerfile
         ports:
-        - 80:80
+        - 8000:80
         volumes:
         - ./config/nginx/conf.d:/nginx.conf
         - static_volume:/app/static
