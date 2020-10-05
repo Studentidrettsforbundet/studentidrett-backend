@@ -41,7 +41,7 @@
       # TODO: Add pytest when this is fixed
 
     nginx:
-      image: nginx:1.13
+      image: acrkundestyrtnsi.azurecr.io/studentidrett-backend:nginx-${IMAGE_VERSION}
       build:
         context: ./config/nginx
         dockerfile: Dockerfile
