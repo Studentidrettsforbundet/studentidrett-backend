@@ -37,6 +37,7 @@
         flake8 &&
         python manage.py makemigrations --check
         "
+      # TODO: Add pytest when this is fixed
   networks:
     postgres_network:
       driver: bridge
