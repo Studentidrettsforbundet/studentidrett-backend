@@ -1,26 +1,40 @@
 # studentidrett-backend
 
-# Run for the first time
+# Running locally
 
-Make sure to have a .env-file in root-directory with:
-* `DJANGO_SECRET_KEY`
-* `DB_NAME`
-* `DB_USER`
-* `DB_PASSWORD`
-* `DB_HOST`
-* `DB_PORT`
+## Install Docker
+https://docs.docker.com/get-docker/
 
-To run migrations, navigate to `/app` and run `python manage.py migrate`. This will create a database in the local virtual environment.
+## Create .env file
+For the system to run corretly it requires a set of environment variables:
 
-If this goes without errors, run `python manage.py runserver`. This will start the server at `localhost:8000`.
+```
+# Django
+DJANGO_SECRET_KEY= [INSERT_KEY]
+
+# Postgres
+POSTGRES_DB=[DATABASE_NAME]
+POSTGRES_USER=[DATABASE_USERNAME]
+POSTGRES_PASSWORD=[DATABASE_PASSWORD]
+POSTGRES_HOST=postgres
+```
+## Run Docker Machine
+Make sure to have a Docker Daemon running to be able to run the project.
+This can be done by running `docker-machine start default` and `
+@FOR /f "tokens=*" %i IN ('docker-machine env') DO @%i`. Find the ip-address that Docker-machine
+runs on by running `docker-machine ip`. This will be the access point to test
+the project, and is by default `192.168.99.100`.
+
+## Run the project
+To run the project locally, simply run `docker-compose -f docker-compose.local.yml up --build -d`
+at the root of the project. This will install dependencies and run migrations and create a docker image
+with the app running.
 
 ### Dependencies
 
 Dependencies are stored in `requirements.txt`, and is installed by running `pip install -r requirements.txt`.
 
 After adding a new dependency, run `pip freeze > requirements.txt` to update.
-
-This makes sure that everyone uses the same dependencies and versions during development.
 
 # Git-conventions
 
