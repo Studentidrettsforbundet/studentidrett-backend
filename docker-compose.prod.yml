@@ -29,7 +29,7 @@
         - postgres_network
         - nginx_network
       volumes:
-        - static_volume:/code/staticfiles
+        - static_volume:/staticfiles
       expose:
         - 8000
       depends_on:
@@ -51,8 +51,7 @@
       - 80:80
       volumes:
       - ./config/nginx/conf.d:/nginx.conf
-      - static_volume:/code/staticfiles
-      - media_volume:/code/media
+      - static_volume:/staticfiles
       depends_on:
       - web
       networks:
