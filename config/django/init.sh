@@ -32,6 +32,6 @@ python manage.py migrate
 
 python manage.py collectstatic --noinput --clear
 
-chmod -R u=rwX,g=rwX,o=rX /staticfiles/
+chmod -R u=rwX,g=rwX,o=rX /home/site/wwwroot/staticfiles/
 
-gunicorn wsgi -w 4 -b 0.0.0.0:8000 --chdir=/code/app --log-file -
+gunicorn wsgi -w 4 -b 0.0.0.0:8000 --chdir=/home/site/wwwroot/app --log-file -
