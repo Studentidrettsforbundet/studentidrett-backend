@@ -1,4 +1,4 @@
-"""from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser
 
 
 class GetGroupPermission(IsAdminUser):
@@ -6,4 +6,4 @@ class GetGroupPermission(IsAdminUser):
         if request.method == "GET":
             return True
         else:
-            return super().has_permission(request, view)"""
+            return super().has_permission(request, view)
