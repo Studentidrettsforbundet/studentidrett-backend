@@ -18,6 +18,7 @@
       container_name: nsi_backend
       volumes:
       - .:/app
+      - static_volume:/code/staticfiles
       env_file:
         - app/.env
       build:
@@ -25,6 +26,8 @@
         dockerfile: config/django/Dockerfile
       depends_on:
         - postgres
+      expose:
+        - 8000
       networks:
         - postgres_network
         - nginx_network
@@ -38,8 +41,8 @@
       - 8000:80
       volumes:
       - ./config/nginx/conf.d:/nginx.conf
-      - static_volume:/app/static
-      - media_volume:/app/media
+      - static_volume:/code/staticfiles
+      - media_volume:/code/media
       depends_on:
       - web
       networks:

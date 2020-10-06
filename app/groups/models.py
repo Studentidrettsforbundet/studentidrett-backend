@@ -20,5 +20,8 @@ class Group(models.Model):
     )  # TODO on_delete=models.CASCADE,
     contact_email = models.EmailField(max_length=254, null=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         ordering = ["name"]
