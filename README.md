@@ -3,6 +3,7 @@
 # Run for the first time
 
 Make sure to have a .env-file in root-directory with:
+* `ENV_NAME` ['local' (default), 'staging', 'production']
 * `DJANGO_SECRET_KEY`
 * `DB_NAME`
 * `DB_USER`
