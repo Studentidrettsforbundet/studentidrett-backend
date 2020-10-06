@@ -22,7 +22,7 @@ class CityViewSet(viewsets.ReadOnlyModelViewSet):
                     detail="Invalid region name. Only permitted names are: ".join(
                         Region.values
                     ),
-                    code=status.HTTP_400_BAD_REQUEST,
+                    code=status.HTTP_404_NOT_FOUND,
                 )
             else:
                 queryset = queryset.filter(region=region)
