@@ -1,11 +1,23 @@
 from rest_framework import serializers
 
-from questionnaire.models import Questionnaire
+from questionnaire.models import Question, Answer
 
 
-class QuestionnaireSerializer(serializers.ModelSerializer):
+class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Questionnaire
+        model = Question
         fields = [
-            "qna"
+            "text",
+            "left",
+            "right"
         ]
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = [
+            "qid",
+            "answer"
+        ]
+

@@ -1,5 +1,12 @@
 from django.db import models
 
 
-class Questionnaire(models.Model):
-    qna = models.CharField(max_length=10)  # TODO: edit qna field to accept a list of tuples
+class Question(models.Model):
+    text = models.CharField(max_length=50)
+    left = models.CharField(max_length=20)
+    right = models.CharField(max_length=20)
+
+
+class Answer(models.Model):
+    qid = models.CharField(max_length=4)
+    answer = models.IntegerField()
