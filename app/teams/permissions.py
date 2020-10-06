@@ -1,4 +1,4 @@
-from rest_framework.permissions import IsAdminUser
+"""from rest_framework.permissions import IsAdminUser
 
 
 class GetPermission(IsAdminUser):
@@ -7,3 +7,4 @@ class GetPermission(IsAdminUser):
             return True
         else:
             return super().has_permission(request, view)
+"""
