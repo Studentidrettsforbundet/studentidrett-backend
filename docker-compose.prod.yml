@@ -29,7 +29,8 @@
         - postgres_network
         - nginx_network
       volumes:
-        - static_volume:/home/site/wwwroot/staticfiles
+        - .:/app
+        - static_volume:/staticfiles
       expose:
         - 8000
       depends_on:
@@ -51,7 +52,7 @@
       - 80:80
       volumes:
       - ./config/nginx/conf.d:/nginx.conf
-      - static_volume:/home/site/wwwroot/staticfiles
+      - static_volume:/staticfiles
       depends_on:
       - web
       networks:

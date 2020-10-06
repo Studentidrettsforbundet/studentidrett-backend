@@ -1,8 +1,9 @@
 FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip
-WORKDIR /home/site/wwwroot
-ADD ./app /home/site/wwwroot
+RUN mkdir /code
+WORKDIR /code
+ADD ./app /code/
 RUN pip install -r requirements.txt
 
 # init.sh converted to UNIX
@@ -21,7 +22,6 @@ RUN apt-get update \
 
 COPY config/django/sshd_config /etc/ssh/
 
-# CMD ["gunicorn", "--bind", "0.0.0.0:80", "app.wsgi"]
-EXPOSE 2222 80
+EXPOSE 2222 8000
 
-CMD ["../usr/local/bin/init.sh"]
+CMD ["/usr/local/bin/init.sh"]

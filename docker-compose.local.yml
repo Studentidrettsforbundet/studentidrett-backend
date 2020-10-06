@@ -18,7 +18,7 @@
       container_name: nsi_backend
       volumes:
       - .:/app
-      - static_volume:/code/staticfiles
+      - static_volume:/staticfiles
       env_file:
         - app/.env
       build:
@@ -41,8 +41,7 @@
       - 8000:80
       volumes:
       - ./config/nginx/conf.d:/nginx.conf
-      - static_volume:/code/staticfiles
-      - media_volume:/code/media
+      - static_volume:/staticfiles
       depends_on:
       - web
       networks:
