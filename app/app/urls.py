@@ -20,13 +20,17 @@ from app import settings
 
 from django.contrib import admin
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("app.swagger_docs")),
-    path("", include("interest.urls")),
-    path("", include("groups.urls")),
-    path("", include("sports.urls")),
-    path("", include("cities.urls")),
-    path("", include("clubs.urls")),
-    path("", include("teams.urls")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns = (
+    [
+        path("admin/", admin.site.urls),
+        path("", include("app.swagger_docs")),
+        path("", include("interest.urls")),
+        path("", include("groups.urls")),
+        path("", include("sports.urls")),
+        path("", include("cities.urls")),
+        path("", include("clubs.urls")),
+        path("", include("teams.urls")),
+    ]
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    + static(settings.MEDIA_URTL, document_root=settings.MEDIA_ROOT)
+)

@@ -19,6 +19,7 @@
       volumes:
       - .:/app
       - static_volume:/staticfiles
+      - media_volume:/mediafiles
       env_file:
         - app/.env
       build:
@@ -42,6 +43,7 @@
       volumes:
       - ./config/nginx/conf.d:/nginx.conf
       - static_volume:/staticfiles
+      - media_volume:/mediafiles
       depends_on:
       - web
       networks:
