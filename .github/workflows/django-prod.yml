@@ -1,19 +1,19 @@
 on:
-  pull_request:
+  push:
     branches:
-      - dev
+      - main
 
-name: Backend build, test and push to Azure
+name: Stable backend build, test and push to Azure
 
 jobs:
     build-and-deploy:
         env:
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          IMAGE_VERSION: ${{ github.actor }}
-          ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          DJANGO_SECRET_KEY: ${secrets.DJANGO_SECRET_KEY}
+          POSTGRES_USER: ${secrets.POSTGRES_USER}
+          POSTGRES_PASSWORD: ${secrets.POSTGRES_PASSWORD}
+          POSTGRES_DB: ${secrets.POSTGRES_DB}
+          IMAGE_VERSION: prod
+          ACR: ${secrets.REGISTRY_LOGIN_SERVER}
 
         runs-on: ubuntu-latest
         steps:

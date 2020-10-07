@@ -1,0 +1,70 @@
+  version: '3'
+
+  services:
+    postgres:
+      image: postgres:12
+      ports:
+        - "5432:5432"
+      environment:
+       POSTGRES_DB: ${POSTGRES_DB}
+       POSTGRES_USER: ${POSTGRES_USER}
+       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      networks:
+        - postgres_network
+    web:
+      image: ${ACR}/studentidrett-backend:${IMAGE_VERSION}
+      build:
+        context: .
+        dockerfile: config/django/Dockerfile
+      logging:
+        driver: "json-file"
+      environment:
+        DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_HOST: postgres
+        POSTGRES_PORT: 5432
+      networks:
+        - postgres_network
+        - nginx_network
+      volumes:
+        - .:/app
+        - static_volume:/staticfiles
+      expose:
+        - 8000
+      depends_on:
+        - postgres
+      command: bash -c "
+        black --check . --config pyproject.toml &&
+        isort --check-only . &&
+        flake8 &&
+        python manage.py makemigrations --check
+        "
+      # TODO: Add pytest when this is fixed
+
+    nginx:
+      image: ${ACR}/studentidrett-backend:nginx-${IMAGE_VERSION}
+      build:
+        context: ./config/nginx
+        dockerfile: Dockerfile
+      ports:
+      - 80:80
+      volumes:
+      - ./config/nginx/conf.d:/nginx.conf
+      - static_volume:/staticfiles
+      depends_on:
+      - web
+      networks:
+      - nginx_network
+
+  volumes:
+    postgres_data:
+    static_volume:
+    media_volume:
+
+  networks:
+    postgres_network:
+      driver: bridge
+    nginx_network:
+      driver: bridge

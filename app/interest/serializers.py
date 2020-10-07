@@ -5,9 +5,9 @@ from .models import Interest
 
 
 class CurrentCookieDefault(object):
-    """Because cookie_key is read_only in addition to being in a UniqueTogether-relationship,
-    it introduces a special case that can be fixed as suggested by:
-    https://stackoverflow.com/a/56061820
+    """Because cookie_key is read_only in addition to being
+    in a UniqueTogether-relationship,it introduces a special
+    case that can be fixed as suggested by:https://stackoverflow.com/a/56061820
     """
 
     def set_context(self, serializer_field):
