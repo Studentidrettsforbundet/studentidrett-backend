@@ -12,7 +12,7 @@
       networks:
         - postgres_network
     web:
-      image: acrkundestyrtnsi.azurecr.io/studentidrett-backend:${IMAGE_VERSION}
+      image: ${ACR}/studentidrett-backend:${IMAGE_VERSION}
       build:
         context: .
         dockerfile: config/django/Dockerfile
@@ -44,7 +44,7 @@
       # TODO: Add pytest when this is fixed
 
     nginx:
-      image: acrkundestyrtnsi.azurecr.io/studentidrett-backend:nginx-${IMAGE_VERSION}
+      image: ${ACR}/studentidrett-backend:nginx-${IMAGE_VERSION}
       build:
         context: ./config/nginx
         dockerfile: Dockerfile

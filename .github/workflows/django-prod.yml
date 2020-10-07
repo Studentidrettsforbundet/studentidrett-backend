@@ -13,6 +13,8 @@ jobs:
           POSTGRES_PASSWORD: ${secrets.POSTGRES_PASSWORD}
           POSTGRES_DB: ${secrets.POSTGRES_DB}
           IMAGE_VERSION: prod
+          ACR: ${secrets.REGISTRY_LOGIN_SERVER}
+
         runs-on: ubuntu-latest
         steps:
         - name: 'Checkout GitHub Action'

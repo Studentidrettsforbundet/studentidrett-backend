@@ -28,8 +28,6 @@ done
 echo "Starting SSH ..."
 service ssh start
 
-python manage.py makemigrations
-
 python manage.py migrate
 
 python manage.py collectstatic --noinput --clear
