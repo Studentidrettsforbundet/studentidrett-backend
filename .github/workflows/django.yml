@@ -8,12 +8,12 @@ name: Backend build, test and push to Azure
 jobs:
     build-and-deploy:
         env:
-          DJANGO_SECRET_KEY: ${secrets.DJANGO_SECRET_KEY}
-          POSTGRES_USER: ${secrets.POSTGRES_USER}
-          POSTGRES_PASSWORD: ${secrets.POSTGRES_PASSWORD}
-          POSTGRES_DB: ${secrets.POSTGRES_DB}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           IMAGE_VERSION: ${{ github.actor }}
-          ACR: ${secrets.REGISTRY_LOGIN_SERVER}
+          ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
 
         runs-on: ubuntu-latest
         steps:
@@ -27,6 +27,7 @@ jobs:
 
         - name: 'Build image'
           run: |
+            dockerd
             docker-compose -f docker-compose.prod.yml build
 
         - name: 'Run tests and linting'
