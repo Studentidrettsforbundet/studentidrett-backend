@@ -27,7 +27,6 @@ jobs:
 
         - name: 'Build image'
           run: |
-            dockerd
             docker-compose -f docker-compose.prod.yml build
 
         - name: 'Run tests and linting'
