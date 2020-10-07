@@ -71,7 +71,7 @@ class TestCityApi(TestCase):
         request = self.factory.get("cities", {"region": "fest"})
         response = get_response(request)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_query_param_no_cities_in_region(self):
         request = self.factory.get("cities", {"region": "nord"})
