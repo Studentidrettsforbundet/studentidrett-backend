@@ -2,7 +2,7 @@
 
   services:
     postgres:
-      image: postgres:latest
+      image: postgres:12
       ports:
         - "5432:5432"
       environment:
@@ -12,7 +12,7 @@
       networks:
         - postgres_network
     web:
-      image: acrkundestyrtnsi.azurecr.io/studentidrett-backend:${IMAGE_VERSION}
+      image: ${ACR}/studentidrett-backend:${IMAGE_VERSION}
       build:
         context: .
         dockerfile: config/django/Dockerfile
@@ -27,8 +27,12 @@
         POSTGRES_PORT: 5432
       networks:
         - postgres_network
-      ports:
-        - "80:8000"
+        - nginx_network
+      volumes:
+        - .:/app
+        - static_volume:/staticfiles
+      expose:
+        - 8000
       depends_on:
         - postgres
       command: bash -c "
@@ -38,6 +42,29 @@
         python manage.py makemigrations --check
         "
       # TODO: Add pytest when this is fixed
+
+    nginx:
+      image: ${ACR}/studentidrett-backend:nginx-${IMAGE_VERSION}
+      build:
+        context: ./config/nginx
+        dockerfile: Dockerfile
+      ports:
+      - 80:80
+      volumes:
+      - ./config/nginx/conf.d:/nginx.conf
+      - static_volume:/staticfiles
+      depends_on:
+      - web
+      networks:
+      - nginx_network
+
+  volumes:
+    postgres_data:
+    static_volume:
+    media_volume:
+
   networks:
     postgres_network:
+      driver: bridge
+    nginx_network:
       driver: bridge

@@ -13,6 +13,8 @@ jobs:
           POSTGRES_PASSWORD: ${secrets.POSTGRES_PASSWORD}
           POSTGRES_DB: ${secrets.POSTGRES_DB}
           IMAGE_VERSION: prod
+          ACR: ${secrets.REGISTRY_LOGIN_SERVER}
+
         runs-on: ubuntu-latest
         steps:
         - name: 'Checkout GitHub Action'
@@ -39,19 +41,6 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
             docker-compose -f docker-compose.prod.yml push
-
-        - uses: azure/appservice-settings@v1
-          with:
-            app-name: kundestyrt-nsi-dev-backend
-            app-settings-json: '${{ secrets.APP_SETTINGS }}'
-            general-settings-json: '{"alwaysOn": "false", "webSocketsEnabled": "true"}'
-
-        - name: Deploy web App using GH Action azure/webapps-deploy
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: kundestyrt-nsi-dev-backend
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-            images: acrkundestyrtnsi.azurecr.io/studentidrett-backend:${{ env.IMAGE_VERSION }}
 
         - name: Azure logout
           run: |
