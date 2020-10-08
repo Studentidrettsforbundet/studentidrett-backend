@@ -1,9 +1,9 @@
 on:
-  pull_request:
+  push:
     branches:
-      - dev
+      - main
 
-name: Backend build, test and push to Azure
+name: Stable backend build, test and push to Azure
 
 jobs:
     build-and-deploy:
@@ -12,7 +12,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          IMAGE_VERSION: ${{ github.actor }}
+          IMAGE_VERSION: prod
           ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
 
         runs-on: ubuntu-latest

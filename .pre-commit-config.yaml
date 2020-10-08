@@ -16,11 +16,13 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
+        exclude: migrations/
         name: black - Automatically format code
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.8.4
     hooks:
       - id: flake8
+        exclude: migrations/
         name: flake8 - Lint [PEP8] for manual review
   - repo: https://github.com/PyCQA/bandit
     rev: 1.6.2

@@ -20,5 +20,8 @@ class Group(models.Model):
     )
     contact_email = models.EmailField(max_length=40, null=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         ordering = ["name"]
