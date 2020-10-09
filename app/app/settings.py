@@ -47,14 +47,21 @@ INSTALLED_APPS = [
     "drf_yasg",
     "django_nose",
     # Local
-    "clubs.apps.ClubsConfig",
-    "cities.apps.CitiesConfig",
-    "interest.apps.InterestConfig",
-    "groups.apps.GroupsConfig",
-    "sports.apps.SportsConfig",
-    "teams.apps.TeamsConfig",
+    'clubs.apps.ClubsConfig',
+    'cities.apps.CitiesConfig',
+    'interest.apps.InterestConfig',
+    'groups.apps.GroupsConfig',
+    'sports.apps.SportsConfig',
+    'teams.apps.TeamsConfig',
+    'search',
+    'django_elasticsearch_dsl'
 ]
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
 # Use nose to run all tests
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 

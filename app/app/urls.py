@@ -20,6 +20,9 @@ from app import settings
 
 from django.contrib import admin
 
+import search.views as search_views
+
+<<<<<<< HEAD
 urlpatterns = (
     [
         path("admin/", admin.site.urls),
@@ -30,6 +33,7 @@ urlpatterns = (
         path("", include("cities.urls")),
         path("", include("clubs.urls")),
         path("", include("teams.urls")),
+        path(r'search/', search_views.global_search, name='global_search')
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
