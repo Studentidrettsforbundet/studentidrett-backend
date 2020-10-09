@@ -8,7 +8,8 @@ def global_search(request):
     q = request.GET.get('q')
 
     q_list = q.split("/") # If query is clubs/ntnui
-    print(q_list)
+
+
     if len(q_list)!=1:
         response_list = specified_search(q_list[0], q_list[1])
 
