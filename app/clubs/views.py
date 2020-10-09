@@ -1,6 +1,7 @@
+from rest_framework import viewsets
+
 from cities.models import City
 from clubs.permissions import GetClubPermission
-from rest_framework import viewsets
 
 from .models import Club
 from .serializers import ClubSerializer
