@@ -13,6 +13,29 @@ from sports.models import Sport
 from django.contrib.auth.models import User
 
 
+def get_response(request, user=None, group_id=None):
+    """
+    Converts a request to a response.
+    :param request: the desired HTTP-request.
+    :param user: the user performing the request. None represents an anonymous user
+    :param group_id: the desired group. None represents all groups.
+    :return: the HTTP-response from Django.
+    """
+
+    force_authenticate(request, user=user)
+
+    if group_id:
+        view = GroupViewSet.as_view(
+            {"get": "retrieve", "put": "update", "delete": "destroy"}
+        )
+        return view(request, pk=group_id)
+    else:
+        view = GroupViewSet.as_view(
+            {"get": "list", "put": "update", "delete": "destroy", "post": "create"}
+        )
+        return view(request)
+
+
 class GroupsModelTest(TestCase):
     def setUp(self):
         self.club = Club.objects.create(name="TestClub")
@@ -63,23 +86,12 @@ class GroupsModelTest(TestCase):
 
 class GroupViewTest(TestCase):
     def setUp(self):
-        club = Club.objects.create(name="TestClub")
-        club.save()
-        sport = Sport.objects.create(name="TestSport")
-        sport.save()
-        city = City.objects.create(name="TestCity")
-        city.save()
-        user = User.objects.create_superuser(
+        self.club = Club.objects.create(name="TestClub")
+        self.sport = Sport.objects.create(name="TestSport")
+        self.city = City.objects.create(name="TestCity")
+        self.user = User.objects.create_superuser(
             username="testuser", email="testuser@test.com", password="testing"
         )
-        user.save()
-
-        self.factory = APIRequestFactory()
-        self.club = club
-        self.sport = sport
-        self.city = city
-        self.user = user
-
         self.group = Group.objects.create(
             name="Group1",
             description="This is a description",
@@ -87,35 +99,21 @@ class GroupViewTest(TestCase):
             club=self.club,
             city=self.city,
         )
-        self.group.sports.add(self.sport)
-        self.group.save()
-        self.serialized_group = GroupSerializer(self.group)
-        self.post_view = GroupViewSet.as_view({"post": "create"})
-        self.get_list_view = GroupViewSet.as_view({"get": "list"})
-        self.get_detail_view = GroupViewSet.as_view({"get": "retrieve"})
-
-    def test_post_groups(self):
-        request = self.factory.post(
-            "/groups/",
-            {
-                "name": "Group2",
-                "description": "This is a description",
-                "cover_photo": None,
-                "sports": [self.sport.id],
-                "club": self.club.id,
-                "city": self.city.id,
-            },
-            format="json",
+        Group.objects.create(
+            name="Group2",
+            description="This is also a description",
+            cover_photo=None,
+            club=self.club,
+            city=self.city,
         )
-        force_authenticate(request, self.user)
-        response = self.post_view(request)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.group.sports.add(self.sport)
+        self.groups = Group.objects.all()
+        self.factory = APIRequestFactory()
 
     def test_group_contains_expected_fields(self):
         request = self.factory.get("/groups/")
         force_authenticate(request, self.user)
-        response = self.get_detail_view(request, pk=self.group.pk)
+        response = get_response(request, group_id=self.group.pk)
 
         self.assertEqual(
             response.data.keys(),
@@ -134,56 +132,45 @@ class GroupViewTest(TestCase):
 
     def test_group_detail(self):
         request = self.factory.get("/groups/")
-        force_authenticate(request, self.user)
-        response = self.get_detail_view(request, pk=self.group.pk)
+        response = get_response(request, group_id=self.group.pk)
 
-        self.assertEqual(response.data, self.serialized_group.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, GroupSerializer(self.group).data)
 
     def test_group_list(self):
         request = self.factory.get("/groups/")
-        force_authenticate(request, self.user)
-        response = self.get_list_view(request)
+        response = get_response(request)
 
-        groups = Group.objects.all()
-        serializer = GroupSerializer(groups, many=True)
-
-        # Check pagination
-        self.assertEqual(response.data.keys(), {"count", "next", "previous", "results"})
-        # Check if object in response correlates with objects in database
-        self.assertEqual(response.data.get("results"), serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_create_new_group(self):
-        group = Group.objects.create(
-            name="Group3",
-            description="This is a description",
-            cover_photo=None,
-            club=self.club,
-            city=self.city,
+        self.assertEqual(response.data.keys(), {"count", "next", "previous", "results"})
+        self.assertEqual(len(response.data.get("results")), len(self.groups))
+        self.assertEqual(
+            response.data.get("results"), GroupSerializer(self.groups, many=True).data
         )
-        group.sports.add(self.sport)
-        group.save()
-        serializer = GroupSerializer(group)
-        request = self.factory.post("/groups/", serializer.data, format="json")
-
-        force_authenticate(request, self.user)
-        response = self.post_view(request)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(Group.objects.filter(name="Group3").exists())
 
     def test_get_nonexistent_group(self):
         request = self.factory.get("/groups/")
-        force_authenticate(request, self.user)
-        response = self.get_detail_view(request, pk=69)
+        response = get_response(request, group_id="99")
+
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_get_groups_auth(self):
-        request = self.factory.get("/groups/")
-        response = self.get_list_view(request)
+    def test_post_group(self):
+        request = self.factory.post(
+            "/groups/",
+            {
+                "name": "Group2",
+                "description": "This is a description",
+                "cover_photo": None,
+                "sports": [self.sport.id],
+                "club": self.club.id,
+                "city": self.city.id,
+            },
+            format="json",
+        )
+        response = get_response(request, user=self.user)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Group.objects.filter(name="Group2").exists())
 
     def test_post_group_auth(self):
         request = self.factory.post(
@@ -198,5 +185,7 @@ class GroupViewTest(TestCase):
             },
             format="json",
         )
-        response = self.post_view(request)
+        response = get_response(request)
+
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(Group.objects.filter(name="Group4").exists())

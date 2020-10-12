@@ -34,7 +34,7 @@
         - nginx_network
 
     nginx:
-      image: nginx:1.13
+      image: nginx:latest
       build:
         context: ./config/nginx
         dockerfile: Dockerfile

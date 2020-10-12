@@ -11,11 +11,12 @@ from django.utils import timezone
 
 
 class Team(models.Model):
-    name = models.CharField(max_length=63, null=False)
+    name = models.CharField(max_length=50, null=False)
     location = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
-    description = models.CharField(max_length=1023, null=True)
+    long_description = models.CharField(max_length=255, null=True)
+    short_description = models.CharField(max_length=30, null=True)
     cost = models.CharField(max_length=511, null=True)
     equipment = models.CharField(max_length=511, null=True)
     gender = models.CharField(max_length=2, choices=Gender.choices, default=Gender.ANY)

@@ -20,6 +20,7 @@
         driver: "json-file"
       environment:
         DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+        ENV_NAME: ${ENV_NAME}
         POSTGRES_DB: ${POSTGRES_DB}
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
