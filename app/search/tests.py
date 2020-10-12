@@ -68,3 +68,24 @@ class TestClubsApi(APITestCase):
         self.assertEqual(len(content), 3)
         self.assertEqual(content[:2], ClubSerializer(self.clubs).data)
         self.assertEqual(content[3], CitySerializer(self.city).data)
+
+    def test_no_results_unspecific(self):
+        response = self.get_response("NothingShouldBeReturnedWhenSearchingForThis")
+        content = loads(response.content)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(content), 0)
+
+    def test_no_results_specific(self):
+        response = self.get_response(
+            "clubs/NothingShouldBeReturnedWhenSearchingForThis"
+        )
+        content = loads(response.content)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(content), 0)
+
+    def test_invalid_specific_search(self):
+        response = self.get_response("NothingToLookFor/TestNavn")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
