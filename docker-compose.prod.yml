@@ -28,6 +28,7 @@
       networks:
         - postgres_network
         - nginx_network
+        - elastic_network
       volumes:
         - .:/app
         - static_volume:/staticfiles
@@ -35,6 +36,7 @@
         - 8000
       depends_on:
         - postgres
+        - elastic_network
       command: bash -c "
         black --check . --config pyproject.toml &&
         isort --check-only . &&
@@ -42,6 +44,28 @@
         python manage.py makemigrations --check
         "
       # TODO: Add pytest when this is fixed
+
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+      container_name: elasticsearch
+      environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+        nofile:
+          soft: 65536
+          hard: 65536
+      cap_add:
+      - IPC_LOCK
+      volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+      networks:
+      - elastic_network
+      ports:
+      - 9200:9200
 
     nginx:
       image: ${ACR}/studentidrett-backend:nginx-${IMAGE_VERSION}
@@ -62,9 +86,12 @@
     postgres_data:
     static_volume:
     media_volume:
+    elasticsearch-data:
 
   networks:
     postgres_network:
       driver: bridge
     nginx_network:
+      driver: bridge
+    elastic_network:
       driver: bridge

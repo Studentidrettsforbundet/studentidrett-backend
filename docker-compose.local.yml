@@ -30,11 +30,10 @@
         - IPC_LOCK
       volumes:
         - elasticsearch-data:/usr/share/elasticsearch/data
+      networks:
+        - elastic_network
       ports:
         - 9200:9200
-        - 9300:9300
-
-
     web:
       container_name: nsi_backend
       volumes:
@@ -54,6 +53,7 @@
       networks:
         - postgres_network
         - nginx_network
+        - elastic_network
 
     nginx:
       image: nginx:latest
@@ -74,6 +74,8 @@
     postgres_network:
       driver: bridge
     nginx_network:
+      driver: bridge
+    elastic_network:
       driver: bridge
   volumes:
     postgres_data:
