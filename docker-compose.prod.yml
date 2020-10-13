@@ -37,7 +37,7 @@
         - 8000
       depends_on:
         - postgres
-        - elastic_network
+        - elasticsearch
       command: bash -c "
         black --check . --config pyproject.toml &&
         isort --check-only . &&
