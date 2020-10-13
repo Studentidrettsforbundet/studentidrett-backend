@@ -13,6 +13,27 @@
       - postgres_data:/var/lib/postgresql/data
       networks:
         - postgres_network
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+      container_name: elasticsearch
+      environment:
+        - xpack.security.enabled=false
+        - discovery.type=single-node
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+        nofile:
+          soft: 65536
+          hard: 65536
+      cap_add:
+        - IPC_LOCK
+      volumes:
+        - elasticsearch-data:/usr/share/elasticsearch/data
+      ports:
+        - 9200:9200
+        - 9300:9300
+
 
     web:
       container_name: nsi_backend
@@ -27,6 +48,7 @@
         dockerfile: config/django/Dockerfile
       depends_on:
         - postgres
+        - elasticsearch
       expose:
         - 8000
       networks:
@@ -34,7 +56,7 @@
         - nginx_network
 
     nginx:
-      image: nginx:1.13
+      image: nginx:latest
       build:
         context: ./config/nginx
         dockerfile: Dockerfile
@@ -57,3 +79,5 @@
     postgres_data:
     static_volume:
     media_volume:
+    elasticsearch-data:
+      driver: local

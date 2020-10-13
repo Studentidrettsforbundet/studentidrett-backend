@@ -22,7 +22,6 @@ from django.contrib import admin
 
 import search.views as search_views
 
-<<<<<<< HEAD
 urlpatterns = (
     [
         path("admin/", admin.site.urls),
