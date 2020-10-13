@@ -11,6 +11,7 @@ For the system to run corretly it requires a set of environment variables:
 ```
 # Django
 DJANGO_SECRET_KEY= [INSERT_KEY]
+ENV_NAME= ['local' (default), 'staging', 'production']
 
 # Postgres
 POSTGRES_DB=[DATABASE_NAME]
@@ -34,7 +35,8 @@ with the app running.
 
 Dependencies are stored in `requirements.txt`, and is installed by running `pip install -r requirements.txt`.
 
-After adding a new dependency, run `pip freeze > requirements.txt` to update.
+After adding a new dependency, add it to `requirements.txt` in the proper subsection.
+Running `pip freeze > requirements.txt` to update the dependency list will add many unnecessary packages and should not be used.
 
 # Git-conventions
 
@@ -44,6 +46,8 @@ To enable run `pre-commit install` once, and then `pre-commit autoupdate`.
 
 The pre-commit hooks will then run before every commit, and check the files changed.
 To run on all files, run `pre-commit run --all-files`
+
+When the pre-commit hooks automatically run and any of them fail, the attempted committed files need to be re-added and committed again.
 
 Branches:
 

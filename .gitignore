@@ -120,6 +120,7 @@ GitHub.sublime-settings
 
 # Test coverage
 cover/
+coverage_report/
 
 # Static files
 static/

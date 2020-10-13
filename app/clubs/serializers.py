@@ -12,6 +12,6 @@ class ClubSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "contact_email",
-            "pricing",
+            "membership_fee",
             "register_info",
         ]
