@@ -47,12 +47,12 @@
       # TODO: Add pytest when this is fixed
 
     elasticsearch:
-      image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+      image: ${ACR}/studentidrett-backend:elastic-${IMAGE_VERSION}
       environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
       - discovery.seed_hosts=[]
-      - vm.max_map_count=262144
+      - ES_JAVA_OPTS='-Xms256m -Xmx256m'
       ulimits:
         memlock:
           soft: -1
@@ -68,6 +68,8 @@
       - elastic_network
       ports:
       - 9200:9200
+      command:
+      - "sysctl -w vm.max_map_count=262144"
 
     nginx:
       image: ${ACR}/studentidrett-backend:nginx-${IMAGE_VERSION}

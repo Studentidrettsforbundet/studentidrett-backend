@@ -14,8 +14,10 @@
       networks:
         - postgres_network
     elasticsearch:
-      image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
-      container_name: elasticsearch
+      image: elasticsearch
+      build:
+        context: .
+        dockerfile: config/elasticsearch/Dockerfile
       environment:
         - xpack.security.enabled=false
         - discovery.type=single-node
