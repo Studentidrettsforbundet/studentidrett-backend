@@ -53,6 +53,9 @@
       - discovery.type=single-node
       - discovery.seed_hosts=[]
       - ES_JAVA_OPTS='-Xms256m -Xmx256m'
+      build:
+        context: ./config/elasticsearch
+        dockerfile: Dockerfile
       ulimits:
         memlock:
           soft: -1
