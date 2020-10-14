@@ -71,8 +71,6 @@
       - elastic_network
       ports:
       - 9200:9200
-      command:
-      - "sysctl -w vm.max_map_count=262144"
 
     nginx:
       image: ${ACR}/studentidrett-backend:nginx-${IMAGE_VERSION}
