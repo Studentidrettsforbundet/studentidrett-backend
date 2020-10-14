@@ -52,13 +52,15 @@
       environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
+      - discovery.seed_hosts=[]
+      - vm.max_map_count = 262144
       ulimits:
         memlock:
           soft: -1
           hard: -1
         nofile:
-          soft: 65536
-          hard: 65536
+          soft: 262144
+          hard: 262144
       cap_add:
       - IPC_LOCK
       volumes:
