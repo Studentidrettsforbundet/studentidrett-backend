@@ -50,7 +50,7 @@ python manage.py migrate
 
 python manage.py collectstatic --noinput --clear
 
-python manage.py search_index --rebuild -f
+# python manage.py search_index --rebuild -f
 
 chmod -R u=rwX,g=rwX,o=rX /staticfiles/
 
