@@ -62,13 +62,16 @@ def specified_search(index, q):
 
 def map_response_item(item):
     if item.meta.index == "cities":
-        return {"name": item.name, "region": item.region}
+        return {
+            "name": item.name,
+            "region": item.region
+        }
     elif item.meta.index == "clubs":
         return {
             "name": item.name,
             "description": item.description,
             "contact_email": item.contact_email,
-            "pricing": item.pricing,
+            "membership_fee": item.membership_fee,
             "register_info": item.register_info,
         }
     elif item.meta.index == "groups":
@@ -79,6 +82,8 @@ def map_response_item(item):
             "contact_email": item.contact_email,
         }
     elif item.meta.index == "sports":
-        return {"name": item.name}
+        return {
+            "name": item.name
+        }
     else:
         return
