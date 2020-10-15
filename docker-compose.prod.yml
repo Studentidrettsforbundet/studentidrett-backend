@@ -52,16 +52,10 @@
       - xpack.security.enabled=false
       - discovery.type=single-node
       - discovery.seed_hosts=[]
+      - es.enforce.bootstrap.checks=false
       build:
         context: ./config/elasticsearch
         dockerfile: Dockerfile
-      ulimits:
-        memlock:
-          soft: -1
-          hard: -1
-        nofile:
-          soft: 262144
-          hard: 262144
       cap_add:
       - IPC_LOCK
       volumes:
