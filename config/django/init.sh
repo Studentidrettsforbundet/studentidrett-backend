@@ -43,9 +43,6 @@ done
 # Start app
 >&2 echo "Postgres and Elastic search is up - executing command"
 
-echo "Starting SSH ..."
-service ssh start
-
 python manage.py migrate
 
 python manage.py collectstatic --noinput --clear

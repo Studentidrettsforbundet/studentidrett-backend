@@ -33,8 +33,6 @@
       volumes:
         - .:/app
         - static_volume:/staticfiles
-      expose:
-        - 8000
       depends_on:
         - postgres
         - elasticsearch

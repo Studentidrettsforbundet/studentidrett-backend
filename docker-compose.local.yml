@@ -50,8 +50,6 @@
       depends_on:
         - postgres
         - elasticsearch
-      expose:
-        - 8000
       networks:
         - postgres_network
         - nginx_network
