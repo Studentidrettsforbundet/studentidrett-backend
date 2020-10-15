@@ -58,9 +58,9 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
-"""ELASTICSEARCH_DSL = {
+ELASTICSEARCH_DSL = {
     "default": {"hosts": "elasticsearch"},
-}"""
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
