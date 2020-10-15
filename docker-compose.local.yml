@@ -16,11 +16,12 @@
     elasticsearch:
       image: elasticsearch
       build:
-        context: .
-        dockerfile: config/elasticsearch/Dockerfile
+        context: ./config/elasticsearch
+        dockerfile: Dockerfile
       environment:
-        - xpack.security.enabled=false
-        - discovery.type=single-node
+        discovery.type: single-node
+        ES_JAVA_OPTS: -Xms512m -Xmx512m
+        discovery.zen.minimum_master_nodes: 1
       ulimits:
         memlock:
           soft: -1
