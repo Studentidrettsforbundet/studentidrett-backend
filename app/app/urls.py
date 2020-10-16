@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.urls import include, path
 
+import search.views as search_views
 from app import settings
 
 from django.contrib import admin
@@ -30,6 +31,7 @@ urlpatterns = (
         path("", include("cities.urls")),
         path("", include("clubs.urls")),
         path("", include("teams.urls")),
+        path(r"search/", search_views.global_search, name="global_search"),
         path("", include("questionnaire.urls")),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
