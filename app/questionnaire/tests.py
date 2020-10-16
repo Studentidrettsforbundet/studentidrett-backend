@@ -13,6 +13,8 @@ class TestQuestionnaireAPI(APITestCase):
         self.qid1 = "1"
         self.answer1 = 3
 
+        self.post_view = QuestionnaireViewSet.as_view({"post": "create"})
+
         self.factory = APIRequestFactory()
 
     def test_post_questionnaire(self):
@@ -21,5 +23,5 @@ class TestQuestionnaireAPI(APITestCase):
         )
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data.keys(), {"qid", "answer", "created"})
+        self.assertEqual(response.data.keys(), {"qid", "answer"})
 
