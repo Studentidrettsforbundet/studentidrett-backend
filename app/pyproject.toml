@@ -1,0 +1,60 @@
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | migrations
+    | media
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+
+[tool.isort]
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+default_section = "THIRDPARTY"
+known_first_party = ['app', 'cities', 'clubs', 'groups', 'interest', 'sports', 'teams']
+known_django = ['django']
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+forced_separate = [
+    "django.contrib",
+    "django.util"
+    ]
+skip = [
+    "__init__.py",
+    "migrations",
+    "venv"
+    ]
+
+[tool.coverage]
+[tool.coverage.run]
+
+# files to omit from coverage
+omit = [
+    "*/__init__.py",
+    "*/apps.py",
+    "*/factories/*",
+    "*/migrations/*",
+    "*/settings/*",
+    "*/tests/*",
+    "*/urls.py",
+    "*wsgi.py",
+    "manage.py",
+]

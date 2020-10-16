@@ -13,16 +13,26 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+from django.conf.urls.static import static
+from django.urls import include, path
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('interest.urls')),
-    path('', include('app.swagger_docs')),
-    path('', include('groups.urls')),
-    path('', include('sports.urls')),
-    path('', include('cities.urls')),
-    path('', include('clubs.urls')),
-    path('', include('teams.urls'))
-]
+import search.views as search_views
+from app import settings
+
+from django.contrib import admin
+
+urlpatterns = (
+    [
+        path("admin/", admin.site.urls),
+        path("", include("app.swagger_docs")),
+        path("", include("interest.urls")),
+        path("", include("groups.urls")),
+        path("", include("sports.urls")),
+        path("", include("cities.urls")),
+        path("", include("clubs.urls")),
+        path("", include("teams.urls")),
+        path(r"search/", search_views.global_search, name="global_search"),
+    ]
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+)

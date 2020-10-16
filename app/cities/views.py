@@ -1,10 +1,9 @@
-from rest_framework import permissions, status
-from rest_framework import viewsets
-from rest_framework.exceptions import ParseError
+from rest_framework import permissions, status, viewsets
+from rest_framework.exceptions import NotFound
 
+from app.enums import Region
 from cities.models import City
 from cities.serializers import CitySerializer
-from app.enums import Region
 
 # Create your views here.
 
@@ -16,10 +15,15 @@ class CityViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-        region = self.request.query_params.get('region', None)
+        region = self.request.query_params.get("region", None)
         if region is not None:
             if region not in Region.values:
-                raise ParseError(detail='Invalid region name. Only permitted names are: [nord, midt, vest, sør, øst]', code=status.HTTP_400_BAD_REQUEST)
+                raise NotFound(
+                    detail="Invalid region name. Only permitted names are: ["
+                    + ", ".join(Region.values)
+                    + "]",
+                    code=status.HTTP_404_NOT_FOUND,
+                )
             else:
                 queryset = queryset.filter(region=region)
         return queryset

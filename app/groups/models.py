@@ -1,19 +1,27 @@
 from django.db import models
-from sports.models import Sport
-from clubs.models import Club
+
 from cities.models import City
+from clubs.models import Club
+from sports.models import Sport
 
 # Create your models here.
 
 
 class Group(models.Model):
-    name = models.CharField(max_length=30, blank=False, default='Group')
+    name = models.CharField(max_length=40, blank=False, null=False, default="Group")
     description = models.TextField(max_length=500, null=True)
-    cover_photo = models.ImageField(upload_to='groups', null=True)
+    cover_photo = models.ImageField(upload_to="groups", null=True)
     sports = models.ManyToManyField(Sport)
-    club = models.ForeignKey(Club, on_delete=models.SET_NULL, null=True, related_name="groups") #TODO on_delete=models.CASCADE,
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, related_name="groups")#TODO on_delete=models.CASCADE,
+    club = models.ForeignKey(
+        Club, on_delete=models.CASCADE, null=True, related_name="groups"
+    )
+    city = models.ForeignKey(
+        City, on_delete=models.CASCADE, null=True, related_name="groups"
+    )
+    contact_email = models.EmailField(max_length=40, null=True)
 
+    def __str__(self):
+        return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]

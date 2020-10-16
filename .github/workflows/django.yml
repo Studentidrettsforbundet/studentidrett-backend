@@ -1,43 +1,47 @@
-name: Django Tests
+on:
+  pull_request:
+    branches:
+      - dev
 
-on: [push]
+name: Backend build, test and push to Azure
 
 jobs:
-  build:
-
-    env:
-      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.7]
-
-    services:
-      db:
-        image: postgres
+    build-and-deploy:
         env:
-          POSTGRES_DB: github-actions
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-        - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          IMAGE_VERSION: ${{ github.actor }}
+          ACR: ${{ secrets.REGISTRY_LOGIN_SERVER }}
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r app/requirements.txt
-    - name: Run migrations
-      run: python app/manage.py migrate
-    - name: Run Tests
-      run: |
-        cd app
-        python manage.py test
+        runs-on: ubuntu-latest
+        steps:
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@master
+
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        - name: 'Build image'
+          run: |
+            docker-compose -f docker-compose.prod.yml build
+
+        - name: 'Run tests and linting'
+          run: |
+            docker-compose -f docker-compose.prod.yml up --abort-on-container-exit
+
+        - name: 'Push image to ACR'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+        - run: |
+            docker-compose -f docker-compose.prod.yml push
+
+        - name: Azure logout
+          run: |
+            az logout
