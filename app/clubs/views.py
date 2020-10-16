@@ -5,8 +5,11 @@ from cities.models import City
 from .models import Club
 from .serializers import ClubSerializer
 
+# from clubs.permissions import GetClubPermission
+
 
 class ClubViewSet(viewsets.ModelViewSet):
+    # permission_classes = [GetClubPermission]
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
 
@@ -15,7 +18,7 @@ class ClubViewSet(viewsets.ModelViewSet):
         city_name = self.request.query_params.get("city", None)
         if city_name is not None:
             city = City.objects.filter(name=city_name)
-            if city.count() == 0:
+            if not city.count():
                 queryset = Club.objects.none()
             elif city.count() == 1:
                 queryset = queryset.filter(city=city[0].id)

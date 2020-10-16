@@ -6,7 +6,7 @@ from app.enums import Region
 
 
 class City(models.Model):
-    name = models.CharField(max_length=31, null=False)
+    name = models.CharField(max_length=32, null=False)
     region = models.CharField(max_length=4, null=False, choices=Region.choices)
 
     def __str__(self):

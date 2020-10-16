@@ -1,6 +1,26 @@
 [tool.black]
 line-length = 88
 include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | migrations
+    | media
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
 
 [tool.isort]
 line_length = 88
@@ -19,5 +39,22 @@ forced_separate = [
     ]
 skip = [
     "__init__.py",
-    "migrations"
+    "migrations",
+    "venv"
     ]
+
+[tool.coverage]
+[tool.coverage.run]
+
+# files to omit from coverage
+omit = [
+    "*/__init__.py",
+    "*/apps.py",
+    "*/factories/*",
+    "*/migrations/*",
+    "*/settings/*",
+    "*/tests/*",
+    "*/urls.py",
+    "*wsgi.py",
+    "manage.py",
+]

@@ -1,0 +1,29 @@
+[coverage]
+[coverage:run]
+# whether to measure branch coverage in addition to statement coverage. The result only included in HTML and JSON reports
+branch = true
+
+# files to omit from coverage
+omit =
+    */__init__.py
+    */apps.py
+    */migrations/*
+    */settings/*
+    */urls.py
+    *wsgi.py
+    manage.py
+    */tests.py
+    */venv/*
+
+
+[coverage:report]
+# Show missing lines in the report
+show_missing = true
+
+# Exclude empty files from the report
+skip_empty = true
+
+
+[coverage:html]
+# where to store the html report
+directory = "coverage_report"
