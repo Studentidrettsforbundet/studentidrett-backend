@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
     "drf_yasg",
+    "django_elasticsearch_dsl",
 ]
 
 LOCAL_APPS = [
@@ -53,10 +54,13 @@ LOCAL_APPS = [
     "groups.apps.GroupsConfig",
     "sports.apps.SportsConfig",
     "teams.apps.TeamsConfig",
+    "search",
 ]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
-
+ELASTICSEARCH_DSL = {
+    "default": {"hosts": "elasticsearch"},
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -67,6 +71,13 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 ROOT_URLCONF = "app.urls"
