@@ -13,6 +13,7 @@
       - postgres_data:/var/lib/postgresql/data
       networks:
         - postgres_network
+
     elasticsearch:
       image: elasticsearch
       build:
@@ -35,6 +36,7 @@
         - elastic_network
       ports:
         - 9200:9200
+        
     web:
       container_name: nsi_backend
       volumes:

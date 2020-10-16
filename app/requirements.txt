@@ -30,4 +30,3 @@ python-dotenv==0.14.0
 
 # Elastic search
 django-elasticsearch-dsl==7.1.4
-
