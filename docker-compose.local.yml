@@ -19,9 +19,7 @@
         context: ./config/elasticsearch
         dockerfile: Dockerfile
       environment:
-        discovery.type: single-node
         ES_JAVA_OPTS: -Xms512m -Xmx512m
-        discovery.zen.minimum_master_nodes: 1
       ulimits:
         memlock:
           soft: -1

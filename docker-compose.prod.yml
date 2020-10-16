@@ -46,8 +46,6 @@
 
     elasticsearch:
       image: ${ACR}/studentidrett-backend:elastic-${IMAGE_VERSION}
-      environment:
-       discovery.type: single-node
       build:
         context: ./config/elasticsearch
         dockerfile: Dockerfile
