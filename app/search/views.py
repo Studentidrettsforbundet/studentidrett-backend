@@ -1,12 +1,11 @@
 from django.http import HttpResponse
 
-from elasticsearch_dsl import Q, Search
+from elasticsearch_dsl import Q, Search, utils
 from rest_framework.utils import json
 
 
 def global_search(request):
     q = request.GET.get("q")
-
     q_list = q.split("/")  # If query is clubs/ntnui
 
     if len(q_list) != 1:
@@ -32,7 +31,9 @@ def global_search(request):
                 response_list.append(map_response_item(item))
 
     return HttpResponse(
-        json.dumps(response_list), status=200, content_type="application/json"
+        json.dumps(response_list, default=obj_dict),
+        status=200,
+        content_type="application/json",
     )
 
 
@@ -62,23 +63,47 @@ def specified_search(index, q):
 
 def map_response_item(item):
     if item.meta.index == "cities":
-        return {"name": item.name, "region": item.region}
+        return {"id": item.id, "name": item.name, "region": item.region}
     elif item.meta.index == "clubs":
         return {
+            "id": item.id,
             "name": item.name,
             "description": item.description,
             "contact_email": item.contact_email,
-            "membership_fee": item.membership_fee,
+            "pricing": item.pricing,
             "register_info": item.register_info,
+            "city": item.city,
         }
     elif item.meta.index == "groups":
+        if not item.cover_photo:
+            item.cover_photo = None
         return {
+            "id": item.id,
             "name": item.name,
             "description": item.description,
             "cover_photo": item.cover_photo,
             "contact_email": item.contact_email,
+            "city": item.city,
+            "sports": item.sports,
+            "club": item.club,
         }
     elif item.meta.index == "sports":
-        return {"name": item.name}
+        return {"id": item.id, "name": item.name}
     else:
         return
+
+
+def obj_dict(obj):
+    """
+    :param obj: An elasticsearch AttrList or AttrDict
+    :return: A list or dictionary to match the model in django
+    """
+
+    if isinstance(obj, utils.AttrList):
+        values = []
+        for item in obj.__dict__["_l_"]:
+            values.append(item["id"])
+        return values
+    elif obj.__contains__("id"):
+        return obj.to_dict()["id"]
+    return None
