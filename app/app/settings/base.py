@@ -15,26 +15,22 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+from app.enums import EnvironmentOptions
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = None
 DEBUG = True
+PRODUCTION = False
+ENVIRONMENT = EnvironmentOptions.BASE
 
-ALLOWED_HOSTS = []
 
-# Application definition
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     # Django modules
     "django.contrib.admin",
     "django.contrib.auth",
@@ -42,36 +38,29 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # 3rd party
+]
+
+THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
-    "rest_framework_swagger",
     "drf_yasg",
-    "django_nose",
-    # Local
-    'clubs.apps.ClubsConfig',
-    'cities.apps.CitiesConfig',
-    'interest.apps.InterestConfig',
-    'groups.apps.GroupsConfig',
-    'sports.apps.SportsConfig',
-    'teams.apps.TeamsConfig',
-    'search',
-    'django_elasticsearch_dsl'
 ]
 
+LOCAL_APPS = [
+    "cities.apps.CitiesConfig",
+    "clubs.apps.ClubsConfig",
+    "interest.apps.InterestConfig",
+    "groups.apps.GroupsConfig",
+    "sports.apps.SportsConfig",
+    "teams.apps.TeamsConfig",
+    "search",
+    "django_elasticsearch_dsl",
+]
+
+INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'localhost:9200'
-    },
+    "default": {"hosts": "elasticsearch"},
 }
-# Use nose to run all tests
-TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
-
-# Tell nose to measure coverage on the 'foo' and 'bar' apps
-NOSE_ARGS = [
-    "--with-coverage",
-    "--cover-package=cities,clubs,groups,interest,sports,teams",
-]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -84,7 +73,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 ROOT_URLCONF = "app.urls"
+
 
 TEMPLATES = [
     {
@@ -102,50 +99,8 @@ TEMPLATES = [
     },
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
 
 # WSGI_APPLICATION = 'app.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-if os.getenv("GITHUB_WORKFLOW"):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "github-actions",
-            "USER": "postgres",
-            "PASSWORD": "postgres",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("DB_NAME"),
-            "USER": os.getenv("DB_USER"),
-            "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": os.getenv("DB_HOST"),
-            "PORT": os.getenv("DB_PORT"),
-        }
-    }
-
-# Add default pagination and json-format
-REST_FRAMEWORK = {
-    "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
-    "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
-}
 
 
 # Password validation
@@ -166,6 +121,47 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+""" DATABASE CONFIGURATION """
+if os.getenv("GITHUB_WORKFLOW"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "github-actions",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("POSTGRES_DB"),
+            "HOST": os.environ.get("POSTGRES_HOST"),
+            "USER": os.environ.get("POSTGRES_USER"),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        }
+    }
+
+
+# Add default pagination and json-format
+"""
+Currently disabled:
+"DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ],
+"""
+REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -183,3 +179,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+STATIC_ROOT = os.path.join(BASE_DIR, "/staticfiles/")
+STATICFILES_DIR = os.path.join(BASE_DIR, "/staticfiles/")
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "/mediafiles")
+MEDIAFILES_DIR = os.path.join(BASE_DIR, "/mediafiles")

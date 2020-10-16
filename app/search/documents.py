@@ -18,13 +18,12 @@ class ClubDocument(Document):
     class Django:
         model = Club
 
-        # Index on name, but including the other fields to include them in the resultbase
         fields = [
             "id",
             "name",
             "description",
             "contact_email",
-            "pricing",
+            "membership_fee",
             "register_info",
         ]
 
@@ -33,7 +32,6 @@ class ClubDocument(Document):
 class CityDocument(Document):
     class Django:
         model = City
-
         fields = ["id", "name", "region"]
 
 
@@ -45,7 +43,6 @@ class GroupDocument(Document):
 
     class Django:
         model = Group
-
         fields = ["id", "name", "description", "cover_photo", "contact_email"]
 
 
@@ -53,5 +50,4 @@ class GroupDocument(Document):
 class SportDocument(Document):
     class Django:
         model = Sport
-
         fields = ["id", "name"]
