@@ -70,7 +70,7 @@ def map_response_item(item):
             "name": item.name,
             "description": item.description,
             "contact_email": item.contact_email,
-            "pricing": item.pricing,
+            "membership_fee": item.membership_fee,
             "register_info": item.register_info,
             "city": item.city,
         }
