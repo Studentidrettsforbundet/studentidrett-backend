@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
+import pytest
 
 from cities.models import City
 from clubs.models import Club
@@ -32,6 +33,7 @@ def get_response(request, user=None, club_id=None):
         return view(request)
 
 
+@pytest.mark.django_db
 class TestClubsApi(APITestCase):
     def setUp(self):
 
@@ -62,6 +64,7 @@ class TestClubsApi(APITestCase):
         self.clubs = Club.objects.all()
         self.factory = APIRequestFactory()
 
+    @pytest.mark.django_db
     def test_club_detail(self):
         request = self.factory.get("/clubs/")
         response = get_response(request, club_id=self.club1.pk)
