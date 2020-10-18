@@ -32,7 +32,12 @@ def global_search(request):
 
     return HttpResponse(
         json.dumps(
-            {"count": 0, "next": None, "previous": None, "results": response_list},
+            {
+                "count": len(response_list),
+                "next": None,
+                "previous": None,
+                "results": response_list,
+            },
             default=obj_dict,
         ),
         status=200,
@@ -109,5 +114,4 @@ def obj_dict(obj):
         return values
     elif obj.__contains__("id"):
         return obj.to_dict()["id"]
-    print("øøøøøøøøøø", obj)
     return None
