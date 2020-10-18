@@ -51,15 +51,14 @@ class TestClubsApi(APITestCase):
         self.assertEqual(content.get("results"), [GroupSerializer(group).data])
 
     def test_specific_city_search(self):
-        city = City.objects.create(name="Searchable3", region="")
+        City.objects.create(id=42, name="Searchable3", region="")
         response = self.get_response("cities/Searchable")
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(content.get("results")), 1)
         self.assertEqual(
-            content.get("results"),
-            [CitySerializer(city).data],
+            content.get("results"), [{"id": 42, "name": "Searchable3", "region": ""}]
         )
 
     """
@@ -96,8 +95,3 @@ class TestClubsApi(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(content.get("results")), 0)
-
-    def test_invalid_search_query(self):
-        response = self.get_response("$€arching")
-
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
