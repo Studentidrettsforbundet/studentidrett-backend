@@ -31,7 +31,15 @@ def global_search(request):
                 response_list.append(map_response_item(item))
 
     return HttpResponse(
-        json.dumps(response_list, default=obj_dict),
+        json.dumps(
+            {
+                "count": len(response_list),
+                "next": None,
+                "previous": None,
+                "results": response_list,
+            },
+            default=obj_dict,
+        ),
         status=200,
         content_type="application/json",
     )
