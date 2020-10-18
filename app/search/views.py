@@ -109,5 +109,4 @@ def obj_dict(obj):
         return values
     elif obj.__contains__("id"):
         return obj.to_dict()["id"]
-    print("øøøøøøøøøø", obj)
     return None
