@@ -16,10 +16,10 @@ class SportSerializer(serializers.ModelSerializer):
         new_labels = validated_data.pop("labels")
         sport = Sport.objects.create(**validated_data)
         for label in new_labels:
-            existing_label = Label.objects.filter(text=label.text)
+            existing_label = Label.objects.filter(text=label.get("text"))
             if len(existing_label) == 1:
                 existing_label[0].sports.add(sport)
             else:
-                lab = Label.objects.create(text=label.text)
+                lab = Label.objects.create(text=label.get("text"))
                 lab.sports.add(sport)
         return sport
