@@ -24,5 +24,5 @@ class Alternative(models.Model):
 
 class Label(models.Model):
     text = models.CharField(max_length=25)
-    sports = models.ManyToManyField(Sport, related_name="Sports")
+    sports = models.ManyToManyField(Sport, related_name="labels")
     alternatives = models.ManyToManyField(Alternative, related_name="labels")
