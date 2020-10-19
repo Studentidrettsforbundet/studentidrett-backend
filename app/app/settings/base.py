@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
     "drf_yasg",
+    "django_elasticsearch_dsl",
 ]
 
 LOCAL_APPS = [
@@ -53,7 +54,8 @@ LOCAL_APPS = [
     "groups.apps.GroupsConfig",
     "sports.apps.SportsConfig",
     "teams.apps.TeamsConfig",
-    "questionnaire.apps.QuestionnaireConfig" "search",
+    "questionnaire.apps.QuestionnaireConfig",
+    "search",
 ]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS

@@ -1,9 +1,8 @@
-from rest_framework import status, viewsets, permissions
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
-from rest_framework.decorators import action
 
-from questionnaire.models import Question, Answer
-from questionnaire.serializers import QuestionSerializer, AnswerSerializer
+from questionnaire.models import Question
+from questionnaire.serializers import AnswerSerializer, QuestionSerializer
 
 
 class QuestionnaireViewSet(viewsets.ModelViewSet):
@@ -22,3 +21,9 @@ class QuestionnaireViewSet(viewsets.ModelViewSet):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    http_method_names = ["get", "post"]
