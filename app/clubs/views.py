@@ -14,6 +14,19 @@ class ClubViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         city_name = self.request.query_params.get("city", None)
+        sport_name = self.request.query_params.get("sport", None)
+
         if city_name is not None:
-            queryset = Club.objects.filter(city__name=city_name)
-        return queryset
+            city_queryset = Club.objects.filter(city__name=city_name)
+            queryset = queryset.intersection(city_queryset)
+
+        if sport_name is not None:
+            sport_queryset = Club.objects.none()
+            for club in queryset:
+                has_sport = club.groups.filter(sports__name=sport_name)
+                if has_sport:
+                    club = Club.objects.filter(pk=club.pk)
+                    sport_queryset = sport_queryset | club
+            queryset = queryset.intersection(sport_queryset)
+
+        return queryset.order_by("name")
