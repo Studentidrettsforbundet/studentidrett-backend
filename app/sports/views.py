@@ -14,7 +14,8 @@ class SportViewSet(viewsets.ModelViewSet):
     queryset = Sport.objects.all()
     permission_classes = [permissions.AllowAny]
 
-    def get_queryset(self):
+
+   """ def get_queryset(self):
         queryset = self.queryset
 
         # Get all groups that include this sport
@@ -23,15 +24,10 @@ class SportViewSet(viewsets.ModelViewSet):
 
         if groups_with_sport.exists():
             for group in groups_with_sport:
-                cities.append(group.get_queryset)
-            if not cities.count():
-                queryset = Sport.objects.none()
-            elif cities.count() == 1:
-                queryset = queryset.filter(city=cities[0].id)
-            else:
-                result = {}
-                for num in cities:
-                    result += queryset.filter(city=num)
-                queryset = result
+                # may add duplicates
+                city_names = group.get_queryset()
+            result = {}
+            if city_names is not None:
+                result += City.objects.filter(city__name=city_names)
 
-        return queryset
+        return queryset"""
