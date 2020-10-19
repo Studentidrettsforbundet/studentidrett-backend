@@ -113,7 +113,8 @@ class TestClubsApi(APITestCase):
 
     def test_query_param_sport(self):
         sport = Sport.objects.create(name="TestSport")
-        Group.objects.create(name="TestGroup", sport=sport, club=self.club1)
+        group = Group.objects.create(name="TestGroup", club=self.club1)
+        group.sports.add(sport)
         request = self.factory.get("/clubs/", {"sport": "TestSport"})
         response = get_response(request)
 
