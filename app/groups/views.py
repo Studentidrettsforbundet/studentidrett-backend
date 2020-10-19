@@ -1,11 +1,9 @@
 from rest_framework import viewsets
 
-from cities.models import City
 from groups.models import Group
 
 # from groups.permissions import GetGroupPermission
 from groups.serializers import GroupSerializer
-from sports.models import Sport
 
 # Create your views here.
 
@@ -19,26 +17,18 @@ class GroupViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         city_name = self.request.query_params.get("city", None)
         sport_name = self.request.query_params.get("sport", None)
+        club_name = self.request.query_params.get("club", None)
 
         if city_name is not None:
-            try:
-                city = City.objects.get(name=city_name)
-                sport_queryset = queryset.filter(city=city.id)
-            except City.DoesNotExist:
-                city_queryset = Group.objects.none()
+            city_queryset = Group.objects.filter(city__name=city_name)
+            queryset = queryset.intersection(city_queryset)
 
         if sport_name is not None:
-            try:
-                sport = Sport.objects.get(name=sport_name)
-                sport_queryset = queryset.filter(sport=sport.id)
-            except Sport.DoesNotExist:
-                sport_queryset = Group.objects.none()
+            sport_queryset = Group.objects.filter(sports__name=sport_name)
+            queryset = queryset.intersection(sport_queryset)
 
-        if city_name and sport_name:
-            return queryset.intersection(city_queryset, sport_queryset)
-        elif city_name:
-            return city_queryset
-        elif sport_name:
-            return sport_queryset
-        else:
-            return queryset
+        if club_name is not None:
+            club_queryset = Group.objects.filter(club__name=club_name)
+            queryset = queryset.intersection(club_queryset)
+
+        return queryset.order_by("name")
