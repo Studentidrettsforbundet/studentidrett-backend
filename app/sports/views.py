@@ -21,7 +21,7 @@ class SportViewSet(viewsets.ModelViewSet):
 
         city_name = self.request.query_params.get("city", None)
 
-        if city_name is not None:
+        if city_name:
             groups_in_city = Group.objects.filter(city__name=city_name)
 
             for group in groups_in_city:

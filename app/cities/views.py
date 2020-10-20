@@ -8,7 +8,8 @@ from cities.serializers import CitySerializer
 # Create your views here.
 
 
-class CityViewSet(viewsets.ReadOnlyModelViewSet):
+#class CityViewSet(viewsets.ReadOnlyModelViewSet):
+class CityViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     queryset = City.objects.all()
     serializer_class = CitySerializer

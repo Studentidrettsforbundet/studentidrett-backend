@@ -59,7 +59,7 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 ELASTICSEARCH_DSL = {
-    "default": {"hosts": "elasticsearch"},
+    "default": {"hosts": "localhost:9200"},
 }
 
 MIDDLEWARE = [
@@ -142,6 +142,7 @@ else:
             "HOST": os.environ.get("POSTGRES_HOST"),
             "USER": os.environ.get("POSTGRES_USER"),
             "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+            "PORT": "5432"
         }
     }
 
