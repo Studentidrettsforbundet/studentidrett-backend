@@ -24,13 +24,12 @@ class TestClubsApi(APITestCase):
         Club.objects.create(name="Searchable1")
         Club.objects.create(name="Searchable2")
         clubs = Club.objects.all()
-
         response = self.get_response("clubs/Searchable")
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(content), len(clubs))
-        self.assertEqual(content, ClubSerializer(clubs, many=True).data)
+        self.assertEqual(len(content.get("results")), len(clubs))
+        self.assertEqual(content.get("results"), ClubSerializer(clubs, many=True).data)
 
     def test_specific_sport_search(self):
         sport = Sport.objects.create(name="Searchable")
@@ -38,8 +37,8 @@ class TestClubsApi(APITestCase):
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(content), 1)
-        self.assertEqual(content, [SportSerializer(sport).data])
+        self.assertEqual(len(content.get("results")), 1)
+        self.assertEqual(content.get("results"), [SportSerializer(sport).data])
 
     def test_specific_group_search(self):
         group = Group.objects.create(name="Searchable")
@@ -47,21 +46,22 @@ class TestClubsApi(APITestCase):
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(content), 1)
-        self.assertEqual(content, [GroupSerializer(group).data])
+        self.assertEqual(len(content.get("results")), 1)
+        self.assertEqual(content.get("results"), [GroupSerializer(group).data])
 
     def test_specific_city_search(self):
-        city = City.objects.create(name="Searchable3")
+        city = City.objects.create(name="Searchable3", region="")
         response = self.get_response("cities/Searchable")
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(content), 1)
+        self.assertEqual(len(content.get("results")), 1)
         self.assertEqual(
-            content, [{"id": city.pk, "name": "Searchable3", "region": ""}]
+            content.get("results"),
+            [{"id": city.pk, "name": "Searchable3", "region": ""}],
         )
 
-    """"
+    """
     Because of caching in elasticsearch this test currently does not work
     def test_unspecific_search(self):
         response = self.get_response("Searchable")
@@ -78,7 +78,7 @@ class TestClubsApi(APITestCase):
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(content), 0)
+        self.assertEqual(len(content.get("results")), 0)
 
     def test_no_results_specific(self):
         response = self.get_response(
@@ -87,11 +87,11 @@ class TestClubsApi(APITestCase):
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(content), 0)
+        self.assertEqual(len(content.get("results")), 0)
 
     def test_invalid_specific_search(self):
         response = self.get_response("NothingToLookFor/TestNavn")
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(content), 0)
+        self.assertEqual(len(content.get("results")), 0)

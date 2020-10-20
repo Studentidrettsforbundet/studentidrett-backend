@@ -5,6 +5,8 @@ from cities.models import City
 from clubs.models import Club
 from clubs.serializers import ClubSerializer
 from clubs.views import ClubViewSet
+from groups.models import Group
+from sports.models import Sport
 
 from django.contrib.auth.models import User
 
@@ -103,7 +105,27 @@ class TestClubsApi(APITestCase):
         self.assertEqual(len(response.data.get("results")), 0)
 
     def test_query_param_non_existing_city(self):
-        request = self.factory.get("clubs", {"city": "Gotham"})
+        request = self.factory.get("/clubs/", {"city": "Gotham"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_sport(self):
+        sport = Sport.objects.create(name="TestSport")
+        group = Group.objects.create(name="TestGroup", club=self.club1)
+        group.sports.add(sport)
+        request = self.factory.get("/clubs/", {"sport": "TestSport"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(
+            response.data.get("results")[0], ClubSerializer(self.club1).data
+        )
+
+    def test_query_param_sport_no_clubs(self):
+        request = self.factory.get("/clubs/", {"sport": "Dans"})
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
