@@ -1,4 +1,5 @@
 from django_elasticsearch_dsl import Document, Index, fields
+from django_elasticsearch_dsl_drf.compat import StringField
 
 from cities.models import City
 from clubs.models import Club
@@ -48,6 +49,8 @@ class GroupDocument(Document):
 
 @SPORT_INDEX.doc_type
 class SportDocument(Document):
+    labels = fields.NestedField(properties={"text": StringField()})
+
     class Django:
         model = Sport
         fields = ["id", "name"]

@@ -96,7 +96,7 @@ def map_response_item(item):
             "club": item.club,
         }
     elif item.meta.index == "sports":
-        return {"id": item.id, "name": item.name}
+        return {"id": item.id, "name": item.name, "labels": item.labels}
     else:
         return
 
@@ -110,7 +110,10 @@ def obj_dict(obj):
     if isinstance(obj, utils.AttrList):
         values = []
         for item in obj.__dict__["_l_"]:
-            values.append(item["id"])
+            try:
+                values.append(item["id"])
+            except KeyError:
+                values.append(item["text"])
         return values
     elif obj.__contains__("id"):
         return obj.to_dict()["id"]

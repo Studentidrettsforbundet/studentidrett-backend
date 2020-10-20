@@ -54,6 +54,7 @@ LOCAL_APPS = [
     "groups.apps.GroupsConfig",
     "sports.apps.SportsConfig",
     "teams.apps.TeamsConfig",
+    "questionnaire.apps.QuestionnaireConfig",
     "search",
 ]
 
