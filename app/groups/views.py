@@ -12,3 +12,23 @@ class GroupViewSet(viewsets.ModelViewSet):
     # permission_classes = [GetGroupPermission]
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        city_name = self.request.query_params.get("city", None)
+        sport_name = self.request.query_params.get("sport", None)
+        club_name = self.request.query_params.get("club", None)
+
+        if city_name is not None:
+            city_queryset = Group.objects.filter(city__name=city_name)
+            queryset = queryset.intersection(city_queryset)
+
+        if sport_name is not None:
+            sport_queryset = Group.objects.filter(sports__name=sport_name)
+            queryset = queryset.intersection(sport_queryset)
+
+        if club_name is not None:
+            club_queryset = Group.objects.filter(club__name=club_name)
+            queryset = queryset.intersection(club_queryset)
+
+        return queryset.order_by("name")
