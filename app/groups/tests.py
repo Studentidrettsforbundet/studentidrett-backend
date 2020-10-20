@@ -179,7 +179,7 @@ class GroupViewTest(TestCase):
                 "name": "Group4",
                 "description": "This is a description",
                 "cover_photo": None,
-                "sports": self.sport.id,
+                "sports": [self.sport.id],
                 "club": self.club.id,
                 "city": self.city.id,
             },
@@ -189,3 +189,150 @@ class GroupViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(Group.objects.filter(name="Group4").exists())
+
+    def test_query_param_city(self):
+        request = self.factory.get("/groups/", {"city": self.city.name})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), len(self.groups))
+        self.assertEqual(
+            response.data.get("results"), GroupSerializer(self.groups, many=True).data
+        )
+
+    def test_query_param_city_no_groups(self):
+        City(name="Oslo")
+        request = self.factory.get("/groups/", {"city": "Oslo"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_non_existing_group(self):
+        request = self.factory.get("/groups/", {"city": "Gotham"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_sport(self):
+        request = self.factory.get("/groups/", {"sport": "TestSport"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(
+            response.data.get("results")[0], GroupSerializer(self.group).data
+        )
+
+    def test_query_param_sport_no_groups(self):
+        Sport(name="Dans")
+        request = self.factory.get("/groups/", {"sport": "Dans"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_non_existing_sport(self):
+        request = self.factory.get("/groups/", {"sport": "Metal Detecting"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_club(self):
+        request = self.factory.get("/groups/", {"club": self.club.name})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 2)
+        self.assertEqual(
+            response.data.get("results"), GroupSerializer(self.groups, many=True).data
+        )
+
+    def test_query_param_club_no_groups(self):
+        Club(name="NothingToSee")
+        request = self.factory.get("/groups/", {"club": "NothingToSee"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_non_existing_club(self):
+        request = self.factory.get("/groups/", {"club": "Lille London"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_city_and_sport(self):
+        request = self.factory.get(
+            "/groups/", {"city": self.city.name, "sport": self.sport.name}
+        )
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(
+            response.data.get("results")[0], GroupSerializer(self.group).data
+        )
+
+    def test_query_param_city_and_club(self):
+        request = self.factory.get(
+            "/groups/", {"city": self.city.name, "club": self.club.name}
+        )
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 2)
+        self.assertEqual(
+            response.data.get("results"), GroupSerializer(self.groups, many=True).data
+        )
+
+    def test_query_param_sport_and_club(self):
+        request = self.factory.get(
+            "/groups/", {"sport": self.sport.name, "club": self.club.name}
+        )
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(
+            response.data.get("results")[0], GroupSerializer(self.group).data
+        )
+
+    def test_query_param_valid_city_and_invalid_sport(self):
+        request = self.factory.get(
+            "/groups/", {"city": "Oslo", "sport": "NoNameForASport"}
+        )
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_valid_city_and_invalid_club(self):
+        request = self.factory.get(
+            "/groups/", {"city": "Oslo", "club": "NoNameForAClub"}
+        )
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_invalid_city_and_valid_sport(self):
+        request = self.factory.get(
+            "/groups/", {"city": "NoNameForACity", "sport": self.city.name}
+        )
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_query_param_invalid_city_and_valid_club(self):
+        request = self.factory.get(
+            "/groups/", {"city": "NoNameForACity", "club": self.club.name}
+        )
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)

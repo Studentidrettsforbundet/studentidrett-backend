@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from questionnaire.models import Label
 from questionnaire.serializers import LabelSerializer
@@ -7,6 +8,10 @@ from sports.models import Sport
 
 class SportSerializer(serializers.ModelSerializer):
     labels = LabelSerializer(many=True)
+
+    name = serializers.CharField(
+        validators=[UniqueValidator(queryset=Sport.objects.all())]
+    )
 
     class Meta:
         model = Sport
