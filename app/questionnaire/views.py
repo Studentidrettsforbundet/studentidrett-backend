@@ -2,6 +2,7 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
 from questionnaire.models import Alternative, Answer, Question
+from questionnaire.recommendation_engine import RecommendationEngine
 from questionnaire.serializers import (
     AlternativeSerializer,
     AnswerSerializer,
@@ -23,37 +24,16 @@ class QuestionnaireViewSet(viewsets.ModelViewSet):
         return self.deduce_recommendation(request)
 
     def deduce_recommendation(self, request):
-        result_dict = self.get_weighting(request)
+        recom = RecommendationEngine(request)
+        result_dict, sports_id = recom.calculate()
         headers = self.get_success_headers(request)
 
-        return Response(result_dict, status=status.HTTP_200_OK, headers=headers)
-
-    def get_weighting(self, request):
-        # Counts how many answers correspond to each label and assigns a weight based on answer
-        # Return a dictionary of label: weight
-        result_dict = dict()
-        weighting_dict = dict()
-        for data in request.data:
-            alternatives = AlternativeSerializer(
-                Alternative.objects.filter(qid=data["qid"]), many=True
-            )
-            for x in range(0, 2):
-                ans = int(data.get("answer"))
-                labels = alternatives.data[x].get("labels")
-                for label in labels:
-                    weighting_dict[label.get("text")] = (
-                        1 - (0.25 * ans) if x == 0 else 0.25 * ans
-                    )
-            labels = [
-                y.get("text")
-                for i in (x.get("labels") for x in alternatives.data)
-                for y in i
-            ]
-            for label in labels:
-                result_dict[label] = result_dict.get(label, 0) + weighting_dict.get(
-                    label
-                )
-        return result_dict
+        # TODO: Calculate a confidence-score
+        return Response(
+            {"recommendation": result_dict, "sport_id": sports_id, "confidence": 0.95},
+            status=status.HTTP_200_OK,
+            headers=headers,
+        )
 
 
 class QuestionViewSet(viewsets.ModelViewSet):

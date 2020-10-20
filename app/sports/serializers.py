@@ -18,7 +18,8 @@ class SportSerializer(serializers.ModelSerializer):
         for label in new_labels:
             existing_label = Label.objects.filter(text=label.get("text"))
             if len(existing_label) == 1:
-                existing_label[0].sports.add(sport)
+                if sport not in existing_label[0].sports:
+                    existing_label[0].sports.add(sport)
             else:
                 lab = Label.objects.create(text=label.get("text"))
                 lab.sports.add(sport)
