@@ -4,7 +4,8 @@ from sports.models import Sport
 from sports.serializers import SportSerializer
 
 from groups.views import GroupViewSet
-from cities.model import City
+from groups.models import Group
+from cities.models import City
 
 # Create your views here.
 
@@ -15,19 +16,16 @@ class SportViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
 
-   """ def get_queryset(self):
-        queryset = self.queryset
+    def get_queryset(self):
+        queryset = Sport.objects.none()
 
-        # Get all groups that include this sport
-        groups_with_sport = Sport.group_set.all()
-        cities = City.objects.none()
+        city_name = self.request.query_params.get("city", None)
 
-        if groups_with_sport.exists():
-            for group in groups_with_sport:
-                # may add duplicates
-                city_names = group.get_queryset()
-            result = {}
-            if city_names is not None:
-                result += City.objects.filter(city__name=city_names)
+        if city_name is not None:
+            groups_in_city = Group.objects.filter(city__name=city_name)
 
-        return queryset"""
+            for group in groups_in_city:
+                sport_queryset = group.sports.all()
+                queryset = queryset.union(sport_queryset)
+
+        return queryset

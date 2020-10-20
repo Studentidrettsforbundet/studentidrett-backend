@@ -103,3 +103,50 @@ class SportViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_post_group(self):
+        request = self.factory.post(
+            "/sports/",
+            {
+                "name": "Sport2"
+            },
+            format="json"
+        )
+        response = get_response(request, user=self.user)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Sport.objects.filter(name="Sport2").exists())
+
+    def test_post_sport_auth(self):
+        request = self.factory.post(
+            "/sports/",
+            {
+                "name": "Sport3"
+            },
+            format="json"
+        )
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(Sport.object.filter(name="Sport3").exists())
+
+    def test_query_param_city(self):
+        request = self.factory.get("/sports/", {"city": self.city.name})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
