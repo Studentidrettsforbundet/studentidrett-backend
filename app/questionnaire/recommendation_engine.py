@@ -61,9 +61,11 @@ class RecommendationEngine:
                     sport_feats[i] = 1
             sports_dict[sport.get("name")] = sport_feats
             sports_id_dict[sport.get("name")] = sport.get("id")
-        result_dict = dict()
+        results = []
         for key in sports_dict:
-            result_dict[key] = self.distance_fn(sports_dict[key], weights)
-        return {
-            k: v for k, v in sorted(result_dict.items(), key=lambda item: item[1])
-        }, sports_id_dict
+            obj = dict()
+            obj["name"] = key
+            obj["id"] = sports_id_dict[key]
+            obj["score"] = self.distance_fn(sports_dict[key], weights)
+            results.append(obj)
+        return sorted(results, key=lambda x: x["score"])
