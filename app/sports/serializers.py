@@ -24,7 +24,6 @@ class SportSerializer(serializers.ModelSerializer):
             sport = Sport.objects.get(name=validated_data.get("name"))
         for label in new_labels:
             existing_label = Label.objects.filter(text=label.get("text")).first()
-            print(LabelSerializer(existing_label).data)
             if existing_label is not None:
                 existing_label.sports.add(sport)
             else:
