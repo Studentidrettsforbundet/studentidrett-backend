@@ -33,12 +33,12 @@ class QuestionnaireViewSet(viewsets.ModelViewSet):
 
     def deduce_recommendation(self, request):
         recom = RecommendationEngine(request)
-        result_dict, sports_id = recom.calculate()
+        results = recom.calculate()
         headers = self.get_success_headers(request)
 
         # TODO: Calculate a confidence-score
         return Response(
-            {"recommendation": result_dict, "sport_id": sports_id, "confidence": 0.95},
+            {"recommendation": results, "confidence": 0.95},
             status=status.HTTP_200_OK,
             headers=headers,
         )
