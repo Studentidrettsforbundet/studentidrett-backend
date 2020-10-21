@@ -71,7 +71,12 @@ def specified_search(index, q):
 
 def map_response_item(item):
     if item.meta.index == "cities":
-        return {"id": item.id, "name": item.name, "region": item.region}
+        return {
+            "id": item.id,
+            "name": item.name,
+            "region": item.region,
+            "clubs": item.clubs,
+        }
     elif item.meta.index == "clubs":
         return {
             "id": item.id,
@@ -110,10 +115,12 @@ def obj_dict(obj):
     if isinstance(obj, utils.AttrList):
         values = []
         for item in obj.__dict__["_l_"]:
-            try:
+            if "id" in item:
                 values.append(item["id"])
-            except KeyError:
+            elif "text" in item:
                 values.append(item["text"])
+            elif "name" in item:
+                values.append(item["name"])
         return values
     elif obj.__contains__("id"):
         return obj.to_dict()["id"]

@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from cities.models import City
+from cities.serializers import CitySerializer
 from clubs.models import Club
 from clubs.serializers import ClubSerializer
 from groups.models import Group
@@ -58,7 +59,7 @@ class TestClubsApi(APITestCase):
         self.assertEqual(len(content.get("results")), 1)
         self.assertEqual(
             content.get("results"),
-            [{"id": city.pk, "name": "Searchable3", "region": ""}],
+            [CitySerializer(city).data],
         )
 
     """
