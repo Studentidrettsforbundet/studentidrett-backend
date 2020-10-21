@@ -5,8 +5,6 @@ from app.enums import Region
 from cities.models import City
 from cities.serializers import CitySerializer
 
-# Create your views here.
-
 
 class CityViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.AllowAny,)
