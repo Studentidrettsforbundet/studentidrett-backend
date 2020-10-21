@@ -17,10 +17,18 @@ class QuestionnaireViewSet(viewsets.ModelViewSet):
     http_method_names = ["post"]
 
     def create(self, request, *args, **kwargs):
+        if type(request.data) != list:
+            return Response(
+                {"message": "Answers must be list-format"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         for data in request.data:
             answer = int(data.get("answer"))
             if answer < 0 or answer > 4:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"message": "Each answer must be between 0 and 4"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         return self.deduce_recommendation(request)
 
     def deduce_recommendation(self, request):
