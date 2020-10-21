@@ -18,14 +18,14 @@ class TestQuestionnaireAPI(APITestCase):
         q = Question.objects.create(text="spm")
         alt1 = Alternative.objects.create(qid=q, text="alternative1")
         alt2 = Alternative.objects.create(qid=q, text="alternative2")
-        sport1 = Sport.objects.create(name="sport1")
-        sport2 = Sport.objects.create(name="sport2")
+        self.sport1 = Sport.objects.create(name="sport1")
+        self.sport2 = Sport.objects.create(name="sport2")
         lab1 = Label.objects.create(text="label1")
         lab2 = Label.objects.create(text="label2")
         lab1.alternatives.add(alt1)
         lab2.alternatives.add(alt2)
-        lab1.sports.add(sport1)
-        lab2.sports.add(sport2)
+        lab1.sports.add(self.sport1)
+        lab2.sports.add(self.sport2)
 
         self.qid1 = q.pk
         self.answer1 = 2
@@ -38,11 +38,21 @@ class TestQuestionnaireAPI(APITestCase):
         )
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.keys(), {"recommendation", "confidence"})
         self.assertEqual(
-            response.data.keys(), {"recommendation", "sport_id", "confidence"}
-        )
-        self.assertEqual(
-            response.data.get("recommendation"), {"sport1": 0.707, "sport2": 0.707}
+            response.data.get("recommendation"),
+            [
+                {
+                    "name": "sport1",
+                    "id": self.sport1.pk,
+                    "score": round(math.sqrt(0.5), 3),
+                },
+                {
+                    "name": "sport2",
+                    "id": self.sport2.pk,
+                    "score": round(math.sqrt(0.5), 3),
+                },
+            ],
         )
 
 
