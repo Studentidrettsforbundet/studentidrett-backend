@@ -6,7 +6,7 @@ from clubs.models import Club
 
 
 class CitySerializer(serializers.ModelSerializer):
-    clubs = serializers.StringRelatedField(many=True)
+    clubs = serializers.StringRelatedField(many=True, read_only=True)
     name = serializers.CharField(
         validators=[UniqueValidator(queryset=Club.objects.all())]
     )
