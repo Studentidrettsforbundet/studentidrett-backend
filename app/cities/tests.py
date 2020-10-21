@@ -32,6 +32,29 @@ class TestCityApi(TestCase):
         self.city2 = City.objects.create(name="Bergen", region="vest")
         self.factory = APIRequestFactory()
         self.cities = City.objects.all()
+        self.response_format = dict(
+            {
+                "nord": [],
+                "midt": [
+                    {
+                        "id": self.city.pk,
+                        "name": "Trondheim",
+                        "region": "midt",
+                        "clubs": [],
+                    }
+                ],
+                "vest": [
+                    {
+                        "id": self.city2.pk,
+                        "name": "Bergen",
+                        "region": "vest",
+                        "clubs": [],
+                    }
+                ],
+                "sor": [],
+                "ost": [],
+            }
+        )
 
     def test_city_detail(self):
         request = self.factory.get("/cities/")
@@ -45,11 +68,8 @@ class TestCityApi(TestCase):
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.keys(), {"count", "next", "previous", "results"})
-        self.assertEqual(len(response.data.get("results")), len(self.cities))
-        self.assertEqual(
-            response.data.get("results"), CitySerializer(self.cities, many=True).data
-        )
+        self.assertEqual(response.data.keys(), self.response_format.keys())
+        self.assertEqual(response.data, self.response_format)
 
     def test_city_detail_non_existing(self):
         request = self.factory.get("cities")
@@ -62,10 +82,7 @@ class TestCityApi(TestCase):
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data.get("results")), 1)
-        self.assertEqual(
-            response.data.get("results")[0], CitySerializer(self.city).data
-        )
+        self.assertEqual(response.data["midt"], self.response_format["midt"])
 
     def test_query_param_non_existing_region(self):
         request = self.factory.get("cities", {"region": "fest"})
@@ -78,4 +95,4 @@ class TestCityApi(TestCase):
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data.get("results")), 0)
+        self.assertEqual(len(response.data["nord"]), 0)
