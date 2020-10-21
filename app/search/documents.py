@@ -31,6 +31,8 @@ class ClubDocument(Document):
 
 @CITY_INDEX.doc_type
 class CityDocument(Document):
+    clubs = fields.NestedField(properties={"name": StringField()})
+
     class Django:
         model = City
         fields = ["id", "name", "region"]
