@@ -4,11 +4,12 @@ from questionnaire.models import Alternative, Answer, Label, Question
 
 
 class LabelSerializer(serializers.ModelSerializer):
+    sports = serializers.StringRelatedField(many=True, read_only=True)
+    alternatives = serializers.StringRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Label
-        fields = [
-            "text",
-        ]
+        fields = ["text", "sports", "alternatives"]
 
 
 class AlternativeSerializer(serializers.ModelSerializer):
