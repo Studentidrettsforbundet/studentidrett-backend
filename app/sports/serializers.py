@@ -5,9 +5,9 @@ from sports.models import Sport
 
 
 class SportSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(
+    """name = serializers.CharField(
         validators=[UniqueValidator(queryset=Sport.objects.all())]
-    )
+    )"""
 
     class Meta:
         model = Sport

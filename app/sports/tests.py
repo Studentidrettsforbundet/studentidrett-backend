@@ -39,13 +39,13 @@ def get_response(request, user=None, sport_id=None):
 
 class SportModelTest(TestCase):
     def setUp(self):
-        sport1 = Sport.object.create(
+        sport1 = Sport.objects.create(
             name="Sport1"
         )
-        sport2 = Sport.object.create(
+        sport2 = Sport.objects.create(
             name="Sport2"
         )
-        sport3 = Sport.object.create(
+        sport3 = Sport.objects.create(
             name="Sport3"
         )
 
@@ -54,19 +54,19 @@ class SportModelTest(TestCase):
         sport3.save()
 
     def test_sport_attributes(self):
-        sport = Sport.object.get(name="Sport1")
+        sport = Sport.objects.get(name="Sport1")
 
         self.assertEqual(sport.name, "Sport1")
 
     def test_sport_list(self):
-        sports = Sport.object.all()
+        sports = Sport.objects.all()
 
-        self.assertEqual(len(sports), not 1)
+        self.assertEqual(len(sports), 3)
 
 
 class SportViewTest(TestCase):
     def setUp(self):
-        self.user = User.object.create_superuser(
+        self.user = User.objects.create_superuser(
             username="testuser", email="testuser@test.com", password="testing"
         )
 
@@ -76,6 +76,9 @@ class SportViewTest(TestCase):
         self.sport2 = Sport.objects.create(
             name="Sport2"
         )
+        self.sport1.save()
+        self.sport2.save()
+
         self.sports = Sport.objects.all()
 
 
@@ -84,28 +87,36 @@ class SportViewTest(TestCase):
             name="TestGroup",
             description="This is a description",
             cover_photo=None,
-            sport=[self.sport1.id, self.sport2.id],
-            city=self.city.id,
+            city=self.city,
         )
+        self.group.sports.set([self.sport1, self.sport2])
 
         self.factory = APIRequestFactory()
 
     def test_sport_contains_expected_fields(self):
         request  = self.factory.get("/sports/")
         force_authenticate(request, self.user)
-        response = get_response(request, sport_id=self.sport.pk)
+        response = get_response(request, sport_id=self.sport1.pk)
 
         self.assertEqual(
             response.data.keys(),
             {
-                "name"
-            }
+                "id",
+                "name",
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_sport_detail(self):
         request = self.factory.get("/sports/")
-        response = get_response(request, sport_id=self.sport.pk)
+        response = get_response(request, sport_id=self.sport1.pk)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, SportSerializer(self.sport1).data)
+
+    def test_sport_list(self):
+        request = self.factory.get("/sports/")
+        response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.keys(), {"count", "next", "previous", "results"})
@@ -144,11 +155,12 @@ class SportViewTest(TestCase):
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertFalse(Sport.object.filter(name="Sport4").exists())
+        self.assertFalse(Sport.objects.filter(name="Sport4").exists())
 
     def test_query_param_city(self):
         request = self.factory.get("/sports/", {"city": self.city.name})
         response = get_response(request)
+        print("HER ER 1")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -159,6 +171,7 @@ class SportViewTest(TestCase):
 
     def test_query_param_city_no_sports(self):
         City(name="Oslo")
+        print("HER ER 2")
         request = self.factory.get("/sports/", {"city": "Oslo"})
         response = get_response(request)
 
@@ -166,6 +179,7 @@ class SportViewTest(TestCase):
         self.assertEqual(len(response.data.get("results")), 0)
 
     def test_query_param_non_existing_city(self):
+        print("HER ER 3")
         request = self.factory.get("/sports/", {"city": "Arkansas"})
         response = get_response(request)
 
