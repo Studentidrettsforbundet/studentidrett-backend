@@ -3,9 +3,9 @@ from rest_framework.serializers import ValidationError
 from app.settings.base import GENERAL_VALID_INPUT, NAME_VALID_INPUT
 
 
-def validate_name(name):
+def validate_name(name, field="Name"):
     if not NAME_VALID_INPUT.match(name):
-        raise ValidationError(f"Name must match pattern: {NAME_VALID_INPUT.pattern}")
+        raise ValidationError(f"{field} must match pattern: {NAME_VALID_INPUT.pattern}")
 
 
 def general_validator(key, value):
