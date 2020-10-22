@@ -160,7 +160,6 @@ class SportViewTest(TestCase):
     def test_query_param_city(self):
         request = self.factory.get("/sports/", {"city": self.city.name})
         response = get_response(request)
-        print("HER ER 1")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -171,7 +170,6 @@ class SportViewTest(TestCase):
 
     def test_query_param_city_no_sports(self):
         City(name="Oslo")
-        print("HER ER 2")
         request = self.factory.get("/sports/", {"city": "Oslo"})
         response = get_response(request)
 
@@ -179,7 +177,6 @@ class SportViewTest(TestCase):
         self.assertEqual(len(response.data.get("results")), 0)
 
     def test_query_param_non_existing_city(self):
-        print("HER ER 3")
         request = self.factory.get("/sports/", {"city": "Arkansas"})
         response = get_response(request)
 

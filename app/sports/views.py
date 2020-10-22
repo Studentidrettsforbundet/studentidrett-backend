@@ -27,8 +27,6 @@ class SportViewSet(viewsets.ModelViewSet):
             if groups_in_city.exists():
                 for group in groups_in_city:
                     sport_queryset = group.sports.all()
-
-                    print("SPORTENE:", sport_queryset)
                     queryset = queryset.intersection(sport_queryset)
             else:
                 queryset = Sport.objects.none()
