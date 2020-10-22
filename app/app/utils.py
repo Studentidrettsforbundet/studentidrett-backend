@@ -15,7 +15,8 @@ def general_validator(key, value):
         )
 
 
-def query_param_validator(query):
+def query_param_valid(query):
     if not NAME_VALID_INPUT.match(query):
-        print("invalid query param")
         return False
+    else:
+        return True
