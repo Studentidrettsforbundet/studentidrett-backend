@@ -20,7 +20,7 @@ def get_response(request, user=None, sport_id=None):
     Converts a request to a response.
     :param request: the desired HTTP-request.
     :param user: the user performing the request. None represents an anonymous user
-    :param group_id: the desired group. None represents all groups.
+    :param sport_id: the desired sport. None represents all sports.
     :return: the HTTP-response from Django.
     """
 
@@ -103,6 +103,7 @@ class SportViewTest(TestCase):
             {
                 "id",
                 "name",
+                "labels"
             },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -125,17 +126,18 @@ class SportViewTest(TestCase):
             response.data.get("results"), SportSerializer(self.sports, many=True).data
         )
 
-    def test_nonexistent_group(self):
+    def test_nonexistent_sport(self):
         request = self.factory.get("/sports/")
         response = get_response(request, sport_id="69")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_post_group(self):
+    def test_post_sport(self):
         request = self.factory.post(
             "/sports/",
             {
-                "name": "Sport3"
+                "name": "Sport3",
+                "labels": []
             },
             format="json"
         )

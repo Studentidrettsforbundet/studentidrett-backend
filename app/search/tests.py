@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from cities.models import City
+from cities.serializers import CitySerializer
 from clubs.models import Club
 from clubs.serializers import ClubSerializer
 from groups.models import Group
@@ -50,14 +51,15 @@ class TestClubsApi(APITestCase):
         self.assertEqual(content.get("results"), [GroupSerializer(group).data])
 
     def test_specific_city_search(self):
-        City.objects.create(id=42, name="Searchable3", region="")
+        city = City.objects.create(name="Searchable3", region="")
         response = self.get_response("cities/Searchable")
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(content.get("results")), 1)
         self.assertEqual(
-            content.get("results"), [{"id": 42, "name": "Searchable3", "region": ""}]
+            content.get("results"),
+            [CitySerializer(city).data],
         )
 
     """
