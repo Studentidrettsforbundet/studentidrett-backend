@@ -1,3 +1,5 @@
+from rest_framework import status
+from rest_framework.exceptions import NotFound
 from rest_framework.serializers import ValidationError
 
 from app.settings.base import GENERAL_VALID_INPUT, NAME_VALID_INPUT
@@ -15,8 +17,18 @@ def general_validator(key, value):
         )
 
 
-def query_param_valid(query):
-    if not NAME_VALID_INPUT.match(query):
-        return False
+def query_param_invalid(query, raise_exception=True):
+    if NAME_VALID_INPUT.match(query):
+        return None
     else:
-        return True
+        message = (
+            f"Query param '{query}' contains invalid characters."
+            f" Query must match regex pattern: {NAME_VALID_INPUT.pattern}"
+        )
+        if raise_exception:
+            raise NotFound(
+                detail=message,
+                code=status.HTTP_404_NOT_FOUND,
+            )
+        else:
+            return message
