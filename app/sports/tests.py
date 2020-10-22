@@ -37,17 +37,12 @@ def get_response(request, user=None, sport_id=None):
         )
         return view(request)
 
+
 class SportModelTest(TestCase):
     def setUp(self):
-        sport1 = Sport.objects.create(
-            name="Sport1"
-        )
-        sport2 = Sport.objects.create(
-            name="Sport2"
-        )
-        sport3 = Sport.objects.create(
-            name="Sport3"
-        )
+        sport1 = Sport.objects.create(name="Sport1")
+        sport2 = Sport.objects.create(name="Sport2")
+        sport3 = Sport.objects.create(name="Sport3")
 
         sport1.save()
         sport2.save()
@@ -70,17 +65,12 @@ class SportViewTest(TestCase):
             username="testuser", email="testuser@test.com", password="testing"
         )
 
-        self.sport1 = Sport.objects.create(
-            name="Sport1"
-        )
-        self.sport2 = Sport.objects.create(
-            name="Sport2"
-        )
+        self.sport1 = Sport.objects.create(name="Sport1")
+        self.sport2 = Sport.objects.create(name="Sport2")
         self.sport1.save()
         self.sport2.save()
 
         self.sports = Sport.objects.all()
-
 
         self.city = City.objects.create(name="TestCity")
         self.group = Group.objects.create(
@@ -94,17 +84,13 @@ class SportViewTest(TestCase):
         self.factory = APIRequestFactory()
 
     def test_sport_contains_expected_fields(self):
-        request  = self.factory.get("/sports/")
+        request = self.factory.get("/sports/")
         force_authenticate(request, self.user)
         response = get_response(request, sport_id=self.sport1.pk)
 
         self.assertEqual(
             response.data.keys(),
-            {
-                "id",
-                "name",
-                "labels"
-            },
+            {"id", "name", "labels"},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -134,12 +120,7 @@ class SportViewTest(TestCase):
 
     def test_post_sport(self):
         request = self.factory.post(
-            "/sports/",
-            {
-                "name": "Sport3",
-                "labels": []
-            },
-            format="json"
+            "/sports/", {"name": "Sport3", "labels": []}, format="json"
         )
         response = get_response(request, user=self.user)
 
@@ -147,13 +128,7 @@ class SportViewTest(TestCase):
         self.assertTrue(Sport.objects.filter(name="Sport3").exists())
 
     def test_post_sport_auth(self):
-        request = self.factory.post(
-            "/sports/",
-            {
-                "name": "Sport4"
-            },
-            format="json"
-        )
+        request = self.factory.post("/sports/", {"name": "Sport4"}, format="json")
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -184,22 +159,3 @@ class SportViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data.get("results")), 0)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
