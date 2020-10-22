@@ -127,6 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 GENERAL_VALID_INPUT = re.compile(r"^[a-zA-Z0-9&ÆæØøÅåÄäÖö_.,'()#@?!+=/\"\- ]+$")
 NAME_VALID_INPUT = re.compile(r"^^[a-zA-Z0-9&ÆæØøÅåÄäÖö_.,'/\- ]+$")
 
+
 """ DATABASE CONFIGURATION """
 if os.getenv("GITHUB_WORKFLOW"):
     DATABASES = {
