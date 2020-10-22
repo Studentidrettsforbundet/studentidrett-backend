@@ -1,11 +1,8 @@
 from rest_framework import permissions, viewsets
 
+from groups.models import Group
 from sports.models import Sport
 from sports.serializers import SportSerializer
-
-from groups.views import GroupViewSet
-from groups.models import Group
-from cities.models import City
 
 # Create your views here.
 
@@ -13,7 +10,7 @@ from cities.models import City
 class SportViewSet(viewsets.ModelViewSet):
     serializer_class = SportSerializer
     queryset = Sport.objects.all()
-    # permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         queryset = self.queryset

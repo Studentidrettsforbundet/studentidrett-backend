@@ -4,13 +4,10 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from cities.models import City
-from clubs.models import Club
 from groups.models import Group
-
 from sports.models import Sport
 from sports.serializers import SportSerializer
 from sports.views import SportViewSet
-from sports.models import Sport
 
 from django.contrib.auth.models import User
 
