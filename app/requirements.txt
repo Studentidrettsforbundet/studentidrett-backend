@@ -28,3 +28,6 @@ drf-yasg==1.17.1
 # Environmental variables
 python-dotenv==0.14.0
 
+# Elastic search
+django-elasticsearch-dsl==7.1.4
+django-elasticsearch-dsl-drf==0.20.9

@@ -1,10 +1,15 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from cities.models import City
+from clubs.models import Club
 
 
 class CitySerializer(serializers.ModelSerializer):
-    clubs = serializers.StringRelatedField(many=True)
+    clubs = serializers.StringRelatedField(many=True, read_only=True)
+    name = serializers.CharField(
+        validators=[UniqueValidator(queryset=Club.objects.all())]
+    )
 
     class Meta:
         model = City

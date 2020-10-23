@@ -209,5 +209,21 @@ class TestTeam(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_query_param_group(self):
+        request = self.factory.get("/teams/", {"group": self.group.name})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), len(self.teams))
+        self.assertEqual(
+            response.data.get("results"), TeamSerializer(self.teams, many=True).data
+        )
+
+    def test_query_param_group_no_teams(self):
+        request = self.factory.get("/teams/", {"group": "NoTeams"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 0)
 
 '''

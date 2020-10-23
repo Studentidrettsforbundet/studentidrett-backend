@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
     "drf_yasg",
+    "django_elasticsearch_dsl",
 ]
 
 LOCAL_APPS = [
@@ -53,10 +54,14 @@ LOCAL_APPS = [
     "groups.apps.GroupsConfig",
     "sports.apps.SportsConfig",
     "teams.apps.TeamsConfig",
+    "questionnaire.apps.QuestionnaireConfig",
+    "search",
 ]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
-
+ELASTICSEARCH_DSL = {
+    "default": {"hosts": "elasticsearch"},
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -67,6 +72,13 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 ROOT_URLCONF = "app.urls"
@@ -131,6 +143,7 @@ else:
             "HOST": os.environ.get("POSTGRES_HOST"),
             "USER": os.environ.get("POSTGRES_USER"),
             "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+            "PORT": "5432",
         }
     }
 
@@ -142,10 +155,10 @@ Currently disabled:
         "rest_framework.permissions.IsAuthenticatedOrReadOnly"
     ],
 """
+
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
+    "DEFAULT_PAGINATION_CLASS": "app.settings.pagination.CustomPagination",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
