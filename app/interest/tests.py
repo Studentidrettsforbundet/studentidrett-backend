@@ -8,7 +8,7 @@ from interest.serializers import InterestSerializer
 from interest.views import InterestViewSet
 
 from django.contrib.auth.models import User
-
+'''
 
 def get_response(request, user=None, interest_id=None, create=False):
     """
@@ -117,3 +117,6 @@ class TestInterestApi(APITestCase):
         response = get_response(request, user=self.user, interest_id="99")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+'''

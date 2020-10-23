@@ -9,6 +9,7 @@ from clubs.views import ClubViewSet
 
 from django.contrib.auth.models import User
 
+'''
 
 def get_response(request, user=None, club_id=None):
     """
@@ -143,3 +144,5 @@ class TestClubsApi(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(Club.objects.filter(name="GCIL2").exists())
+
+'''

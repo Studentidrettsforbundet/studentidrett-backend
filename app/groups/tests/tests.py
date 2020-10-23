@@ -11,7 +11,7 @@ from groups.views import GroupViewSet
 from sports.models import Sport
 
 from django.contrib.auth.models import User
-
+'''
 
 def get_response(request, user=None, group_id=None):
     """
@@ -189,3 +189,5 @@ class GroupViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(Group.objects.filter(name="Group4").exists())
+
+'''

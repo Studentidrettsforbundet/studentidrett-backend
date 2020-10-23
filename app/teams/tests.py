@@ -13,6 +13,7 @@ from teams.views import TeamViewSet
 
 from django.contrib.auth.models import User
 
+'''
 
 def get_response(request, user=None, team_id=None):
     """
@@ -207,3 +208,6 @@ class TestTeam(TestCase):
         response = get_response(request, team_id="99")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+'''

@@ -2,12 +2,19 @@ import factory
 from clubs.models import Club
 
 
-class ClubFactory(factory.Factory):
+class ClubFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Club
 
     name = "GCIL"
     description = "The usual suspects"
-    contact_email = "contact@gcil.com"
-    membership_fee = "free"
-    register_info = "The usual hazing procedure"
+    contact_email = factory.lazy_attribute(lambda club: f"contact@{club.name}.com".lower())
+    membership_fee = "100kr"
+    register_info = "The standard hazing procedure"
+
+
+class LongNameClubFactory(ClubFactory):
+    class Meta:
+        model = Club
+
+    name = "N"*256
