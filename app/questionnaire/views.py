@@ -35,7 +35,7 @@ class QuestionnaireViewSet(viewsets.ModelViewSet):
 
         # TODO: Calculate a confidence-score
         return Response(
-            {"recommendation": results, "confidence": 0.95},
+            {"recommendation": results[:3], "confidence": 0.95},
             status=status.HTTP_200_OK,
             headers=headers,
         )
