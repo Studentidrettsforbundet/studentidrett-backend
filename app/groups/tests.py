@@ -190,6 +190,12 @@ class GroupViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(Group.objects.filter(name="Group4").exists())
 
+    def test_invalid_query_param(self):
+        request = self.factory.get("/groups/", {"city": "Cit@y"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_query_param_city(self):
         request = self.factory.get("/groups/", {"city": self.city.name})
         response = get_response(request)
@@ -336,3 +342,19 @@ class GroupViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_invalid_name(self):
+        request = self.factory.post("/groups/", {"name": "Group%3"}, format="json")
+        response = get_response(request, user=self.user)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_char_field(self):
+        request = self.factory.post(
+            "/groups/",
+            {"name": "Group3", "description": "This description i$ not valid"},
+            format="json",
+        )
+        response = get_response(request, user=self.user)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

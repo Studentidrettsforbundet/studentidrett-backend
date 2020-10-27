@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from app.utils import general_validator, validate_name
 from teams.models import Schedule, Team, TryoutDates
 
 
@@ -54,3 +55,18 @@ class TeamSerializer(serializers.ModelSerializer):
             t = TryoutDates.objects.create(date=date.get("date"))
             t.team.add(team)
         return team
+
+    def validate(self, data):
+        check_fields = [
+            "long_description",
+            "short_description",
+            "register_info",
+            "cost",
+            "equipment",
+            "season",
+        ]
+        validate_name(data["name"])
+        for item in data:
+            if item in check_fields:
+                general_validator(item, data[item])
+        return data
