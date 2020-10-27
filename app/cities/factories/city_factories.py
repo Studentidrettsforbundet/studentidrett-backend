@@ -7,3 +7,4 @@ class CityFactory(factory.django.DjangoModelFactory):
         model = City
 
     name = "Trondheim"
+    region = "MIDT"

@@ -11,7 +11,7 @@ from sports.views import SportViewSet
 
 from django.contrib.auth.models import User
 
-
+'''
 def get_response(request, user=None, sport_id=None):
     """
     Converts a request to a response.
@@ -156,3 +156,4 @@ class SportViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data.get("results")), 0)
+'''
