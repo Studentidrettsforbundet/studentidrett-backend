@@ -15,23 +15,35 @@ class ClubViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-        city_name = self.request.query_params.get("city", None)
-        sport_name = self.request.query_params.get("sport", None)
+        city = self.request.query_params.get("city", None)
+        sport = self.request.query_params.get("sport", None)
 
-        if city_name is not None:
-            query_param_invalid(city_name)
+        if city is not None:
+            query_param_invalid(city)
+            try:
+                city = int(city)
 
-            city_queryset = Club.objects.filter(city__name=city_name)
+                city_queryset = Club.objects.filter(city__id=city)
+            except ValueError:
+                city_queryset = Club.objects.filter(city__name=city)
             queryset = queryset.intersection(city_queryset)
 
-        if sport_name is not None:
-            query_param_invalid(sport_name)
+        if sport is not None:
+            query_param_invalid(sport)
+
             sport_queryset = Club.objects.none()
             for club in queryset:
-                has_sport = club.groups.filter(sports__name=sport_name)
-                if has_sport:
-                    club = Club.objects.filter(pk=club.pk)
-                    sport_queryset = sport_queryset | club
+                try:
+                    sport = int(sport)
+                    has_sport = club.groups.filter(sports__id=sport)
+                    if has_sport:
+                        club = Club.objects.filter(pk=club.pk)
+                        sport_queryset = sport_queryset | club
+                except ValueError:
+                    has_sport = club.groups.filter(sports__name=sport)
+                    if has_sport:
+                        club = Club.objects.filter(pk=club.pk)
+                        sport_queryset = sport_queryset | club
             queryset = queryset.intersection(sport_queryset)
 
         return queryset.order_by("name")
