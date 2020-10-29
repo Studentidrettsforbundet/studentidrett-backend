@@ -218,6 +218,16 @@ class TestTeam(TestCase):
             response.data.get("results"), TeamSerializer(self.teams, many=True).data
         )
 
+    def test_query_param_group_id(self):
+        request = self.factory.get("/teams/", {"group": self.group.pk})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), len(self.teams))
+        self.assertEqual(
+            response.data.get("results"), TeamSerializer(self.teams, many=True).data
+        )
+
     def test_invalid_query_param(self):
         request = self.factory.get("/teams/", {"group": "Grou@p"})
         response = get_response(request)

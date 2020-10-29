@@ -11,10 +11,11 @@ def validate_name(name, field="Name"):
 
 
 def general_validator(key, value):
-    if not GENERAL_VALID_INPUT.match(value):
-        raise ValidationError(
-            f"{key} must match pattern: {GENERAL_VALID_INPUT.pattern}"
-        )
+    if value:
+        if not GENERAL_VALID_INPUT.match(value):
+            raise ValidationError(
+                f"{key} must match pattern: {GENERAL_VALID_INPUT.pattern}"
+            )
 
 
 def query_param_invalid(query, raise_exception=True):

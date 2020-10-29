@@ -206,6 +206,16 @@ class GroupViewTest(TestCase):
             response.data.get("results"), GroupSerializer(self.groups, many=True).data
         )
 
+    def test_query_param_city_id(self):
+        request = self.factory.get("/groups/", {"city": self.city.pk})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), len(self.groups))
+        self.assertEqual(
+            response.data.get("results"), GroupSerializer(self.groups, many=True).data
+        )
+
     def test_query_param_city_no_groups(self):
         City(name="Oslo")
         request = self.factory.get("/groups/", {"city": "Oslo"})
@@ -231,6 +241,16 @@ class GroupViewTest(TestCase):
             response.data.get("results")[0], GroupSerializer(self.group).data
         )
 
+    def test_query_param_sport_id(self):
+        request = self.factory.get("/groups/", {"sport": self.sport.pk})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(
+            response.data.get("results")[0], GroupSerializer(self.group).data
+        )
+
     def test_query_param_sport_no_groups(self):
         Sport(name="Dans")
         request = self.factory.get("/groups/", {"sport": "Dans"})
@@ -248,6 +268,16 @@ class GroupViewTest(TestCase):
 
     def test_query_param_club(self):
         request = self.factory.get("/groups/", {"club": self.club.name})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 2)
+        self.assertEqual(
+            response.data.get("results"), GroupSerializer(self.groups, many=True).data
+        )
+
+    def test_query_param_club_id(self):
+        request = self.factory.get("/groups/", {"club": self.club.pk})
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
