@@ -18,6 +18,7 @@ class SportViewSet(viewsets.ModelViewSet):
         city = self.request.query_params.get("city", None)
 
         if city is not None:
+            queryset = Sport.objects.none()
             try:
                 city = int(city)
                 groups_in_city = Group.objects.filter(city__id=city)
@@ -27,8 +28,6 @@ class SportViewSet(viewsets.ModelViewSet):
             if groups_in_city.exists():
                 for group in groups_in_city:
                     sport_queryset = group.sports.all()
-                    queryset = queryset.intersection(sport_queryset)
-            else:
-                queryset = Sport.objects.none()
+                    queryset = queryset.union(sport_queryset)
 
-        return queryset.order_by("name")
+        return queryset

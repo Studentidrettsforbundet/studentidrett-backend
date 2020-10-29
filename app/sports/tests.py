@@ -142,6 +142,17 @@ class SportViewTest(TestCase):
             response.data.get("results"), SportSerializer(self.sports, many=True).data
         )
 
+    def test_query_param_city_id(self):
+        request = self.factory.get("/sports/", {"city": self.city.pk})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(response.data.get("results")), len(self.sports))
+        self.assertEqual(
+            response.data.get("results"), SportSerializer(self.sports, many=True).data
+        )
+
     def test_query_param_city_no_sports(self):
         City(name="Oslo")
         request = self.factory.get("/sports/", {"city": "Oslo"})

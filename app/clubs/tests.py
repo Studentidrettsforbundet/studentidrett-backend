@@ -96,6 +96,14 @@ class TestClubsApi(APITestCase):
         self.assertEqual(len(response.data.get("results")), 1)
         self.assertEqual(response.data.get("results")[0].get("city"), self.city1.pk)
 
+    def test_query_param_city_id(self):
+        request = self.factory.get("clubs", {"city": self.city1.pk})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(response.data.get("results")[0].get("city"), self.city1.pk)
+
     def test_query_param_city_no_clubs(self):
         City(name="Oslo")
         request = self.factory.get("clubs", {"city": "Oslo"})
@@ -122,6 +130,19 @@ class TestClubsApi(APITestCase):
         group = Group.objects.create(name="TestGroup", club=self.club1)
         group.sports.add(sport)
         request = self.factory.get("/clubs/", {"sport": "TestSport"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), 1)
+        self.assertEqual(
+            response.data.get("results")[0], ClubSerializer(self.club1).data
+        )
+
+    def test_query_param_sport_id(self):
+        sport = Sport.objects.create(name="TestSport")
+        group = Group.objects.create(name="TestGroup", club=self.club1)
+        group.sports.add(sport)
+        request = self.factory.get("/clubs/", {"sport": sport})
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
