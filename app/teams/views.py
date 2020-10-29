@@ -18,11 +18,15 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-        group_name = self.request.query_params.get("group", None)
+        group = self.request.query_params.get("group", None)
 
-        if group_name is not None:
-            query_param_invalid(group_name)
-            group_queryset = Team.objects.filter(group__name=group_name)
+        if group is not None:
+            query_param_invalid(group)
+            try:
+                group = int(group)
+                group_queryset = Team.objects.filter(group__id=group)
+            except ValueError:
+                group_queryset = Team.objects.filter(group__name=group)
             queryset = queryset.intersection(group_queryset)
 
         return queryset.order_by("id")
