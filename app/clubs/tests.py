@@ -111,6 +111,12 @@ class TestClubsApi(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data.get("results")), 0)
 
+    def test_invalid_query_param(self):
+        request = self.factory.get("/groups/", {"sport": "Sp@rt"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_query_param_sport(self):
         sport = Sport.objects.create(name="TestSport")
         group = Group.objects.create(name="TestGroup", club=self.club1)
@@ -162,3 +168,19 @@ class TestClubsApi(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(Club.objects.filter(name="GCIL2").exists())
+
+    def test_invalid_name(self):
+        request = self.factory.post("/clubs/", {"name": "Club%3"}, format="json")
+        response = get_response(request, user=self.user)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_char_field(self):
+        request = self.factory.post(
+            "/clubs/",
+            {"name": "Clubbb", "description": "This description i$ not valid"},
+            format="json",
+        )
+        response = get_response(request, user=self.user)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

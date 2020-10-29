@@ -3,9 +3,15 @@ from django.http import HttpResponse
 from elasticsearch_dsl import Q, Search, utils
 from rest_framework.utils import json
 
+from app.utils import query_param_invalid
+
 
 def global_search(request):
     q = request.GET.get("q")
+    q_invalid = query_param_invalid(q, raise_exception=False)
+    if q_invalid:
+        return HttpResponse(q_invalid, status=404)
+
     q_list = q.split("/")  # If query is clubs/ntnui
 
     if len(q_list) != 1:
