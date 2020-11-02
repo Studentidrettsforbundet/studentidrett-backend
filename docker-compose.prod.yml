@@ -33,6 +33,7 @@
       volumes:
         - .:/app
         - static_volume:/staticfiles
+        - media_volume:/mediafiles
       depends_on:
         - postgres
         - elasticsearch
@@ -77,6 +78,7 @@
       volumes:
       - ./config/nginx/conf.d:/nginx.conf
       - static_volume:/staticfiles
+      - media_volume:/mediafiles
       depends_on:
       - web
       networks:
