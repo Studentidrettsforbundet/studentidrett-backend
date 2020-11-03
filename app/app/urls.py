@@ -14,17 +14,31 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls.static import static
-from django.urls import include, path
+from django.urls import include, path, re_path
+
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
 
 import search.views as search_views
 from app import settings
 
 from django.contrib import admin
 
+openapi_info = openapi.Info(
+    title="NSI API",
+    default_version="v2",
+    description="API to access NSI",
+    license=openapi.License(name="Apache v2 License"),
+)
+
+schema_view = get_schema_view(
+    openapi_info,
+    public=True,
+)
+
 urlpatterns = (
     [
         path("admin/", admin.site.urls),
-        path("", include("app.swagger_docs")),
         path("", include("interest.urls")),
         path("", include("groups.urls")),
         path("", include("sports.urls")),
@@ -33,6 +47,19 @@ urlpatterns = (
         path("", include("teams.urls")),
         path(r"search/", search_views.global_search, name="global_search"),
         path("", include("questionnaire.urls")),
+        re_path(
+            r"^doc(?P<format>\.json|\.yaml)$",
+            schema_view.without_ui(cache_timeout=0),
+            name="schema-json",
+        ),
+        path(
+            "doc/",
+            schema_view.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        ),
+        path(
+            "redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+        ),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -57,6 +57,23 @@ class QuestionSerializer(serializers.ModelSerializer):
             alt.save(question)
         return question
 
+    def list(self, validated_data):
+        resp = []
+        for question in validated_data:
+            alternatives = AlternativeSerializer(
+                Alternative.objects.filter(qid=question.id), many=True
+            )
+            # Explicitly define which answer is on which side to keep things consistent
+            resp.append(
+                {
+                    "id": str(question.id),
+                    "text": question.text,
+                    "left": alternatives.data[0].get("text"),
+                    "right": alternatives.data[1].get("text"),
+                }
+            )
+        return resp
+
     def validate(self, data):
         validate_name(data["text"], "Text")
         return data
