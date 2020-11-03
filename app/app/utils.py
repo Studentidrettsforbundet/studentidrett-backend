@@ -1,3 +1,5 @@
+import os
+
 from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.serializers import ValidationError
@@ -33,3 +35,18 @@ def query_param_invalid(query, raise_exception=True):
             )
         else:
             return message
+
+
+def is_allowed_host(host):
+    env_name = os.getenv("ENV_NAME", "local")
+    if env_name == "staging":
+        from app.settings.development import ALLOWED_HOSTS
+    elif env_name == "production":
+        from app.settings.production import ALLOWED_HOSTS
+    else:
+        from app.settings.local import ALLOWED_HOSTS
+
+    if host or "*" in ALLOWED_HOSTS:
+        return True
+    else:
+        return False
