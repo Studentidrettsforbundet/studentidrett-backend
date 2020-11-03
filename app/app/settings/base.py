@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
 import os
+import re
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -123,6 +123,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Input validation
+GENERAL_VALID_INPUT = re.compile(r"^[a-zA-Z0-9&ÆæØøÅåÄäÖö_.,'()#@?!+=/\"\- ]+$")
+NAME_VALID_INPUT = re.compile(r"^^[a-zA-Z0-9&ÆæØøÅåÄäÖö_.,'/\- ]+$")
+
+
 """ DATABASE CONFIGURATION """
 if os.getenv("GITHUB_WORKFLOW"):
     DATABASES = {
@@ -169,7 +174,7 @@ REST_FRAMEWORK = {
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "CET"
 
 USE_I18N = True
 
@@ -181,9 +186,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
-
 STATIC_ROOT = os.path.join(BASE_DIR, "/staticfiles/")
 STATICFILES_DIR = os.path.join(BASE_DIR, "/staticfiles/")
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "/mediafiles")
-MEDIAFILES_DIR = os.path.join(BASE_DIR, "/mediafiles")

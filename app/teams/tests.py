@@ -218,9 +218,41 @@ class TestTeam(TestCase):
             response.data.get("results"), TeamSerializer(self.teams, many=True).data
         )
 
+    def test_query_param_group_id(self):
+        request = self.factory.get("/teams/", {"group": self.group.pk})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data.get("results")), len(self.teams))
+        self.assertEqual(
+            response.data.get("results"), TeamSerializer(self.teams, many=True).data
+        )
+
+    def test_invalid_query_param(self):
+        request = self.factory.get("/teams/", {"group": "Grou@p"})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_query_param_group_no_teams(self):
         request = self.factory.get("/teams/", {"group": "NoTeams"})
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_invalid_name(self):
+        request = self.factory.post("/teams/", {"name": "Group%3"}, format="json")
+        response = get_response(request, user=self.user)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_char_field(self):
+        request = self.factory.post(
+            "/teams/",
+            {"name": "Group3", "short_description": "This description i$ not valid"},
+            format="json",
+        )
+        response = get_response(request, user=self.user)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

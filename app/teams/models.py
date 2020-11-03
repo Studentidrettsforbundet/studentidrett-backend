@@ -24,22 +24,19 @@ class Team(models.Model):
         max_length=4, choices=Skill.choices, default=Skill.NONE
     )
     season = models.CharField(max_length=511, null=True)
-    facebook_link = models.CharField(max_length=127, null=True)
-    instagram_link = models.CharField(max_length=127, null=True)
-    webpage = models.CharField(max_length=127, null=True)
+    facebook_link = models.URLField(max_length=127, null=True)
+    instagram_link = models.URLField(max_length=127, null=True)
+    webpage = models.URLField(max_length=127, null=True)
     availability = models.CharField(
         max_length=2, choices=Status.choices, default=Status.FULL
     )
     image = models.ImageField(upload_to="teams", null=True)
 
-    class Meta:
-        """ Configure the name displayed in the admin panel """
-
-        verbose_name = "Team"
-        verbose_name_plural = "Teams"
-
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ["name"]
 
 
 class Schedule(models.Model):

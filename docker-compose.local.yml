@@ -36,7 +36,7 @@
         - elastic_network
       ports:
         - 9200:9200
-        
+
     web:
       container_name: nsi_backend
       volumes:

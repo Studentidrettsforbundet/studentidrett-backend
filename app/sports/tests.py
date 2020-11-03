@@ -142,6 +142,17 @@ class SportViewTest(TestCase):
             response.data.get("results"), SportSerializer(self.sports, many=True).data
         )
 
+    def test_query_param_city_id(self):
+        request = self.factory.get("/sports/", {"city": self.city.pk})
+        response = get_response(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(response.data.get("results")), len(self.sports))
+        self.assertEqual(
+            response.data.get("results"), SportSerializer(self.sports, many=True).data
+        )
+
     def test_query_param_city_no_sports(self):
         City(name="Oslo")
         request = self.factory.get("/sports/", {"city": "Oslo"})
@@ -156,3 +167,11 @@ class SportViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data.get("results")), 0)
+
+    def test_invalid_name(self):
+        request = self.factory.post(
+            "/sports/", {"name": "Sport%3", "labels": []}, format="json"
+        )
+        response = get_response(request, user=self.user)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

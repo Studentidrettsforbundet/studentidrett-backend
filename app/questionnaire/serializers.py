@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from app.utils import validate_name
 from questionnaire.models import Alternative, Answer, Label, Question
 
 
@@ -10,6 +11,10 @@ class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
         fields = ["text", "sports", "alternatives"]
+
+    def validate(self, data):
+        validate_name(data["text"], field="Text")
+        return data
 
 
 class AlternativeSerializer(serializers.ModelSerializer):
@@ -31,6 +36,10 @@ class AlternativeSerializer(serializers.ModelSerializer):
                 lab.alternatives.add(alternative)
         return alternative
 
+    def validate(self, data):
+        validate_name(data["text"], field="Text")
+        return data
+
 
 class QuestionSerializer(serializers.ModelSerializer):
     alternatives = AlternativeSerializer(many=True)
@@ -48,6 +57,7 @@ class QuestionSerializer(serializers.ModelSerializer):
             alt.save(question)
         return question
 
+
     def list(self, validated_data):
         resp = []
         for question in validated_data:
@@ -64,6 +74,10 @@ class QuestionSerializer(serializers.ModelSerializer):
                 }
             )
         return resp
+
+    def validate(self, data):
+        validate_name(data["text"], "Text")
+        return data
 
 
 class AnswerSerializer(serializers.ModelSerializer):
