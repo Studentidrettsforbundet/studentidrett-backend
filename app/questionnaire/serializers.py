@@ -57,7 +57,6 @@ class QuestionSerializer(serializers.ModelSerializer):
             alt.save(question)
         return question
 
-
     def list(self, validated_data):
         resp = []
         for question in validated_data:
