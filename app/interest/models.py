@@ -4,7 +4,7 @@ from groups.models import Group
 
 
 class Interest(models.Model):
-    cookie_key = models.CharField(max_length=100, null=False)
+    session_id = models.CharField(max_length=100, null=False)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=False, blank=False)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -12,6 +12,6 @@ class Interest(models.Model):
         ordering = ["group"]
         constraints = [
             models.UniqueConstraint(
-                fields=["cookie_key", "group"], name="unique_interest"
+                fields=["session_id", "group"], name="unique_interest"
             )
         ]
