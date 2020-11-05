@@ -37,16 +37,16 @@ def query_param_invalid(query, raise_exception=True):
             return message
 
 
-def is_allowed_host(host):
+def is_allowed_origin(origin):
     env_name = os.getenv("ENV_NAME", "local")
     if env_name == "staging":
-        from app.settings.development import ALLOWED_HOSTS
+        from app.settings.development import CORS_ALLOWED_ORIGINS, CORS_ORIGIN_ALLOW_ALL
     elif env_name == "production":
-        from app.settings.production import ALLOWED_HOSTS
+        from app.settings.production import CORS_ALLOWED_ORIGINS, CORS_ORIGIN_ALLOW_ALL
     else:
-        from app.settings.local import ALLOWED_HOSTS
+        from app.settings.local import CORS_ORIGIN_ALLOW_ALL
 
-    if host or "*" in ALLOWED_HOSTS:
+    if CORS_ORIGIN_ALLOW_ALL or (origin in CORS_ALLOWED_ORIGINS):
         return True
     else:
         return False

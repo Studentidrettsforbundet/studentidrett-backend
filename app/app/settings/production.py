@@ -9,9 +9,12 @@ ENVIRONMENT = EnvironmentOptions.PRODUCTION
 
 
 """ ACCESS_CONTROL """
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://kundestyrt-nsi-backend.azurewebsites.net/"]
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ALLOWED_ORIGINS = ()
+CORS_ALLOWED_ORIGINS = (
+    "https://kundestyrt-nsi-backend.azurewebsites.net/",
+    "https://kundestyrt-nsi-frontend.azurewebsites.net/",
+)
 
 SECURE_SSL_REDIRECT = True
 
