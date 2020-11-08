@@ -7,4 +7,20 @@ class CityFactory(factory.django.DjangoModelFactory):
         model = City
 
     name = "Trondheim"
-    region = "MIDT"
+    region = "midt"
+
+
+class CityFactoryT(factory.django.DjangoModelFactory):
+    class Meta:
+        model = City
+
+    name = "Trondheim"
+    region = "midt"
+
+
+class CityFactoryB(factory.django.DjangoModelFactory):
+    class Meta:
+        model = City
+
+    name = "Bergen"
+    region = "vest"

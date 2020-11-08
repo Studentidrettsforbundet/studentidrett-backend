@@ -1,8 +1,12 @@
-from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 import pytest
 
+from rest_framework import status
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
+
+from cities.factories.city_factories import CityFactory, CityFactoryB
 from cities.models import City
+# from clubs.factories.club_factories import BIClubFactory, ClubFactory
+from clubs.factories.club_factories import BIClubFactory, ClubFactory
 from clubs.models import Club
 from clubs.serializers import ClubSerializer
 from clubs.views import ClubViewSet
@@ -11,7 +15,6 @@ from sports.models import Sport
 
 from django.contrib.auth.models import User
 
-'''
 
 def get_response(request, user=None, club_id=None):
     """
@@ -41,25 +44,11 @@ class TestClubsApi(APITestCase):
     def setUp(self):
 
         self.name = "NTNUI"
-        self.city1 = City.objects.create(name="Trondheim", region="MIDT")
-        self.city2 = City.objects.create(name="Eiksmarka", region="ØST")
-        self.club1 = Club.objects.create(
-            name=self.name,
-            city=self.city1,
-            description="This is a club for the best of the best!",
-            contact_email="captain1@ntnui.com",
-            membership_fee="about half of your yearly income",
-            register_info="You'll have to sell your soul, and bake a cake",
-        )
 
-        Club.objects.create(
-            name="BI lions",
-            city=self.city2,
-            description="We just wanna take your money",
-            contact_email="cheif@bilions.com",
-            membership_fee="about all of your yearly income",
-            register_info="You'll have to buy champagne for the whole club",
-        )
+        self.city1 = CityFactory()
+        self.club1 = ClubFactory(city=self.city1)
+        self.city2 = CityFactoryB()
+        self.club2 = BIClubFactory(city=self.city2)
 
         self.user = User.objects.create_superuser(
             username="testuser", email="testuser@test.com", password="testing"
@@ -166,5 +155,3 @@ class TestClubsApi(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(Club.objects.filter(name="GCIL2").exists())
-
-'''

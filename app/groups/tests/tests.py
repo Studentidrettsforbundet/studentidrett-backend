@@ -4,14 +4,16 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from cities.models import City
+from clubs.factories.club_factories import ClubFactory
 from clubs.models import Club
+from groups.factories.group_factories import GroupFactory
 from groups.models import Group
 from groups.serializers import GroupSerializer
 from groups.views import GroupViewSet
 from sports.models import Sport
 
 from django.contrib.auth.models import User
-'''
+
 
 def get_response(request, user=None, group_id=None):
     """
@@ -92,20 +94,9 @@ class GroupViewTest(TestCase):
         self.user = User.objects.create_superuser(
             username="testuser", email="testuser@test.com", password="testing"
         )
-        self.group = Group.objects.create(
-            name="Group1",
-            description="This is a description",
-            cover_photo=None,
-            club=self.club,
-            city=self.city,
-        )
-        Group.objects.create(
-            name="Group2",
-            description="This is also a description",
-            cover_photo=None,
-            club=self.club,
-            city=self.city,
-        )
+        self.group = GroupFactory(city=self.city, club=self.club)
+        GroupFactory(name="group2", city=self.city, club=self.club)
+
         self.group.sports.add(self.sport)
         self.groups = Group.objects.all()
         self.factory = APIRequestFactory()
@@ -336,5 +327,3 @@ class GroupViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data.get("results")), 0)
-
-'''

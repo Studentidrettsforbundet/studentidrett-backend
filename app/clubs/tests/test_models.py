@@ -13,6 +13,7 @@ from clubs.views import ClubViewSet
 from clubs.factories.club_factories import ClubFactory, LongNameClubFactory
 
 
+@pytest.mark.django_db
 class TestClubsModel(APITestCase):
 
     def setUp(self):
@@ -26,6 +27,8 @@ class TestClubsModel(APITestCase):
     def test_club_field_lengths(self):
         with pytest.raises(django.db.utils.DataError):
             self.club2 = LongNameClubFactory()
+
+
 
 
 
