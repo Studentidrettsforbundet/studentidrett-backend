@@ -53,7 +53,6 @@ class TestInterestApi(APITestCase):
             "/interest/",
             {"group": self.group.pk, "session_id": "c00k13"},
             format="json",
-            HTTP_ORIGIN="localhost:8000",
         )
         response = get_response(request, create=True)
 
@@ -65,7 +64,6 @@ class TestInterestApi(APITestCase):
             "/interest/",
             {"group": self.group.pk, "session_id": "c00k13M0n5t3r"},
             format="json",
-            HTTP_ORIGIN="localhost:8000",
         )
         response = get_response(request, create=True)
 
@@ -84,10 +82,7 @@ class TestInterestApi(APITestCase):
 
     def test_post_empty_club(self):
         request = self.factory.post(
-            "/interest/",
-            {"session_id": "no_group"},
-            format="json",
-            HTTP_ORIGIN="localhost:8000",
+            "/interest/", {"session_id": "no_group"}, format="json"
         )
         response = get_response(request, create=True)
 
