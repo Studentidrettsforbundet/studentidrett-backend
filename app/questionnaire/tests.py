@@ -3,12 +3,14 @@ import math
 from django.test import TestCase
 
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
 from questionnaire.models import Alternative, Label, Question
 from questionnaire.recommendation_engine import RecommendationEngine
 from questionnaire.views import QuestionnaireViewSet
 from sports.models import Sport
+
+from django.contrib.auth.models import User
 
 
 class TestQuestionnaireAPI(APITestCase):
@@ -29,6 +31,9 @@ class TestQuestionnaireAPI(APITestCase):
 
         self.qid1 = q.pk
         self.answer1 = 2
+        self.user = User.objects.create_superuser(
+            username="testuser", email="testuser@test.com", password="testing"
+        )
 
     def test_post_questionnaire(self):
         request = self.factory.post(
@@ -36,6 +41,7 @@ class TestQuestionnaireAPI(APITestCase):
             [{"qid": self.qid1, "answer": self.answer1}],
             format="json",
         )
+        force_authenticate(request, user=self.user)
         response = self.post_view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.keys(), {"recommendation", "confidence"})

@@ -1,16 +1,15 @@
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets
 
 from groups.models import Group
 from sports.models import Sport
+from sports.permissions import GetSportPermission
 from sports.serializers import SportSerializer
-
-# Create your views here.
 
 
 class SportViewSet(viewsets.ModelViewSet):
     serializer_class = SportSerializer
     queryset = Sport.objects.all()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [GetSportPermission]
 
     def get_queryset(self):
         queryset = self.queryset

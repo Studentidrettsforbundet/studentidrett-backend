@@ -2,15 +2,14 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 from app.utils import is_allowed_origin
+from interest.permissions import GetInterestPermission
+from interest.serializers import InterestSerializer
 
 from .models import Interest
 
-# from .permissions import GetInterestPermission
-from .serializers import InterestSerializer
-
 
 class InterestViewSet(viewsets.ModelViewSet):
-    # permission_classes = [GetInterestPermission]
+    permission_classes = [GetInterestPermission]
     queryset = Interest.objects.all()
     serializer_class = InterestSerializer
     http_method_names = ["get", "post"]

@@ -1,8 +1,9 @@
-from rest_framework import permissions, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 from app.settings.pagination import CustomPagination
 from questionnaire.models import Answer, Question
+from questionnaire.permissions import GetPermission
 from questionnaire.recommendation_engine import RecommendationEngine
 from questionnaire.serializers import AnswerSerializer, QuestionSerializer
 
@@ -10,7 +11,7 @@ from questionnaire.serializers import AnswerSerializer, QuestionSerializer
 class QuestionnaireViewSet(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [GetPermission]
     http_method_names = ["post"]
 
     def create(self, request, *args, **kwargs):
@@ -44,6 +45,7 @@ class QuestionnaireViewSet(viewsets.ModelViewSet):
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    permission_classes = [GetPermission]
     http_method_names = ["get", "post"]
     pagination_class = CustomPagination
 
