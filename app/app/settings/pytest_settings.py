@@ -1,24 +1,7 @@
 # flake8: noqa
 from .local import *
 
-if os.getenv("GITHUB_WORKFLOW"):
-
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "github-actions",
-            "USER": "postgres",
-            "PASSWORD": "postgres",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
-    }
-
-    ELASTICSEARCH_DSL = {
-        "default": {"hosts": "elasticsearch"},
-    }
-else:
-
+if not os.getenv("GITHUB_WORKFLOW"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
