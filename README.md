@@ -1,5 +1,4 @@
 # studentidrett-backend
-# Virtual environment in installation?
 
 ## Description
 This project is the back end for The Norwegian Association of University Sports (Norges Studentidrettsforbund, NSI)
@@ -136,6 +135,10 @@ Run migrations so the PostgreSQL database have all tables and columns needed for
 Run project as an ordinary Python project, using the runserver command.
 `python manage.py runserver`
 
+The project should now be accessible from [localhost:8000](http://localhost:8000/)
+
+## Testing
+
 
 ## Code style
 Automatic linting, code formatting and security testing is implemented using
@@ -147,7 +150,7 @@ To run on all files, run `pre-commit run --all-files`
 
 When the pre-commit hooks automatically run and any of them fail, the attempted committed files need to be re-added and committed again.
 
-### More about code style can be found at WIKI KANSKJE?
+*More about code standards can be found in the [wiki](https://github.com/Studentidrettsforbundet/studentidrett-backend/wiki/Code-Standards)*
 
 ## Git-conventions
 
