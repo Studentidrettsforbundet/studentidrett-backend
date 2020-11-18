@@ -1,5 +1,5 @@
 # flake8: noqa
-from .local import *
+from .base import *
 
 if os.getenv("GITHUB_WORKFLOW"):
 
