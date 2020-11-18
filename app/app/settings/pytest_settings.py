@@ -1,8 +1,7 @@
 # flake8: noqa
-from .base import *
+from .local import *
 
 if os.getenv("GITHUB_WORKFLOW"):
-    from .development import *
 
     DATABASES = {
         "default": {
@@ -16,10 +15,9 @@ if os.getenv("GITHUB_WORKFLOW"):
     }
 
     ELASTICSEARCH_DSL = {
-        "default": {"hosts": "elasticsearch"},
+        "default": {"hosts": "localhost:9200"},
     }
 else:
-    from .local import *
 
     DATABASES = {
         "default": {
