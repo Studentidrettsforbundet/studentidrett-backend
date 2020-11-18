@@ -8,6 +8,16 @@ Front end is hosted at: https://kundestyrt-nsi-frontend-staging.azurewebsites.ne
 Front end repository: https://github.com/Studentidrettsforbundet/studentidrett-frontend
 
 
+## Technologies
+This is a general overview of the technologies used in the project. All dependencies used are included in 'requirements.txt'.
+* [Python](https://www.python.org/)
+* [Django](https://www.djangoproject.com/)
+* [Django REST framework](https://www.django-rest-framework.org/)
+* [Elasticsearch](https://www.elastic.co/elasticsearch/)
+* [PostgreSQL](https://www.postgresql.org/)
+* [Docker](https://www.docker.com/)
+* [Azure](https://azure.microsoft.com/)
+
 # Running locally
 
 ## Install Docker
