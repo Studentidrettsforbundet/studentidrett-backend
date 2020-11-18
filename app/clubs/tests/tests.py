@@ -1,7 +1,12 @@
+import pytest
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
+from cities.factories.city_factories import CityFactory, CityFactoryB
 from cities.models import City
+
+# from clubs.factories.club_factories import BIClubFactory, ClubFactory
+from clubs.factories.club_factories import BIClubFactory, ClubFactory
 from clubs.models import Club
 from clubs.serializers import ClubSerializer
 from clubs.views import ClubViewSet
@@ -34,29 +39,16 @@ def get_response(request, user=None, club_id=None):
         return view(request)
 
 
+@pytest.mark.django_db
 class TestClubsApi(APITestCase):
     def setUp(self):
 
         self.name = "NTNUI"
-        self.city1 = City.objects.create(name="Trondheim", region="MIDT")
-        self.city2 = City.objects.create(name="Eiksmarka", region="ØST")
-        self.club1 = Club.objects.create(
-            name=self.name,
-            city=self.city1,
-            description="This is a club for the best of the best!",
-            contact_email="captain1@ntnui.com",
-            membership_fee="about half of your yearly income",
-            register_info="You'll have to sell your soul, and bake a cake",
-        )
 
-        Club.objects.create(
-            name="BI lions",
-            city=self.city2,
-            description="We just wanna take your money",
-            contact_email="cheif@bilions.com",
-            membership_fee="about all of your yearly income",
-            register_info="You'll have to buy champagne for the whole club",
-        )
+        self.city1 = CityFactory()
+        self.club1 = ClubFactory(city=self.city1)
+        self.city2 = CityFactoryB()
+        self.club2 = BIClubFactory(city=self.city2)
 
         self.user = User.objects.create_superuser(
             username="testuser", email="testuser@test.com", password="testing"
@@ -64,6 +56,7 @@ class TestClubsApi(APITestCase):
         self.clubs = Club.objects.all()
         self.factory = APIRequestFactory()
 
+    @pytest.mark.django_db
     def test_club_detail(self):
         request = self.factory.get("/clubs/")
         response = get_response(request, club_id=self.club1.pk)
@@ -130,19 +123,6 @@ class TestClubsApi(APITestCase):
         group = Group.objects.create(name="TestGroup", club=self.club1)
         group.sports.add(sport)
         request = self.factory.get("/clubs/", {"sport": "TestSport"})
-        response = get_response(request)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data.get("results")), 1)
-        self.assertEqual(
-            response.data.get("results")[0], ClubSerializer(self.club1).data
-        )
-
-    def test_query_param_sport_id(self):
-        sport = Sport.objects.create(name="TestSport")
-        group = Group.objects.create(name="TestGroup", club=self.club1)
-        group.sports.add(sport)
-        request = self.factory.get("/clubs/", {"sport": sport})
         response = get_response(request)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

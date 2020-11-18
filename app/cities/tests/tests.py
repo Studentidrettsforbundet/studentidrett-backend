@@ -3,9 +3,10 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from .models import City
-from .serializers import CitySerializer
-from .views import CityViewSet
+from cities.factories.city_factories import CityFactoryB, CityFactoryT
+from cities.models import City
+from cities.serializers import CitySerializer
+from cities.views import CityViewSet
 
 
 def get_response(request, user=None, city_id=None):
@@ -28,17 +29,17 @@ def get_response(request, user=None, city_id=None):
 
 class TestCityApi(TestCase):
     def setUp(self):
-        self.city = City.objects.create(name="Trondheim", region="midt")
-        self.city2 = City.objects.create(name="Bergen", region="vest")
+        self.city1 = CityFactoryT()
+        self.city2 = CityFactoryB()
         self.factory = APIRequestFactory()
         self.cities = City.objects.all()
 
     def test_city_detail(self):
         request = self.factory.get("/cities/")
-        response = get_response(request, city_id=self.city.id)
+        response = get_response(request, city_id=self.city1.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, CitySerializer(self.city).data)
+        self.assertEqual(response.data, CitySerializer(self.city1).data)
 
     def test_cities_list(self):
         request = self.factory.get("/cities/")
@@ -64,7 +65,7 @@ class TestCityApi(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data.get("results")), 1)
         self.assertEqual(
-            response.data.get("results")[0], CitySerializer(self.city).data
+            response.data.get("results")[0], CitySerializer(self.city1).data
         )
 
     def test_query_param_non_existing_region(self):

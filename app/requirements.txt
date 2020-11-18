@@ -6,7 +6,9 @@ gunicorn==20.0.4
 
 # Test tools
 coverage==5.3
-
+pytest-django==4.1.0
+pytest-cov==2.10.1
+factory_boy==3.1.0
 
 # Code quality: Linting, formatting
 pre-commit==2.7.1

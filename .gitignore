@@ -49,6 +49,7 @@ wheels/
 *.egg
 *.manifest
 *.spec
+coverage.json
 
 # Installer logs
 pip-log.txt

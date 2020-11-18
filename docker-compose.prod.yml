@@ -26,6 +26,7 @@
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
+        ELASTICSEARCH: "elasticsearch"
       networks:
         - postgres_network
         - nginx_network
@@ -37,13 +38,7 @@
       depends_on:
         - postgres
         - elasticsearch
-      command: bash -c "
-        black --check . --config pyproject.toml &&
-        isort --check-only . &&
-        flake8 &&
-        python manage.py makemigrations --check
-        "
-      # TODO: Add pytest when this is fixed
+      command: ["/usr/local/bin/elastic.sh"]
 
     elasticsearch:
       image: ${ACR}/studentidrett-backend:elastic-${IMAGE_VERSION}

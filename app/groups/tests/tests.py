@@ -5,6 +5,7 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 
 from cities.models import City
 from clubs.models import Club
+from groups.factories.group_factories import GroupFactory
 from groups.models import Group
 from groups.serializers import GroupSerializer
 from groups.views import GroupViewSet
@@ -92,20 +93,9 @@ class GroupViewTest(TestCase):
         self.user = User.objects.create_superuser(
             username="testuser", email="testuser@test.com", password="testing"
         )
-        self.group = Group.objects.create(
-            name="Group1",
-            description="This is a description",
-            cover_photo=None,
-            club=self.club,
-            city=self.city,
-        )
-        Group.objects.create(
-            name="Group2",
-            description="This is also a description",
-            cover_photo=None,
-            club=self.club,
-            city=self.city,
-        )
+        self.group = GroupFactory(city=self.city, club=self.club)
+        GroupFactory(name="group2", city=self.city, club=self.club)
+
         self.group.sports.add(self.sport)
         self.groups = Group.objects.all()
         self.factory = APIRequestFactory()
