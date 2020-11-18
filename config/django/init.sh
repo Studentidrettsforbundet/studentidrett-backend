@@ -41,7 +41,7 @@ until elastic_ready; do
 done
 
 # Start app
->&2 echo "Postgres and Elastic search is up - executing command"
+>&2 echo "Postgres and Elasticsearch is up - executing command"
 
 python manage.py migrate
 
