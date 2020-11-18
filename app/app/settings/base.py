@@ -60,6 +60,9 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 
+ELASTICSEARCH_DSL = {
+    "default": {"hosts": os.environ.get("ELASTICSEARCH")},
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -138,11 +141,6 @@ if os.getenv("GITHUB_WORKFLOW"):
             "PORT": "5432",
         }
     }
-
-    ELASTICSEARCH_DSL = {
-        "default": {"hosts": "localhost:9200"},
-    }
-
 else:
     DATABASES = {
         "default": {
@@ -153,10 +151,6 @@ else:
             "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
             "PORT": "5432",
         }
-    }
-
-    ELASTICSEARCH_DSL = {
-        "default": {"hosts": os.environ.get("ELASTICSEARCH")},
     }
 
 
