@@ -97,6 +97,19 @@ POSTGRES_HOST= 'localhost'
 ELASTICSEARCH= 'localhost:9200'
 ```
 
+#### Set up virtual environment
+To create a virtual environment run: \
+`python -m venv .venv` \
+This will create a virtual environment named `.venv` in the root directory.
+
+Activation of the virtual environment depends on the operating system.
+
+**POSIX (Linux, macOS, \*BSD, etc.):** \
+`source .venv/bin/activate`
+
+**Windows:** \
+`.venv\Scripts\activate.bat`
+
 #### Install dependencies
 Navigate to directory containing `requirements.txt`: \
 `cd app`
