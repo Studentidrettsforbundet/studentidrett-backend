@@ -58,3 +58,13 @@ omit = [
     "*wsgi.py",
     "manage.py",
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = 'app.settings.pytest_settings'
+python_files = ['tests.py', 'test_*.py', '*_tests.py']
+
+addopts = [
+    "--maxfail=3",
+    "--no-cov-on-fail",
+    "--failed-first"
+    ]

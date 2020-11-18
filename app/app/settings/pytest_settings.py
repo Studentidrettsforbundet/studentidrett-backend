@@ -15,7 +15,7 @@ if os.getenv("GITHUB_WORKFLOW"):
     }
 
     ELASTICSEARCH_DSL = {
-        "default": {"hosts": "localhost:9200"},
+        "default": {"hosts": "elasticsearch"},
     }
 else:
 
