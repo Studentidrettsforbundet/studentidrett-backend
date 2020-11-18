@@ -1,16 +1,14 @@
-from rest_framework import permissions, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.exceptions import NotFound
 
 from app.enums import Region
 from cities.models import City
+from cities.permissions import GetCityPermission
 from cities.serializers import CitySerializer
 
-# Create your views here.
 
-
-# class CityViewSet(viewsets.ReadOnlyModelViewSet):
 class CityViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [GetCityPermission]
     queryset = City.objects.all()
     serializer_class = CitySerializer
 

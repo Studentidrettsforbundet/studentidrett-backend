@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from app.utils import validate_name
 from questionnaire.models import Label
 from questionnaire.serializers import LabelSerializer
 from sports.models import Sport
@@ -30,3 +31,7 @@ class SportSerializer(serializers.ModelSerializer):
                 lab = Label.objects.create(text=label.get("text"))
                 lab.sports.add(sport)
         return sport
+
+    def validate(self, data):
+        validate_name(data["name"])
+        return data

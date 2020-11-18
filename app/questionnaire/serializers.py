@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from app.utils import validate_name
 from questionnaire.models import Alternative, Answer, Label, Question
 
 
@@ -10,6 +11,10 @@ class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
         fields = ["text", "sports", "alternatives"]
+
+    def validate(self, data):
+        validate_name(data["text"], field="Text")
+        return data
 
 
 class AlternativeSerializer(serializers.ModelSerializer):
@@ -31,6 +36,10 @@ class AlternativeSerializer(serializers.ModelSerializer):
                 lab.alternatives.add(alternative)
         return alternative
 
+    def validate(self, data):
+        validate_name(data["text"], field="Text")
+        return data
+
 
 class QuestionSerializer(serializers.ModelSerializer):
     alternatives = AlternativeSerializer(many=True)
@@ -47,6 +56,27 @@ class QuestionSerializer(serializers.ModelSerializer):
             alt.is_valid()
             alt.save(question)
         return question
+
+    def list(self, validated_data):
+        resp = []
+        for question in validated_data:
+            alternatives = AlternativeSerializer(
+                Alternative.objects.filter(qid=question.id), many=True
+            )
+            # Explicitly define which answer is on which side to keep things consistent
+            resp.append(
+                {
+                    "id": str(question.id),
+                    "text": question.text,
+                    "left": alternatives.data[0].get("text"),
+                    "right": alternatives.data[1].get("text"),
+                }
+            )
+        return resp
+
+    def validate(self, data):
+        validate_name(data["text"], "Text")
+        return data
 
 
 class AnswerSerializer(serializers.ModelSerializer):

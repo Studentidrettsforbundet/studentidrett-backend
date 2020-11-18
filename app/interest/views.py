@@ -1,23 +1,26 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from .models import Interest
+from app.utils import is_allowed_origin
+from interest.permissions import GetInterestPermission
+from interest.serializers import InterestSerializer
 
-# from .permissions import GetInterestPermission
-from .serializers import InterestSerializer
+from .models import Interest
 
 
 class InterestViewSet(viewsets.ModelViewSet):
-    # permission_classes = [GetInterestPermission]
+    permission_classes = [GetInterestPermission]
     queryset = Interest.objects.all()
     serializer_class = InterestSerializer
-    http_method_names = ["get", "post", "head"]
+    http_method_names = ["get", "post"]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        if not request.COOKIES.get("csrftoken"):
+        origin = request.headers["origin"]
+        if not is_allowed_origin(origin + "/"):
             return Response(
-                'No "csrftoken" found in cookies', status=status.HTTP_400_BAD_REQUEST
+                f"{origin} is not allowed to post interests.",
+                status=status.HTTP_403_FORBIDDEN,
             )
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -25,6 +28,3 @@ class InterestViewSet(viewsets.ModelViewSet):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
-
-    def perform_create(self, serializer):
-        serializer.save(cookie_key=self.request.COOKIES.get("csrftoken"))

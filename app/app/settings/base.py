@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
 import os
+import re
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -123,6 +123,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Input validation
+GENERAL_VALID_INPUT = re.compile(r"^[a-zA-Z0-9&ÆæØøÅåÄäÖö_.,'()#@?!+=/\"\- ]+$")
+NAME_VALID_INPUT = re.compile(r"^^[a-zA-Z0-9&ÆæØøÅåÄäÖö_.,'/\- ]+$")
+
+
 """ DATABASE CONFIGURATION """
 if os.getenv("GITHUB_WORKFLOW"):
     DATABASES = {
@@ -148,19 +153,14 @@ else:
     }
 
 
-# Add default pagination and json-format
-"""
-Currently disabled:
-"DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
-    ],
-"""
-
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
     "DEFAULT_PAGINATION_CLASS": "app.settings.pagination.CustomPagination",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ],
 }
 
 
@@ -169,7 +169,7 @@ REST_FRAMEWORK = {
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "CET"
 
 USE_I18N = True
 
@@ -181,9 +181,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
-
 STATIC_ROOT = os.path.join(BASE_DIR, "/staticfiles/")
 STATICFILES_DIR = os.path.join(BASE_DIR, "/staticfiles/")
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "/mediafiles")
-MEDIAFILES_DIR = os.path.join(BASE_DIR, "/mediafiles")

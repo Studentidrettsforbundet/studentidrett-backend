@@ -6,6 +6,9 @@ from sports.models import Sport
 class Question(models.Model):
     text = models.CharField(max_length=100)
 
+    class Meta:
+        ordering = ["id"]
+
 
 class Answer(models.Model):
     qid = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")

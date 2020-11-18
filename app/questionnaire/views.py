@@ -1,19 +1,17 @@
-from rest_framework import permissions, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from questionnaire.models import Alternative, Answer, Question
+from app.settings.pagination import CustomPagination
+from questionnaire.models import Answer, Question
+from questionnaire.permissions import GetPermission
 from questionnaire.recommendation_engine import RecommendationEngine
-from questionnaire.serializers import (
-    AlternativeSerializer,
-    AnswerSerializer,
-    QuestionSerializer,
-)
+from questionnaire.serializers import AnswerSerializer, QuestionSerializer
 
 
 class QuestionnaireViewSet(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [GetPermission]
     http_method_names = ["post"]
 
     def create(self, request, *args, **kwargs):
@@ -38,7 +36,7 @@ class QuestionnaireViewSet(viewsets.ModelViewSet):
 
         # TODO: Calculate a confidence-score
         return Response(
-            {"recommendation": results, "confidence": 0.95},
+            {"recommendation": results[:3], "confidence": 0.95},
             status=status.HTTP_200_OK,
             headers=headers,
         )
@@ -47,25 +45,29 @@ class QuestionnaireViewSet(viewsets.ModelViewSet):
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    permission_classes = [GetPermission]
     http_method_names = ["get", "post"]
+    pagination_class = CustomPagination
+
+    def create(self, request, *args, **kwargs):
+        if len(request.data.get("alternatives")) != 2:
+            return Response(
+                {"message": "There must be exactly 2 alternatives specified"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
     # Fetch questions currently in database, filtering logic handled in front end
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        headers = self.get_success_headers(queryset)
-        resp = []
-        for question in queryset:
-            alternatives = AlternativeSerializer(
-                Alternative.objects.filter(qid=question.id), many=True
-            )
-            if len(alternatives.data) == 2:
-                # Explicitly define which answer is on which side to keep things consistent
-                resp.append(
-                    {
-                        "id": str(question.id),
-                        "text": question.text,
-                        "left": alternatives.data[0].get("text"),
-                        "right": alternatives.data[1].get("text"),
-                    }
-                )
-        return Response(resp, status=status.HTTP_200_OK, headers=headers)
+        paginated_resp = self.paginate_queryset(queryset)
+        serializer = self.serializer_class
+        serialized = serializer().list(paginated_resp)
+        page = self.get_paginated_response(serialized)
+        return page
