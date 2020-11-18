@@ -141,15 +141,21 @@ The project should now be accessible from [localhost:8000](http://localhost:8000
 
 ## Testing
 Running the tests requires Elasticsearch to be running either through Docker or [manually running](https://github.com/Studentidrettsforbundet/studentidrett-backend/tree/fix/readme#install-and-run-elasticsearch).
-Some of the development specific environmental variables also have to be set a certain way.
 
-```
-POSTGRES_HOST= 'localhost'
-ELASTICSEARCH= 'localhost:9200'
-```
+To run the tests you need to be in the `./app` folder and run the command: \
+`pytest --cov`
 
-To run the tests you need to be in the root folder and run the command: \
-`pytest app/manage.py test`
+## Other notable commands
+These commands might be necessary when developing or debugging.
+
+If you have changed anything with search or want to clear the search cache: \
+`python manage.py search_index --rebuild`
+
+To shut down the Docker containers: \
+`docker-compose -f docker-compose.local.yml down -v`
+
+To remove all Docker images: \
+`docker image prune -a`
 
 ## Code style
 Automatic linting, code formatting and security testing is implemented using
