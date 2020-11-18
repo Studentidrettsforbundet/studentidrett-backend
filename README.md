@@ -25,9 +25,9 @@ This is a general overview of the technologies used in the project.
 
 ### Dependencies
 
-Dependencies are stored in `requirements.txt`, and is installed automatically by Docker and manually by running `pip install -r requirements.txt`.
+Dependencies are stored in `requirements.txt`, and is installed automatically by Docker and can be manually installed by running `pip install -r requirements.txt`.
 
-After adding a new dependency, add it to `requirements.txt` in the proper subsection, or create a new fitting subsection. \
+After adding a new dependency to the project, add it to `requirements.txt` in the proper subsection, or create a new fitting subsection. \
 Running `pip freeze > requirements.txt` to update the dependency list will add many unnecessary packages and dependencies of dependencies, and should not be used.
 
 ## Installation and running locally
@@ -67,12 +67,14 @@ ELASTICSEARCH= 'elasticsearch'
 https://docs.docker.com/get-docker/
 
 
-#### Run [Docker Machine](https://docs.docker.com/machine/)
+#### Install and run Docker Machine
 If you have an older Mac or Windows system you will need to install and use Docker Machine, since you cannot enable
  Hyper-V services. If your system supports Hyper-V services you can skip this part.
 
 Installation guide for Docker Machine can be found at:
 https://docs.docker.com/machine/install-machine/
+
+After installation do the following:
 
 Make sure to have a Docker Daemon running to be able to run the project.
 This can be done by running `docker-machine start default` and `
@@ -123,7 +125,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elastics
 https://www.postgresql.org/download/
 
 #### Create PostgreSQL database
-https://www.guru99.com/postgresql-create-database.html \
+https://www.guru99.com/postgresql-create-database.html
 
 Make sure that all variables coincide with what is stored in the `.env` file.
 
@@ -132,7 +134,7 @@ Run migrations so the PostgreSQL database have all tables and columns needed for
 `python manage.py migrate`
 
 #### Run the project
-Run project as an ordinary Python project, using the runserver command.
+Run project as an ordinary Python project, using the runserver command. \
 `python manage.py runserver`
 
 The project should now be accessible from [localhost:8000](http://localhost:8000/)
@@ -146,7 +148,7 @@ POSTGRES_HOST= 'localhost'
 ELASTICSEARCH= 'localhost:9200'
 ```
 
-To run the tests you need to be in the root folder and run the command:
+To run the tests you need to be in the root folder and run the command: \
 `pytest app/manage.py test`
 
 ## Code style
