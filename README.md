@@ -49,20 +49,9 @@ DJANGO_SECRET_KEY= [INSERT_KEY] (Not needed for running locally)
 POSTGRES_DB=[DATABASE_NAME]
 POSTGRES_USER=[DATABASE_USERNAME]
 POSTGRES_PASSWORD=[DATABASE_PASSWORD]
-POSTGRES_HOST=[DEV_ENVIRONMENT_SPECIFIC]
-
-# Elasticsearch
-ELASTICSEARCH=[DEV_ENVIRONMENT_SPECIFIC]
 ```
 
 ### Option 1 - Using Docker
-#### Environment variables
-The usage of quotation marks should be exactly as below.
-```
-POSTGRES_HOST= postgres
-ELASTICSEARCH= 'elasticsearch'
-```
-
 #### Install and run Docker
 https://docs.docker.com/get-docker/
 
@@ -91,13 +80,6 @@ The project should now be accessible from [localhost:8000](http://localhost:8000
 
 
 ### Option 2 - Running as a Python file
-#### Environment variables
-The usage of quotation marks should be exactly as below.
-```
-POSTGRES_HOST= 'localhost'
-ELASTICSEARCH= 'localhost:9200'
-```
-
 #### Set up virtual environment
 To create a virtual environment run: \
 `python -m venv .venv` \
