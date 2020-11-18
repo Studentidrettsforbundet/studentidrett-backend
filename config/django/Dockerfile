@@ -9,8 +9,10 @@ RUN pip install -r requirements.txt
 # init.sh converted to UNIX
 RUN apt-get update && apt-get install -y dos2unix
 COPY config/django/init.sh /usr/local/bin/
+COPY config/django/elastic.sh /usr/local/bin/
 RUN chmod u+x /usr/local/bin/init.sh
-RUN dos2unix /usr/local/bin/init.sh && apt-get --purge remove -y dos2unix && rm -rf /var/lib/apt/lists/
+RUN chmod u+x /usr/local/bin/elastic.sh
+RUN dos2unix /usr/local/bin/init.sh && dos2unix /usr/local/bin/elastic.sh && apt-get --purge remove -y dos2unix && rm -rf /var/lib/apt/lists/
 
 EXPOSE 8000
 
