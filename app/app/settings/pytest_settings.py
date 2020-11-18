@@ -31,7 +31,3 @@ else:
             "PORT": "5432",
         }
     }
-
-    ELASTICSEARCH_DSL = {
-        "default": {"hosts": os.environ.get("ELASTICSEARCH", "localhost:9200")},
-    }
