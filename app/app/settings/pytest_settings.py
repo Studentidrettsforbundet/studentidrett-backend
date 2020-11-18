@@ -1,11 +1,6 @@
 # flake8: noqa
 from .local import *
 
-ELASTICSEARCH_DSL = {
-    "default": {"hosts": "localhost:9200"},
-}
-
-
 if os.getenv("GITHUB_WORKFLOW"):
     DATABASES = {
         "default": {
@@ -17,6 +12,10 @@ if os.getenv("GITHUB_WORKFLOW"):
             "PORT": "5432",
         }
     }
+
+    ELASTICSEARCH_DSL = {
+        "default": {"hosts": "elasticsearch"},
+    }
 else:
     DATABASES = {
         "default": {
@@ -27,4 +26,8 @@ else:
             "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
             "PORT": "5432",
         }
+    }
+
+    ELASTICSEARCH_DSL = {
+        "default": {"hosts": "localhost:9200"},
     }
