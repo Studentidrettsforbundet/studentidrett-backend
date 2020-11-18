@@ -26,7 +26,7 @@
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
-        ELASTICSEARCH: "elasticsearch"
+        ELASTICSEARCH: elasticsearch
       networks:
         - postgres_network
         - nginx_network
