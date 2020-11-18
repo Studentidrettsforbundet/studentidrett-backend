@@ -1,7 +1,10 @@
 # studentidrett-backend
 
 ## Description
-This project is the back end for The Norwegian Association of University Sports (Norges Studentidrettsforbund, NSI) that is meant to let students find NSI's sports offers all over Norway. There is also a questionnaire that recommends sports based on the answers given. Admins can use the back end to create new objects in the database, as well as a primitive view of interests (clicks) on groups from the front end.
+This project is the back end for The Norwegian Association of University Sports (Norges Studentidrettsforbund, NSI)
+that is meant to let students find NSI's sports offers all over Norway. There is also a questionnaire that recommends
+sports based on the answers given. Admins can use the back end to create new objects in the database, as well as a
+primitive view of interests (clicks) on groups from the front end.
 
 Back end is hosted at: https://kundestyrt-nsi-backend.azurewebsites.net/ \
 Swagger for back end: https://app.swaggerhub.com/apis/kundestyrt_h20/Backend/v3
@@ -11,7 +14,7 @@ Front end repository: https://github.com/Studentidrettsforbundet/studentidrett-f
 
 
 ## Technologies
-This is a general overview of the technologies used in the project. All dependencies used are included in 'requirements.txt'.
+This is a general overview of the technologies used in the project.
 * [Python](https://www.python.org/)
 * [Django](https://www.djangoproject.com/)
 * [Django REST framework](https://www.django-rest-framework.org/)
@@ -20,12 +23,17 @@ This is a general overview of the technologies used in the project. All dependen
 * [Docker](https://www.docker.com/)
 * [Azure](https://azure.microsoft.com/)
 
-# Running locally
+### Dependencies
 
-## Install Docker
-https://docs.docker.com/get-docker/
+Dependencies are stored in `requirements.txt`, and is installed by running `pip install -r requirements.txt`.
 
-## Create .env file
+After adding a new dependency, add it to `requirements.txt` in the proper subsection, or create a new fitting subsection. \
+Running `pip freeze > requirements.txt` to update the dependency list will add many unnecessary packages and dependencies of dependencies, and should not be used.
+
+## Installation and running locally
+Running the project locally can be done using either Docker or running it as a normal Python and Django project. \
+The installation guide assumes [Python 3](https://www.python.org/downloads/) has already been installed.
+### Create .env file
 For the system to run correctly it requires a set of environment variables:
 
 ```
@@ -37,10 +45,28 @@ ENV_NAME= ['local' (default), 'staging', 'production']
 POSTGRES_DB=[DATABASE_NAME]
 POSTGRES_USER=[DATABASE_USERNAME]
 POSTGRES_PASSWORD=[DATABASE_PASSWORD]
-POSTGRES_HOST=postgres
+POSTGRES_HOST=[DEV_ENVIRONMENT_SPECIFIC]
+ELASTICSEARCH=[DEV_ENVIRONMENT_SPECIFIC]
 ```
-## Run [Docker Machine](https://docs.docker.com/machine/)
-If you have an older Mac or Windows system you will need to install and use Docker Machine, since you cannot enable Hyper-V services.
+
+### Option 1 - Using Docker
+#### Environment variables
+The usage of quotation marks should be exactly as below.
+```
+POSTGRES_HOST= postgres
+ELASTICSEARCH= 'elasticsearch'
+```
+
+#### Install and run Docker
+https://docs.docker.com/get-docker/
+
+
+#### Run [Docker Machine](https://docs.docker.com/machine/)
+If you have an older Mac or Windows system you will need to install and use Docker Machine, since you cannot enable
+ Hyper-V services. If your system supports Hyper-V services you can skip this part.
+
+Installation guide for Docker Machine can be found at:
+https://docs.docker.com/machine/install-machine/
 
 Make sure to have a Docker Daemon running to be able to run the project.
 This can be done by running `docker-machine start default` and `
@@ -48,19 +74,16 @@ This can be done by running `docker-machine start default` and `
 runs on by running `docker-machine ip`. This will be the access point to test
 the project, and is by default `192.168.99.100`.
 
-## Run the project
+#### Run the project
 To run the project locally, simply run `docker-compose -f docker-compose.local.yml up --build -d`
 at the root of the project. This will install dependencies and run migrations and create a docker image
 with the app running.
 
-### Dependencies
+The project should now be accessible from [localhost:8000](localhost:8000)
 
-Dependencies are stored in `requirements.txt`, and is installed by running `pip install -r requirements.txt`.
+### Option 2 - Running as
 
-After adding a new dependency, add it to `requirements.txt` in the proper subsection.
-Running `pip freeze > requirements.txt` to update the dependency list will add many unnecessary packages and should not be used.
-
-# Git-conventions
+## Git-conventions
 
 Automatic linting, code formatting and security testing is implemented using
 [pre-commit](https://pre-commit.com/), with isort, Black, Flake8 and Bandit.
@@ -84,3 +107,4 @@ Pull requests:
 
 - At least one collaborator have to review and approve a pull request before it is merged into dev-branch
 - Always use "Squash and merge" as merge-options
+
