@@ -1,4 +1,5 @@
 # studentidrett-backend
+# Virtual environment in installation?
 
 ## Description
 This project is the back end for The Norwegian Association of University Sports (Norges Studentidrettsforbund, NSI)
@@ -25,27 +26,33 @@ This is a general overview of the technologies used in the project.
 
 ### Dependencies
 
-Dependencies are stored in `requirements.txt`, and is installed by running `pip install -r requirements.txt`.
+Dependencies are stored in `requirements.txt`, and is installed automatically by Docker and manually by running `pip install -r requirements.txt`.
 
 After adding a new dependency, add it to `requirements.txt` in the proper subsection, or create a new fitting subsection. \
 Running `pip freeze > requirements.txt` to update the dependency list will add many unnecessary packages and dependencies of dependencies, and should not be used.
 
 ## Installation and running locally
 Running the project locally can be done using either Docker or running it as a normal Python and Django project. \
-The installation guide assumes [Python 3](https://www.python.org/downloads/) has already been installed.
+The installation guide assumes [Python 3](https://www.python.org/downloads/) has already been installed and that the repository has been cloned.
+
 ### Create .env file
+The .env file should be created inside the first `app` directory
 For the system to run correctly it requires a set of environment variables:
 
 ```
+# General
+ENV_NAME= ['local' (default), 'staging', 'production']
+
 # Django
 DJANGO_SECRET_KEY= [INSERT_KEY]
-ENV_NAME= ['local' (default), 'staging', 'production']
 
 # Postgres
 POSTGRES_DB=[DATABASE_NAME]
 POSTGRES_USER=[DATABASE_USERNAME]
 POSTGRES_PASSWORD=[DATABASE_PASSWORD]
 POSTGRES_HOST=[DEV_ENVIRONMENT_SPECIFIC]
+
+# Elasticsearch
 ELASTICSEARCH=[DEV_ENVIRONMENT_SPECIFIC]
 ```
 
@@ -79,12 +86,45 @@ To run the project locally, simply run `docker-compose -f docker-compose.local.y
 at the root of the project. This will install dependencies and run migrations and create a docker image
 with the app running.
 
-The project should now be accessible from [localhost:8000](localhost:8000)
+The project should now be accessible from [localhost:8000](http://localhost:8000/)
 
-### Option 2 - Running as
 
-## Git-conventions
+### Option 2 - Running as a Python file
+#### Environment variables
+The usage of quotation marks should be exactly as below.
+```
+POSTGRES_HOST= 'localhost'
+ELASTICSEARCH= 'localhost:9200'
+```
 
+#### Install dependencies
+Navigate to directory containing `requirements.txt`: \
+`cd app`
+
+Install dependencies: \
+`pip install -r requirements.txt`
+
+#### Install and run Elasticsearch
+https://www.elastic.co/downloads/elasticsearch
+
+#### Install PostgreSQL
+https://www.postgresql.org/download/
+
+#### Create PostgreSQL database
+https://www.guru99.com/postgresql-create-database.html \
+
+Make sure that all variables coincide with what is stored in the `.env` file.
+
+#### Migrate database
+Run migrations so the PostgreSQL database have all tables and columns needed for the project. \
+`python manage.py migrate`
+
+#### Run the project
+Run project as an ordinary Python project, using the runserver command.
+`python manage.py runserver`
+
+
+## Code style
 Automatic linting, code formatting and security testing is implemented using
 [pre-commit](https://pre-commit.com/), with isort, Black, Flake8 and Bandit.
 To enable run `pre-commit install` once, and then `pre-commit autoupdate`.
@@ -93,6 +133,10 @@ The pre-commit hooks will then run before every commit, and check the files chan
 To run on all files, run `pre-commit run --all-files`
 
 When the pre-commit hooks automatically run and any of them fail, the attempted committed files need to be re-added and committed again.
+
+### More about code style can be found at WIKI KANSKJE?
+
+## Git-conventions
 
 Branches:
 
