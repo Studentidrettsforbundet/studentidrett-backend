@@ -1,7 +1,7 @@
 # studentidrett-backend
 
 ## Description
-This project is the back end for The Norwegian Association of University Sports (Norges Studentidrettsforbund, NSI)
+This project is the back end for The Norwegian Association of University Sports' (Norges Studentidrettsforbund, NSI) website
 that is meant to let students find NSI's sports offers all over Norway. There is also a questionnaire that recommends
 sports based on the answers given. Admins can use the back end to create new objects in the database, as well as a
 primitive view of interests (clicks) on groups from the front end.
@@ -40,10 +40,10 @@ For the system to run correctly it requires a set of environment variables:
 
 ```
 # General
-ENV_NAME= ['local' (default), 'staging', 'production']
+ENV_NAME= ['local' (default), 'staging', 'production'] (Not needed for running locally)
 
 # Django
-DJANGO_SECRET_KEY= [INSERT_KEY]
+DJANGO_SECRET_KEY= [INSERT_KEY] (Not needed for running locally)
 
 # Postgres
 POSTGRES_DB=[DATABASE_NAME]
@@ -117,7 +117,7 @@ Install dependencies: \
 `pip install -r requirements.txt`
 
 #### Install and run Elasticsearch
-https://www.elastic.co/downloads/elasticsearch
+https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html
 
 #### Install PostgreSQL
 https://www.postgresql.org/download/
@@ -138,7 +138,16 @@ Run project as an ordinary Python project, using the runserver command.
 The project should now be accessible from [localhost:8000](http://localhost:8000/)
 
 ## Testing
+Running the tests requires Elasticsearch to be running either through Docker or [manually running](https://github.com/Studentidrettsforbundet/studentidrett-backend/tree/fix/readme#install-and-run-elasticsearch).
+Some of the development specific environmental variables also have to be set a certain way.
 
+```
+POSTGRES_HOST= 'localhost'
+ELASTICSEARCH= 'localhost:9200'
+```
+
+To run the tests you need to be in the root folder and run the command:
+`pytest app/manage.py test`
 
 ## Code style
 Automatic linting, code formatting and security testing is implemented using
@@ -150,7 +159,7 @@ To run on all files, run `pre-commit run --all-files`
 
 When the pre-commit hooks automatically run and any of them fail, the attempted committed files need to be re-added and committed again.
 
-*More about code standards can be found in the [wiki](https://github.com/Studentidrettsforbundet/studentidrett-backend/wiki/Code-Standards)*
+*More about code standards can be found in the [GitHub wiki](https://github.com/Studentidrettsforbundet/studentidrett-backend/wiki/Code-Standards)*
 
 ## Git-conventions
 
