@@ -45,6 +45,9 @@
       - media_volume:/mediafiles
       env_file:
         - app/.env
+      environment:
+        ELASTICSEARCH: elasticsearch
+        POSTGRES_HOST: postgres
       build:
         context: .
         dockerfile: config/django/Dockerfile

@@ -1,5 +1,5 @@
 # flake8: noqa
-from .base import *
+import os
 
 if os.getenv("GITHUB_WORKFLOW"):
     from .development import *
@@ -30,8 +30,4 @@ else:
             "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
             "PORT": "5432",
         }
-    }
-
-    ELASTICSEARCH_DSL = {
-        "default": {"hosts": "localhost:9200"},
     }

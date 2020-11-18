@@ -61,7 +61,7 @@ LOCAL_APPS = [
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 
 ELASTICSEARCH_DSL = {
-    "default": {"hosts": os.environ.get("ELASTICSEARCH")},
+    "default": {"hosts": os.environ.get("ELASTICSEARCH", "localhost:9200")},
 }
 
 MIDDLEWARE = [
@@ -146,7 +146,7 @@ else:
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": os.environ.get("POSTGRES_DB"),
-            "HOST": os.environ.get("POSTGRES_HOST"),
+            "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
             "USER": os.environ.get("POSTGRES_USER"),
             "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
             "PORT": "5432",
