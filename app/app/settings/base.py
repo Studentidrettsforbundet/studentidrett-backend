@@ -60,7 +60,7 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 ELASTICSEARCH_DSL = {
-    "default": {"hosts": "elasticsearch"},
+    "default": {"hosts": os.environ.get("ELASTICSEARCH")},
 }
 
 MIDDLEWARE = [
