@@ -1,5 +1,5 @@
 # flake8: noqa
-
+from .local import *
 
 if os.getenv("GITHUB_WORKFLOW"):
 
@@ -7,8 +7,6 @@ if os.getenv("GITHUB_WORKFLOW"):
         "default": {"hosts": "elasticsearch"},
     }
 else:
-    from .local import *
-
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
