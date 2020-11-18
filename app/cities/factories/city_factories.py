@@ -1,4 +1,5 @@
 import factory
+
 from cities.models import City
 
 

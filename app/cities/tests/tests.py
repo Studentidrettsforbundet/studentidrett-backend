@@ -3,11 +3,10 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate
 
+from cities.factories.city_factories import CityFactoryB, CityFactoryT
 from cities.models import City
 from cities.serializers import CitySerializer
 from cities.views import CityViewSet
-
-from cities.factories.city_factories import CityFactoryT, CityFactoryB
 
 
 def get_response(request, user=None, city_id=None):
