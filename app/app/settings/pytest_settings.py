@@ -2,11 +2,25 @@
 from .base import *
 
 if os.getenv("GITHUB_WORKFLOW"):
+    from .development import *
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "github-actions",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
 
     ELASTICSEARCH_DSL = {
         "default": {"hosts": "elasticsearch"},
     }
 else:
+    from .local import *
+
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
