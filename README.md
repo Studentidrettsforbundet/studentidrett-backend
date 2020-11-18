@@ -1,12 +1,20 @@
 # studentidrett-backend
 
+## Description
+This project is the back end for The Norwegian Association of University Sports (Norges Studentidrettsforbund, NSI) that is meant to let students find NSI's sports offers all over Norway. There is also a questionnaire that recommends sports based on the answers given. Admins can use the back end to create new objects in the database, as well as a primitive view of interests (clicks) on groups from the front end.
+
+Back end is hosted at: https://kundestyrt-nsi-backend.azurewebsites.net/ \
+Front end is hosted at: https://kundestyrt-nsi-frontend-staging.azurewebsites.net/ \
+Front end repository: https://github.com/Studentidrettsforbundet/studentidrett-frontend
+
+
 # Running locally
 
 ## Install Docker
 https://docs.docker.com/get-docker/
 
 ## Create .env file
-For the system to run corretly it requires a set of environment variables:
+For the system to run correctly it requires a set of environment variables:
 
 ```
 # Django
@@ -19,7 +27,9 @@ POSTGRES_USER=[DATABASE_USERNAME]
 POSTGRES_PASSWORD=[DATABASE_PASSWORD]
 POSTGRES_HOST=postgres
 ```
-## Run Docker Machine
+## Run [Docker Machine](https://docs.docker.com/machine/)
+If you have an older Mac or Windows system you will need to install and use Docker Machine, since you cannot enable Hyper-V services.
+
 Make sure to have a Docker Daemon running to be able to run the project.
 This can be done by running `docker-machine start default` and `
 @FOR /f "tokens=*" %i IN ('docker-machine env') DO @%i`. Find the ip-address that Docker-machine
