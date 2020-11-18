@@ -4,6 +4,8 @@
 This project is the back end for The Norwegian Association of University Sports (Norges Studentidrettsforbund, NSI) that is meant to let students find NSI's sports offers all over Norway. There is also a questionnaire that recommends sports based on the answers given. Admins can use the back end to create new objects in the database, as well as a primitive view of interests (clicks) on groups from the front end.
 
 Back end is hosted at: https://kundestyrt-nsi-backend.azurewebsites.net/ \
+Swagger for back end: https://app.swaggerhub.com/apis/kundestyrt_h20/Backend/v3
+
 Front end is hosted at: https://kundestyrt-nsi-frontend-staging.azurewebsites.net/ \
 Front end repository: https://github.com/Studentidrettsforbundet/studentidrett-frontend
 
