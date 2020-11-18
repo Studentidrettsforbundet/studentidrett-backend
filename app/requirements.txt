@@ -6,7 +6,9 @@ gunicorn==20.0.4
 
 # Test tools
 coverage==5.3
-
+pytest-django==4.1.0
+pytest-cov==2.10.1
+factory_boy==3.1.0
 
 # Code quality: Linting, formatting
 pre-commit==2.7.1
@@ -31,9 +33,3 @@ python-dotenv==0.14.0
 # Elastic search
 django-elasticsearch-dsl==7.1.4
 django-elasticsearch-dsl-drf==0.20.9
-
-# Pytest
-pytest-django==4.1.0
-
-# Factory boy
-factory_boy==3.1.0

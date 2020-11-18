@@ -131,19 +131,6 @@ class TestClubsApi(APITestCase):
             response.data.get("results")[0], ClubSerializer(self.club1).data
         )
 
-    def test_query_param_sport_id(self):
-        sport = Sport.objects.create(name="TestSport")
-        group = Group.objects.create(name="TestGroup", club=self.club1)
-        group.sports.add(sport)
-        request = self.factory.get("/clubs/", {"sport": sport})
-        response = get_response(request)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data.get("results")), 1)
-        self.assertEqual(
-            response.data.get("results")[0], ClubSerializer(self.club1).data
-        )
-
     def test_query_param_sport_no_clubs(self):
         request = self.factory.get("/clubs/", {"sport": "Dans"})
         response = get_response(request)
