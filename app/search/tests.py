@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from cities.models import City
-from cities.serializers import CitySerializer
 from clubs.models import Club
 from clubs.serializers import ClubSerializer
 from groups.models import Group
