@@ -51,16 +51,13 @@ class TestClubsApi(APITestCase):
         self.assertEqual(content.get("results"), [GroupSerializer(group).data])
 
     def test_specific_city_search(self):
-        city = City.objects.create(name="Searchable3", region="")
+        city = City.objects.create(id=42, name="Searchable3", region="")
         response = self.get_response("cities/Searchable")
         content = loads(response.content)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(content.get("results")), 1)
-        self.assertEqual(
-            content.get("results"),
-            [CitySerializer(city).data],
-        )
+        self.assertEqual(content.get("results"), [CitySerializer(city).data])
 
     """
     Because of caching in elasticsearch this test currently does not work

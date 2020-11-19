@@ -1,4 +1,5 @@
 from rest_framework import status, viewsets
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from app.settings.pagination import CustomPagination
@@ -11,7 +12,7 @@ from questionnaire.serializers import AnswerSerializer, QuestionSerializer
 class QuestionnaireViewSet(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
-    permission_classes = [GetPermission]
+    permission_classes = [AllowAny]
     http_method_names = ["post"]
 
     def create(self, request, *args, **kwargs):
