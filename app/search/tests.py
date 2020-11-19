@@ -93,3 +93,8 @@ class TestClubsApi(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(content.get("results")), 0)
+
+    def test_invalid_search_query(self):
+        response = self.get_response("$€arching")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
